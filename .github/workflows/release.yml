@@ -4,6 +4,14 @@ on:
   push:
     tags:
       - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   publish:
@@ -16,18 +24,31 @@ jobs:
       - name: Set up Temurin JDK 17 (with GPG & OSSRH)
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
+          distribution: temurin
           java-version: '17'
-          cache: 'maven'
-          server-id: ossrh                      # matches <distributionManagement> id
-          server-username: OSSRH_USERNAME       # env var name (resolved from secrets below)
+          cache: maven
+          server-id: ossrh
+          server-username: OSSRH_USERNAME
           server-password: OSSRH_PASSWORD
-          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}    # ASCII-armored private key
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
           gpg-passphrase: GPG_PASSPHRASE
 
+      - name: Ensure tag version matches POM
+        id: ver
+        run: |
+          TAG="${GITHUB_REF_NAME#v}"
+          POM="$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' \
+                 --non-recursive org.codehaus.mojo:exec-maven-plugin:3.5.0:exec)"
+          echo "Tag: $TAG | POM: $POM"
+          if [ "$TAG" != "$POM" ]; then
+            echo "::error ::POM version ($POM) does not match tag ($TAG). Run: mvn versions:set -DnewVersion=$TAG"
+            exit 1
+          fi
+
       - name: Deploy to OSSRH (sign, stage, close+release)
-        run: mvn -B -P release -DskipTests=true deploy
+        run: mvn -B -P release -DskipTests=true -Docr=bytedeco deploy
         env:
-          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}   # use Sonatype USER TOKEN creds
           OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+          MAVEN_OPTS: -Docr=bytedeco
