@@ -70,7 +70,7 @@ HybridParser ── coordinates and merges results from the above
 ## Project Status
 
 - Build tool: **Maven**
-- Coordinates (current): `com.extractpdf4j:extractpdf4j-parser:0.0.1-SNAPSHOT`
+- Coordinates (current): `io.github.mehulimukherjee:extractpdf4j-parser:0.1.0`
 - Java: **17+** (recommended 17+ runtime)
 
 ---
@@ -94,16 +94,16 @@ HybridParser ── coordinates and merges results from the above
 
 ```xml
 <dependency>
-  <groupId>com.extractpdf4j</groupId>
+  <groupId>io.github.mehulimukherjee</groupId>
   <artifactId>extractpdf4j-parser</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.1.0</version>
 </dependency>
 ```
 
 ### Gradle
 
 ```kotlin
-implementation("com.extractpdf4j:extractpdf4j-parser:0.0.1-SNAPSHOT")
+implementation("io.github.mehulimukherjee:extractpdf4j-parser:0.1.0")
 ```
 
 ### Native Notes
