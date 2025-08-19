@@ -1,0 +1,33 @@
+name: Release to Maven Central (OSSRH)
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Temurin JDK 17 (with GPG & OSSRH)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'maven'
+          server-id: ossrh                      # matches <distributionManagement> id
+          server-username: OSSRH_USERNAME       # env var name (resolved from secrets below)
+          server-password: OSSRH_PASSWORD
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}    # ASCII-armored private key
+          gpg-passphrase: GPG_PASSPHRASE
+
+      - name: Deploy to OSSRH (sign, stage, close+release)
+        run: mvn -B -P release -DskipTests=true deploy
+        env:
+          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
