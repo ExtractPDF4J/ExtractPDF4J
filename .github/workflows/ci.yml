@@ -25,31 +25,12 @@ jobs:
           java-version: '17'
           cache: 'maven'
 
-      # Install Tesseract CLI so OCR tests don't fail on runners
-      - name: Install Tesseract (Ubuntu)
-        if: runner.os == 'Linux'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y tesseract-ocr
-          tesseract --version
+      # Force OCR path to Bytedeco on all runners so CLI isn't required.
+      - name: Build & Test (force Bytedeco OCR)
+        run: mvn -B -U verify -Docr=bytedeco
+        env:
+          MAVEN_OPTS: -Docr=bytedeco
 
-      - name: Install Tesseract (macOS)
-        if: runner.os == 'macOS'
-        run: |
-          brew update
-          brew install tesseract
-          tesseract --version
-
-      - name: Install Tesseract (Windows)
-        if: runner.os == 'Windows'
-        run: |
-          choco install -y tesseract --version=5.3.0
-          tesseract --version
-
-      - name: Build & Test
-        run: mvn -B -U verify
-
-      # Always upload test reports to help debug failures
       - name: Upload surefire reports
         if: always()
         uses: actions/upload-artifact@v4
