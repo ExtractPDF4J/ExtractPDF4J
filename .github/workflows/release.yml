@@ -21,15 +21,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Temurin JDK 17 (with GPG & OSSRH)
+      - name: Set up Temurin JDK 17 (with GPG & CENTRAL)
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
           cache: maven
-          server-id: ossrh
-          server-username: OSSRH_USERNAME
-          server-password: OSSRH_PASSWORD
+          server-id: central
+          server-username: CENTRAL_USERNAME
+          server-password: CENTRAL_PASSWORD
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
           gpg-passphrase: GPG_PASSPHRASE
 
@@ -45,10 +45,10 @@ jobs:
             exit 1
           fi
 
-      - name: Deploy to OSSRH (sign, stage, close+release)
+      - name: Deploy to MAVEN CENTRAL (sign, stage, close+release)
         run: mvn -B -P release -DskipTests=true -Docr=bytedeco deploy
         env:
-          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}   # use Sonatype USER TOKEN creds
-          OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+          CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}   # use Sonatype USER TOKEN creds
+          CENTRAL_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
           MAVEN_OPTS: -Docr=bytedeco
