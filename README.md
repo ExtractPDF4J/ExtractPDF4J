@@ -1,6 +1,6 @@
 # ExtractPDF4J
 
-A production-focused **Java** library for extracting **tables** and structured data from PDFs. This README mirrors the actual code in `package com.extractpdf4j` while keeping the same depth and clarity as a full, project-level README.
+A production-focused **Java** library for extracting **tables** and structured data from PDFs. This README mirrors the actual code in `package io.github.mehulimukherjee` while keeping the same depth and clarity as a full, project-level README.
 
 > Built on PDFBox (text extraction & rendering), OpenCV (grid/lines), and optional OCR (Tesseract/Leptonica via Bytedeco).
 
