@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.extractpdf4j</groupId>
   <artifactId>extractpdf4j-parser</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.1.0-SNAPSHOT</version>
   <name>ExtractPDF4J</name>
   <description>Java PDF table extraction via stream/lattice/OCR-hybrid with PDFBox, OpenCV and Tesseract.</description>
   <url>https://github.com/mehulimukherjee/ExtractPDF4J</url>
@@ -18,7 +18,7 @@
   </licenses>
 
   <developers>
-    <developer>
+    <developer>awddsd
       <id>mehulimukherjee</id>
       <name>Mehuli Mukherjee</name>
       <email>mehulimukherjee2017@gmail.com</email> <!-- optional -->
