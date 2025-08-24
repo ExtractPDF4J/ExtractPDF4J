@@ -47,4 +47,59 @@ class BaseParserTest {
         assertEquals("ALL", out.get(0).cell(0,0));
         assertEquals(List.of(-1), fp.called);
     }
+    
+    @Test
+    void handlesEmptyResultGracefully_singlePage() throws Exception {
+        class EmptyResultParser extends BaseParser {
+            EmptyResultParser(String fp) { super(fp); }
+            @Override
+            protected List<Table> parsePage(int page) {
+                return new ArrayList<>();
+            }
+        }
+
+        BaseParser parser = new EmptyResultParser("mock_path/empty_doc.pdf");
+        List<Table> result = parser.parse();
+
+        assertNotNull(result, "The result should not be null.");
+        assertTrue(result.isEmpty(), "The result list should be empty.");
+    }
+    
+    @Test
+    void handlesEmptyResultGracefully_multiPage() throws Exception {
+        class EmptyMultiPageParser extends BaseParser {
+            EmptyMultiPageParser(String fp) { super(fp); }
+            @Override
+            protected List<Table> parsePage(int page) {
+                return new ArrayList<>();
+            }
+        }
+
+        BaseParser parser = (BaseParser) new EmptyMultiPageParser("mock_path/multi_empty_doc.pdf")
+                .pages("1,2,3,4");
+
+        List<Table> result = parser.parse();
+
+        assertNotNull(result, "The result should not be null.");
+        assertTrue(result.isEmpty(), "The result list should be empty even if multiple pages are processed.");
+    }
+    
+    @Test
+    void handlesEmptyResultGracefully_allPages() throws Exception {
+        class EmptyAllPagesParser extends BaseParser {
+            EmptyAllPagesParser(String fp) { super(fp); }
+            @Override
+            protected List<Table> parsePage(int page) {
+                return new ArrayList<>();
+            }
+        }
+
+        BaseParser parser = (BaseParser) new EmptyAllPagesParser("mock_path/all_empty_doc.pdf")
+                .pages("all");
+
+        List<Table> result = parser.parse();
+
+        assertNotNull(result, "The result should not be null.");
+        assertTrue(result.isEmpty(), "The result list should be empty when parsing 'all' pages of an empty document.");
+    }
 }
