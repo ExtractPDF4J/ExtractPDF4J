@@ -4,7 +4,11 @@ import com.extractpdf4j.helpers.PageRange;
 import com.extractpdf4j.helpers.Table;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * BaseParser
@@ -39,6 +43,10 @@ import java.util.List;
  * @since 2025
  */
 public abstract class BaseParser {
+	
+	/** Logger for parser base events. */
+	private static final Logger LOGGER = LoggerFactory.getLogger(BaseParser.class);
+	
     /** Absolute or relative path to the PDF file being parsed. */
     protected final String filepath;
 
@@ -104,14 +112,20 @@ public abstract class BaseParser {
 
         // Convention: a single -1 means "all" — subclasses should parse the entire document.
         if (pageList.size() == 1 && pageList.get(0) == -1) {
-            out.addAll(parsePage(-1));
+            List<Table> all = parsePage(-1);
+            if (all != null) {
+            	out.addAll(all);
+            }
         } else {
             // Otherwise, parse each page number individually.
             for (int p : pageList) {
-                out.addAll(parsePage(p));
+                List<Table> pageTables = parsePage(p);
+                if (pageTables != null) {
+                	out.addAll(pageTables);
+                }
             }
         }
-        return out;
+        return finalizeResults(out, this.filepath);
     }
 
     /**
@@ -128,4 +142,25 @@ public abstract class BaseParser {
      * @since 2025
      */
     protected abstract List<Table> parsePage(int page) throws IOException;
+    
+    
+    /** 
+     * Normalizes parser output for "no tables" situations.
+     * <p>If {@code tables} is {@code null} or empty, logs a concise message and returns
+     * {@link java.util.Collections#emptyList()}. Otherwise return the input list unchanged.</p>
+     * 
+     * @param tables     tables collected for the requested page(s)
+     * @param sourcePath     path to the input PDF (logging only)
+     * @return a non-null list of tables
+     * @since 2025
+     */
+    protected List<Table> finalizeResults(List<Table> tables, String sourcePath) {
+    	if (tables == null || tables.isEmpty()) {
+    		LOGGER.info("No tables detected in PDF: {}", sourcePath);
+    		return Collections.emptyList();
+    	}
+    	
+    	return tables;
+    }
+   
 }
