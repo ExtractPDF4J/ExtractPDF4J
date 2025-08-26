@@ -10,6 +10,9 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * StreamParser
  *
@@ -28,6 +31,9 @@ import java.util.stream.Collectors;
  */
 public class StreamParser extends BaseParser {
     public StreamParser(String filepath){ super(filepath); }
+
+  /** Logger for stream parser events. */
+    private static final Logger LOGGER = LoggerFactory.getLogger(StreamParser.class);
 
     /**
      * Parses a specific page (1-based) or all pages when {@code page == -1}.
@@ -89,6 +95,8 @@ public class StreamParser extends BaseParser {
             rows.add(new Row(gs));
         }
         List<Double> bounds = inferColumnBounds(rows);
+        LOGGER.debug("Inferred column bounds: {}", bounds);
+        LOGGER.debug("Detected {} rows on page {}", rows.size(), pageOneIndexed);
         List<List<String>> grid = new ArrayList<>();
         for (Row r : rows) {
             List<String> row = new ArrayList<>(Collections.nCopies(bounds.size()-1, ""));
@@ -102,6 +110,9 @@ public class StreamParser extends BaseParser {
         }
         List<Double> rowBounds = new ArrayList<>();
         for (List<Glyph> gs : lines.values()) rowBounds.add(gs.stream().mapToDouble(g->g.y).average().orElse(0));
+        LOGGER.debug("Final table size: {} rows x {} cols", grid.size(), bounds.size()-1);
+        LOGGER.info("Table detected on page {} with {} rows and {} columns",
+          pageOneIndexed, grid.size(), bounds.size()-1);
         return new Table(grid, bounds, rowBounds);
     }
 
