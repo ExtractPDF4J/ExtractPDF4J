@@ -221,9 +221,9 @@ This project uses [SLF4J](https://www.slf4j.org/). You can bind it to any backen
 
 - **INFO** logs announce when a table is detected
 - **DEBUG** logs provide details:
-- inferred column boundaries
-- detected row positions
-- final grid dimensions
+  - inferred column boundaries
+  - detected row positions
+  - final grid dimensions
 
 ### Enable DEBUG logs
 
