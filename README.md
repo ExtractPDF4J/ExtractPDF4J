@@ -233,6 +233,47 @@ public class OcrQuickStart {
 
 ---
 
+## CLI
+
+Run the bundled CLI to extract tables from a PDF.
+
+Usage:
+
+```bash
+java -jar extractpdf4j-hybrid-0.2.0.jar <pdf>
+     [--mode stream|lattice|ocrstream|hybrid]
+     [--pages 1|all|1,3-5]
+     [--sep ,]
+     [--out out.csv]
+     [--debug]
+     [--dpi 300]
+     [--ocr auto|cli|bytedeco]
+     [--keep-cells]
+     [--debug-dir <dir>]
+```
+
+- **--pages**: page selection. Accepts `"1"`, `"2-5"`, `"1,3-4"`, or `"all"`.
+  - Examples:
+    - `--pages 1` → only page 1
+    - `--pages 1-3` → pages 1,2,3
+    - `--pages 1-3,5` → pages 1,2,3 and 5
+    - `--pages all` → all pages
+
+Examples:
+
+```bash
+java -jar extractpdf4j-hybrid-0.2.0.jar scan.pdf --mode lattice --pages 1 --dpi 450 --ocr cli --debug --keep-cells --debug-dir debug_out --out p1.csv
+java -jar extractpdf4j-hybrid-0.2.0.jar statement.pdf --mode hybrid --pages all --dpi 400 --out tables.csv
+```
+
+Notes:
+
+- When `--out` is omitted, tables are printed to STDOUT in CSV form.
+- When multiple tables are found and `--out` is provided, files are numbered by suffix (e.g., `out-1.csv`, `out-2.csv`).
+- `--ocr` sets a system property read by OCR helpers; values: `auto`, `cli`, or `bytedeco`.
+
+---
+
 ## Configuration
 
 - `BaseParser#pages(String)` — set page ranges (e.g., `"1"`, `"2-5"`, `"1,3-4"`, or `"all"`).
