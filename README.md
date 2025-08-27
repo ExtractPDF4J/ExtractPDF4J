@@ -9,6 +9,7 @@ A production-focused **Java** library for extracting **tables** and structured d
 ## Table of Contents
 
 - [Features](#features)
+- [CLI Quickstart](#cli-quickstart)
 - [Architecture](#architecture)
 - [Project Status](#project-status)
 - [Requirements](#requirements)
@@ -22,9 +23,11 @@ A production-focused **Java** library for extracting **tables** and structured d
   - [Hybrid (Mixed Documents)](#hybrid-mixed-documents)
   - [OCR-assisted Stream](#ocr-assisted-stream)
 - [Configuration](#configuration)
+- [YAML Rules (Normalization)](#yaml-rules-normalization)
 - [Logging](#logging)
 - [Exports](#exports)
 - [Performance Tips](#performance-tips)
+- [OCR Preprocessing Tips](#ocr-preprocessing-tips)
 - [Error Handling](#error-handling)
 - [Known Limitations](#known-limitations)
 - [Troubleshooting](#troubleshooting)
@@ -65,6 +68,30 @@ HybridParser ── coordinates and merges results from the above
 - `LatticeParser` runs line detection, grid construction, and cell assignment.
 - `OcrStreamParser` adds OCR text where no text layer exists.
 - `HybridParser` orchestrates multiple strategies, returning a `List<Table>`.
+
+---
+
+## CLI Quickstart
+
+The CLI defaults to **hybrid mode**. If you do not pass `--mode`, it behaves like `--mode hybrid`.
+
+```bash
+java -jar extractpdf4j-hybrid-0.2.0.jar input.pdf \
+  --pages all \
+  --out tables.csv
+```
+
+Common flags:
+
+- `--mode stream|lattice|ocrstream|hybrid` (default: hybrid)
+- `--pages 1|all|1,3-5`
+- `--sep ,` (CSV separator)
+- `--out out.csv` (omit to print to STDOUT)
+- `--dpi 300` (use 300–450 for scans)
+- `--debug` and `--debug-dir debug/`
+- `--ocr auto|cli|bytedeco`
+
+See also the changelog entry for this documentation pass: [CHANGELOG](CHANGELOG.md).
 
 ---
 
@@ -215,6 +242,41 @@ public class OcrQuickStart {
 
 ---
 
+## YAML Rules (Normalization)
+
+While extraction focuses on finding table cells, many workflows need consistent headers and typed values. You can maintain a small YAML file to normalize results downstream (header aliases, alignment to canonical names, and date/number formats). Example:
+
+```yaml
+headers:
+  aliases:
+    "Txn Date": ["Transaction Date", "Date"]
+    "Description": ["Details", "Narration"]
+    "Amount": ["Debit/Credit", "Amt"]
+
+schema:
+  align:
+    - ["Txn Date", "Description", "Amount"]
+
+formats:
+  date:
+    input: ["yyyy-MM-dd", "dd/MM/yyyy", "dd-MMM-uuuu"]
+    output: "yyyy-MM-dd"
+  number:
+    decimal_separator: "."
+    thousand_separator: ","
+    currency_symbols: ["$", "₹", "€"]
+```
+
+How to apply:
+
+- Map extracted header texts to canonical names using `headers.aliases`.
+- Reorder/ensure columns using `schema.align`.
+- Parse and reformat values using `formats.date` and `formats.number`.
+
+Note: The core library does not interpret YAML natively; this pattern keeps normalization explicit in your app while remaining stable across parser updates.
+
+---
+
 ## Logging
 
 This project uses [SLF4J](https://www.slf4j.org/). You can bind it to any backend (e.g., Logback, Log4j2, or the simple logger).
@@ -256,6 +318,35 @@ Files.writeString(Path.of("out/table.csv"), table.toCSV(','));
 - For scans, choose appropriate **DPI** (e.g., 300f). Try `keepCells(true)` to preserve empty grid cells.
 - Enable `debug(true)` in `LatticeParser` when tuning; inspect overlays and artifacts in `debugDir`.
 - Process files in parallel if you have lots of independent documents.
+
+---
+
+## OCR Preprocessing Tips
+
+For image/scanned PDFs, use lattice or OCR-assisted parsing. Helpful flags and settings:
+
+- `--dpi 300` (try 300–450); higher DPI improves line and OCR accuracy.
+- `--ocr auto|cli|bytedeco` to choose OCR backend. Default is `auto`.
+- `--debug --debug-dir debug/` to dump intermediate artifacts.
+- System properties for OCR CLI fine-tuning:
+  - `-Dtess.lang=eng` language
+  - `-Dtess.psm=6` page segmentation mode (6 = uniform block)
+  - `-Dtess.oem=1` engine mode
+  - `-Docr.debug=true` to dump last TSV when no words are detected
+
+Example (lattice, 450 DPI, CLI OCR, debug artifacts):
+
+```bash
+java -Dtess.lang=eng -Dtess.psm=6 -Dtess.oem=1 -Docr.debug=true \
+  -jar extractpdf4j-hybrid-0.2.0.jar scan.pdf \
+  --mode lattice --dpi 450 --ocr cli --debug --debug-dir debug \
+  --out tables.csv
+```
+
+Before/after (conceptual):
+
+- Before: low-DPI scan at 150, faint grid → few or no tables detected.
+- After: re-run at `--dpi 400` with `--debug` to inspect binarization; switch to `--mode ocrstream` if the text layer is missing.
 
 ---
 
