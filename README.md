@@ -22,6 +22,7 @@ A production-focused **Java** library for extracting **tables** and structured d
   - [Hybrid (Mixed Documents)](#hybrid-mixed-documents)
   - [OCR-assisted Stream](#ocr-assisted-stream)
 - [Configuration](#configuration)
+- [Logging](#logging)
 - [Exports](#exports)
 - [Performance Tips](#performance-tips)
 - [Error Handling](#error-handling)
@@ -211,6 +212,26 @@ public class OcrQuickStart {
 - `LatticeParser` chainable options (available in source): `dpi(float)`, `keepCells(boolean)`, `debug(boolean)`, `debugDir(File)`.
 
 > A full `ParserConfig` builder is **not** in this repository. If you want that style, we can add it in a minor release without breaking the current API.
+
+---
+
+## Logging
+
+This project uses [SLF4J](https://www.slf4j.org/). You can bind it to any backend (e.g., Logback, Log4j2, or the simple logger).
+
+- **INFO** logs announce when a table is detected
+- **DEBUG** logs provide details:
+  - inferred column boundaries
+  - detected row positions
+  - final grid dimensions
+
+### Enable DEBUG logs
+
+If using the SLF4J Simple backend (`slf4j-simple`), enable debug output with:
+
+```bash
+java -Dorg.slf4j.simpleLogger.defaultLogLevel=debug 
+```
 
 ---
 
