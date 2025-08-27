@@ -30,10 +30,11 @@ import org.slf4j.LoggerFactory;
  * </ol>
  */
 public class StreamParser extends BaseParser {
-    /** Logger for stream parser events. */
+    public StreamParser(String filepath){ super(filepath); }
+
+  /** Logger for stream parser events. */
     private static final Logger LOGGER = LoggerFactory.getLogger(StreamParser.class);
 
-    public StreamParser(String filepath){ super(filepath); }
     /**
      * Parses a specific page (1-based) or all pages when {@code page == -1}.
      *
