@@ -24,9 +24,9 @@
         </developer>
     </developers>
     <scm>
-        <url>https://github.com/mehulimukherjee/ExtractPDF4J</url>
-        <connection>scm:git:https://github.com/mehulimukherjee/ExtractPDF4J.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com/mehulimukherjee/ExtractPDF4J.git</developerConnection>
+        <url>https://github.com/ExtractPDF4J/ExtractPDF4J</url>
+        <connection>scm:git:https://github.com/ExtractPDF4J/ExtractPDF4J.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/ExtractPDF4J/ExtractPDF4J.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
     <!-- Required by OSSRH -->
