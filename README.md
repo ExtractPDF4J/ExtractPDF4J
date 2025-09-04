@@ -76,7 +76,7 @@ HybridParser ── coordinates and merges results from the above
 The CLI defaults to **hybrid mode**. If you do not pass `--mode`, it behaves like `--mode hybrid`.
 
 ```bash
-java -jar extractpdf4j-hybrid-0.2.0.jar input.pdf \
+java -jar extractpdf4j-parser-0.1.1.jar input.pdf \
   --pages all \
   --out tables.csv
 ```
@@ -240,7 +240,7 @@ Run the bundled CLI to extract tables from a PDF.
 Usage:
 
 ```bash
-java -jar extractpdf4j-hybrid-0.2.0.jar <pdf>
+java -jar extractpdf4j-parser-0.1.1.jar <pdf>
      [--mode stream|lattice|ocrstream|hybrid]
      [--pages 1|all|1,3-5]
      [--sep ,]
@@ -262,8 +262,8 @@ java -jar extractpdf4j-hybrid-0.2.0.jar <pdf>
 Examples:
 
 ```bash
-java -jar extractpdf4j-hybrid-0.2.0.jar scan.pdf --mode lattice --pages 1 --dpi 450 --ocr cli --debug --keep-cells --debug-dir debug_out --out p1.csv
-java -jar extractpdf4j-hybrid-0.2.0.jar statement.pdf --mode hybrid --pages all --dpi 400 --out tables.csv
+java -jar extractpdf4j-parser-0.1.1.jar scan.pdf --mode lattice --pages 1 --dpi 450 --ocr cli --debug --keep-cells --debug-dir debug_out --out p1.csv
+java -jar extractpdf4j-parser-0.1.1.jar statement.pdf --mode hybrid --pages all --dpi 400 --out tables.csv
 ```
 
 Notes:

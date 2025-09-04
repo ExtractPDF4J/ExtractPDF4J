@@ -49,13 +49,13 @@ public class Main {
 
     /** Prints CLI usage and examples to STDOUT. */
     private static void usage() {
-        System.out.println("Usage: java -jar extractpdf4j-hybrid-0.2.0.jar <pdf> " +
+        System.out.println("Usage: java -jar extractpdf4j-parser-0.1.1.jar <pdf> " +
                 "[--mode stream|lattice|ocrstream|hybrid] " +
                 "[--pages 1|all|1,3-5] [--sep ,] [--out out.csv] " +
                 "[--debug] [--dpi 300] [--ocr auto|cli|bytedeco] [--keep-cells] [--debug-dir <dir>]");
         System.out.println("Examples:");
-        System.out.println("  java -jar extractpdf4j-hybrid-0.2.0.jar scan.pdf --mode lattice --pages 1 --dpi 450 --ocr cli --debug --keep-cells --debug-dir debug_out --out p1.csv");
-        System.out.println("  java -jar extractpdf4j-hybrid-0.2.0.jar statement.pdf --mode hybrid --pages all --dpi 400 --out tables.csv");
+        System.out.println("  java -jar extractpdf4j-parser-0.1.1.jar scan.pdf --mode lattice --pages 1 --dpi 450 --ocr cli --debug --keep-cells --debug-dir debug_out --out p1.csv");
+        System.out.println("  java -jar extractpdf4j-parser-0.1.1.jar statement.pdf --mode hybrid --pages all --dpi 400 --out tables.csv");
     }
 
     /**
