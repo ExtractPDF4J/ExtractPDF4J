@@ -82,6 +82,7 @@ public class Main {
         float dpi = 300f;
         String ocrMode = null;
         String debugDirPath = null;
+        double minScore = 0.0;
 
         // Parse flags (simple linear scan)
         for (int i = 1; i < args.length; i++) {
@@ -95,6 +96,7 @@ public class Main {
                 case "--ocr":        ocrMode = args[++i]; break;
                 case "--keep-cells": keepCells = true; break;
                 case "--debug-dir":  debugDirPath = args[++i]; break;
+                case "--min-score":  minScore = Double.parseDouble(args[++i]); break;
                 case "--help":       usage(); return;
                 default:
                     System.err.println("Unknown arg: " + args[i]);
@@ -137,7 +139,8 @@ public class Main {
                         .dpi(dpi)
                         .debug(debug)
                         .keepCells(keepCells)
-                        .debugDir(dbgDir);
+                        .debugDir(dbgDir)
+                        .minScore(minScore);
                 break;
         }
 
