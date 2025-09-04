@@ -8,6 +8,8 @@ import com.extractpdf4j.parsers.OcrStreamParser;
 import com.extractpdf4j.parsers.StreamParser;
 import java.io.File;
 import java.io.FileWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -83,21 +85,23 @@ public class Main {
         String ocrMode = null;
         String debugDirPath = null;
         double minScore = 0.0;
+        List<String> requiredHeaders = new ArrayList<>();
 
         // Parse flags (simple linear scan)
         for (int i = 1; i < args.length; i++) {
             switch (args[i]) {
-                case "--mode":       mode = args[++i]; break;
-                case "--pages":      pages = args[++i]; break;
-                case "--sep":        sep = args[++i]; break;
-                case "--out":        out = args[++i]; break;
-                case "--debug":      debug = true; break;
-                case "--dpi":        dpi = Float.parseFloat(args[++i]); break;
-                case "--ocr":        ocrMode = args[++i]; break;
-                case "--keep-cells": keepCells = true; break;
-                case "--debug-dir":  debugDirPath = args[++i]; break;
-                case "--min-score":  minScore = Double.parseDouble(args[++i]); break;
-                case "--help":       usage(); return;
+                case "--mode":            mode = args[++i]; break;
+                case "--pages":           pages = args[++i]; break;
+                case "--sep":             sep = args[++i]; break;
+                case "--out":             out = args[++i]; break;
+                case "--debug":           debug = true; break;
+                case "--dpi":             dpi = Float.parseFloat(args[++i]); break;
+                case "--ocr":             ocrMode = args[++i]; break;
+                case "--keep-cells":      keepCells = true; break;
+                case "--debug-dir":       debugDirPath = args[++i]; break;
+                case "--min-score":       minScore = Double.parseDouble(args[++i]); break;
+                case "--require-headers": requiredHeaders = new ArrayList<>(Arrays.asList(args[++i].toLowerCase().split("\\s*,\\s*"))); break;
+                case "--help":            usage(); return;
                 default:
                     System.err.println("Unknown arg: " + args[i]);
                     usage();
@@ -131,7 +135,8 @@ public class Main {
                 parser = new OcrStreamParser(pdf)
                         .dpi(dpi)
                         .debug(debug)
-                        .debugDir(dbgDir);
+                        .debugDir(dbgDir)
+                        .requiredHeaders(requiredHeaders);
                 break;
             case "hybrid":
             default:
