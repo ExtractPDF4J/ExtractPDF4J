@@ -250,6 +250,8 @@ java -jar extractpdf4j-parser-0.1.1.jar <pdf>
      [--ocr auto|cli|bytedeco]
      [--keep-cells]
      [--debug-dir <dir>]
+     [--min-score 0-1]
+     [--require-headers Date,Description,Balance]
 ```
 
 - **--pages**: page selection. Accepts `"1"`, `"2-5"`, `"1,3-4"`, or `"all"`.

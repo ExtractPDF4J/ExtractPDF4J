@@ -31,6 +31,8 @@ import java.util.List;
  *      [--ocr auto|cli|bytedeco]
  *      [--keep-cells]
  *      [--debug-dir <dir>]
+ *      [--min-score 0-1]
+ *      [--require-headers Date,Description,Balance]
  * }</pre>
  *
  * <h3>Notes</h3>
