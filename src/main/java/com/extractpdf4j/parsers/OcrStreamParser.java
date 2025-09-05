@@ -32,11 +32,14 @@ public class OcrStreamParser extends BaseParser {
     private float renderDpi = 450f;   // OCR likes ~350–450
     private boolean debug = false;
     private File debugDir = new File("debug");
+    private List<String> requiredHeaders = new ArrayList<>();
+    private boolean requiredHeadersFoundInFile = false;
 
     public OcrStreamParser(String filepath){ super(filepath); }
     public OcrStreamParser dpi(float dpi){ this.renderDpi = dpi; return this; }
     public OcrStreamParser debug(boolean on){ this.debug = on; return this; }
     public OcrStreamParser debugDir(File dir){ if (dir!=null) this.debugDir=dir; return this; }
+    public OcrStreamParser requiredHeaders(List<String> headers){ this.requiredHeaders = headers; return this; }
 
     @Override
     protected List<Table> parsePage(int page) throws IOException {
@@ -48,6 +51,10 @@ public class OcrStreamParser extends BaseParser {
             } else {
                 if (!pages.contains(page)) return Collections.emptyList();
                 out.add(extractFromPage(doc, page-1));
+            }
+            if (!requiredHeadersFoundInFile){
+                System.err.printf("Pdf file doesn't contain required headers: %s", String.join(", ", requiredHeaders));
+                System.exit(1);
             }
             return out;
         }
@@ -96,12 +103,17 @@ public class OcrStreamParser extends BaseParser {
         lines.sort(Comparator.comparingInt(a -> a.stream().mapToInt(w->w.top).min().orElse(0)));
         for (var ln : lines) ln.sort(Comparator.comparingInt(w -> w.left));
 
-        // 8) Try to anchor columns using header detection (fuzzy)
+        if (!requiredHeaders.isEmpty() && !requiredHeadersFoundInFile){
+            // 8) Try to find all required headers by parsing lines
+            requiredHeadersFoundInFile = findRequiredHeaders(lines);
+        }
+
+        // 9) Try to anchor columns using header detection (fuzzy)
         int pageWidth = cleaned.cols();
         List<Double> colBounds = headerAnchoredBounds(lines, pageWidth);
 
         if (colBounds == null) {
-            // 9) Fallback: infer separators from mid-gaps histogram
+            // 10) Fallback: infer separators from mid-gaps histogram
             List<Integer> seps = inferSeparators(lines, pageWidth);
             colBounds = new ArrayList<>();
             colBounds.add(0.0);
@@ -111,7 +123,7 @@ public class OcrStreamParser extends BaseParser {
 
         int ncols = Math.max(1, colBounds.size()-1);
 
-        // 10) Build grid by assigning each word to its column (center or right-edge for numeric-like)
+        // 11) Build grid by assigning each word to its column (center or right-edge for numeric-like)
         List<List<String>> grid = new ArrayList<>();
         boolean headerPassed = false;
         for (var ln : lines) {
@@ -162,6 +174,14 @@ public class OcrStreamParser extends BaseParser {
         Mat rules = new Mat(); bitwise_or(hLines, vLines, rules);
         Mat noLines = new Mat(); subtract(binInv, rules, noLines);
         return noLines;
+    }
+
+    /** Returns true if any single line contains all required headers. */
+    private boolean findRequiredHeaders(List<List<Ocr.OcrWord>> lines){
+        for (var line : lines) {
+            if (matchRequiredHeaders(line)) return true;
+        }
+        return false;
     }
 
     // ---------- Column anchoring via header ----------
@@ -219,6 +239,23 @@ public class OcrStreamParser extends BaseParser {
             }
         }
         return out;
+    }
+
+    /** Try to match all required headers with words in line.
+     * If line contains all headers return true, else return false
+     * */
+    private boolean matchRequiredHeaders (List<Ocr.OcrWord> line){
+        List<String> found = new ArrayList<>();
+        for (var word: line){
+            String n = normalizeAlpha(word.text);
+            for (String req: requiredHeaders){
+                if (found.contains(req)) continue;
+                if (n.equals(req) || editDistance(n, req) <= 1){
+                    found.add(req);
+                }
+            }
+        }
+        return found.size() == requiredHeaders.size();
     }
 
     private static String normalizeAlpha(String s){

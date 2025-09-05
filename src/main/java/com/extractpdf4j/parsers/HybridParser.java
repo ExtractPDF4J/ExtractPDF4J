@@ -46,6 +46,8 @@ public class HybridParser extends BaseParser {
     private final LatticeParser lattice;
     /** Underlying OCR-enabled parser (image PDFs without text layer). */
     private final OcrStreamParser ocrstream;
+    /** Minimum allowed score for a table (default: 0.0) */
+    private double minScore = 0.0;
 
     /**
      * Creates a {@code HybridParser} for the given PDF file path.
@@ -107,6 +109,17 @@ public class HybridParser extends BaseParser {
     }
 
     /**
+     * Sets the minimum allowed average score across a list of tables. If the
+     * list's average score is below this threshold, it will be rejected.
+     * @param score minimal score in [0, 1]
+     * @return this parser
+     */
+    public HybridParser minScore(double score){
+        this.minScore = score;
+        return this;
+    }
+
+    /**
      * Sets the page selection for this parser and propagates the same selection
      * to all underlying strategies.
      *
@@ -150,6 +163,11 @@ public class HybridParser extends BaseParser {
                 return Collections.emptyList();
             }
             double sa = scoreAll(a), sb = scoreAll(b), sc = scoreAll(c);
+            double avgScore = Math.max(sa, Math.max(sb, sc));
+            if (avgScore < minScore){
+                System.err.printf("Average score of tables (%f) is lower than minimum allowed(%f)", avgScore, minScore);
+                System.exit(1);
+            }
             return (sb >= sa && sb >= sc) ? b : (sc >= sa && sc >= sb) ? c : a;
         }
 
@@ -169,6 +187,10 @@ public class HybridParser extends BaseParser {
                 return Collections.emptyList();
             }
             double sa = scoreAll(a), sb = scoreAll(b), sc = scoreAll(c);
+            double avgScore = Math.max(sa, Math.max(sb, sc));
+            if (avgScore < minScore){
+                System.err.printf("Average score of tables (%f) is lower than minimum allowed(%f)", avgScore, minScore);
+            }
             return (sb >= sa && sb >= sc) ? b : (sc >= sa && sc >= sb) ? c : a;
         } finally {
             // Always restore original page specification on subparsers.
