@@ -275,7 +275,73 @@ Notes:
 - `--ocr` sets a system property read by OCR helpers; values: `auto`, `cli`, or `bytedeco`.
 
 ---
+## Microservice (via Docker)
 
+This project includes a sample Spring Boot microservice that exposes a REST endpoint for PDF table extraction, fulfilling the requirements of a best-practice deployment.
+
+### Requirements
+
+- [Docker](https://www.docker.com/get-started) must be installed and running on your system.
+
+### Building the Docker Image
+
+Navigate to the project's root directory (where the `Dockerfile` is located) and run the following command. This command builds the Docker image using the provided multi-stage `Dockerfile` and tags it with the name `extractpdf4j-service`.
+
+```bash
+docker build -t extractpdf4j-service .
+
+Running the Microservice
+Once the image has been successfully built, you can run the microservice inside a container using the following command. This will start the service and map the container's internal port 8080 to port 8080 on your local machine, making it accessible.
+
+docker run -p 8080:8080 extractpdf4j-service
+
+Alternatively, you can run the service directly from the command line after building the project
+
+java -jar target/extractpdf4j-parser-0.1.1.jar
+
+After running either command, you will see the Spring Boot application startup logs in your terminal.
+
+Using the Endpoint
+The service provides a POST endpoint at /api/extract for processing PDF files.
+
+Example using curl
+To test the endpoint, you can send a multipart/form-data request with a PDF file. Make sure you are in the project's root directory so the command can find the sample PDF file.
+
+curl -X POST -F "file=@Scanned_Bank_Statement.pdf" http://localhost:8080/api/extract
+Expected Response
+
+The service will respond with a 200 OK status and a plain text body containing the extracted table(s) in CSV format.
+--- Table 1 ---
+EXAMPLE BANK,,LID.,,
+Statement of Account,,,,Page |
+Account Name: Mehuli,Mukherjee,,,Branch: Wellington CBD
+Account Number:,,,,01-2345-6789012-000 BIC: EXBKNZ22
+bate,Description,,,Debit Credit a Balance
+10 Jul 2025 Uber,Trip,,Wellington,"14.18 i 5,407.18"
+“aaju 2025 Spotify,,,,"112.47 5,294.74"
+“42 Jul 2025,Electricity,-,Meridian,"332.20 a 4,962.5 |"
+43 Jul 2025 Salary,,ACME,Corp,"1,991.95 6,954.46"
+“14 jul2025 ATM,,Withdrawal,,"632 6,938.14"
+FE Jjul2025 Rent,,Payment,,oe 407000 (stsi<Cs~*st‘is~*«~S BBL
+i Jul 2025 POs,,1234,Countdown,"Lambton 253.88 6,577.26"
+117 Jul 2025,Groceries,-,New,"World 101.54 | 6,475.72"
+“18 jul 2025,Spotify,,,"364.82 6,110.90"
+“49 Jul 2025 POS,,1234,Countdown,Lambton 342.19 _ 5768.7 |
+"""20 Jul2025.Watercare",,Bill,,"315.07 5,453.64"
+2 Jul 2025,Coffee -,Mojo,,"127.21 5,326.4"
+“23 4Jul2025,Coffee-Mojo,,,gg 6 4846.83
+“24 Jul 2025,Parking -,Wilson,,"2B 4,800.64"
+"""25 Jul2025",—Fuel-Z,Energy,,"a72eT 4,527.74"
+26 Jul 2025 ATM,,Withdrawal,_,"320.19 4,198.58"
+27 Jul 2025 Uber,Trip,,Wellington,"437.98 3,760.64"
+28 Jul 2025,Parking,-,Wilson,"7 38.22 3,722.38"
+29 Jul2025 _,Insurance,-,Tower,"373874 3,348.64"
+30 Jul 2025 Fuel,-7,Energy,,261.08 a 3.087.5¢
+31 Jul 2025,Salary,ACME,Corp,"385.18 3,472.74"
+For queries call,0800 000,000,or visit,examplebank.nz
+ with Maven:
+
+---
 ## Configuration
 
 - `BaseParser#pages(String)` — set page ranges (e.g., `"1"`, `"2-5"`, `"1,3-4"`, or `"all"`).

@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.apache.pdfbox.pdmodel.PDDocument;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +48,10 @@ public abstract class BaseParser {
 	/** Logger for parser base events. */
 	private static final Logger LOGGER = LoggerFactory.getLogger(BaseParser.class);
 	
-    /** Absolute or relative path to the PDF file being parsed. */
+    /** 
+     * Absolute or relative path to the PDF file being parsed.
+     * This may be null when processing in-memory documents.
+     */
     protected final String filepath;
 
     /**
@@ -69,6 +73,14 @@ public abstract class BaseParser {
      */
     protected BaseParser(String filepath) {
         this.filepath = filepath;
+    }
+
+    /**
+     * Constructs a parser for in-memory processing.
+     * The filepath will be null.
+     */
+    protected BaseParser() {
+        this.filepath = null;
     }
 
     /**
@@ -162,5 +174,15 @@ public abstract class BaseParser {
     	
     	return tables;
     }
+    
+     /**
+     * Parses a previously loaded PDF document. This is the preferred method
+     * for in-memory processing.
+     *
+     * @param document The PDDocument to parse.
+     * @return A list of extracted tables.
+     * @throws IOException for I/O issues during parsing.
+     */
+    public abstract List<Table> parse(PDDocument document) throws IOException;
    
 }

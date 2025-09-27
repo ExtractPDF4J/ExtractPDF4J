@@ -29,21 +29,27 @@ import org.slf4j.LoggerFactory;
  *   <li>Assign spans to columns to build a {@link Table} grid.</li>
  * </ol>
  */
+
 public class StreamParser extends BaseParser {
     /** Logger for stream parser events. */
     private static final Logger LOGGER = LoggerFactory.getLogger(StreamParser.class);
+    
     public StreamParser(String filepath){ super(filepath); }
 
+    /**
+     * Creates a {@code StreamParser} for in-memory processing.
+     * The PDF document must be passed to the parse() method.
+     */
+    public StreamParser() {
+        super();
+    }
 
     /**
-     * Parses a specific page (1-based) or all pages when {@code page == -1}.
-     *
-     * <p>For “all pages”, iterates through the document and calls
-     * {@link #extractFromPage(PDDocument, int)} per page; otherwise only the
-     * requested page is processed (subject to the configured page selection).</p>
+     * @deprecated This method loads the document from disk on every call.
+     *             Prefer loading the PDDocument once and using {@link #parse(PDDocument)}.
      */
-
     @Override
+    @Deprecated
     protected List<Table> parsePage(int page) throws IOException {
         try (PDDocument doc = PDDocument.load(new java.io.File(filepath))) {
             List<Table> out = new ArrayList<>();
@@ -57,6 +63,36 @@ public class StreamParser extends BaseParser {
             return out;
         }
     }
+    
+    @Override
+    public List<Table> parse(PDDocument document) throws IOException {
+        List<Table> tables = new ArrayList<>();
+
+        List<Integer> selectedPages = PageRange.parse(this.pages);
+
+        // Check for the "all pages" case
+        if (selectedPages.size() == 1 && selectedPages.get(0) == -1) {
+            // If "all", iterate from page 1 to the last page
+            for (int i = 1; i <= document.getNumberOfPages(); i++) {
+                Table table = extractFromPage(document, i);
+                if (table != null && table.nrows() > 0) {
+                    tables.add(table);
+                }
+            }
+        } else {
+            // Otherwise, iterate through the explicitly selected pages
+            for (int pageNum : selectedPages) {
+                // Ensure the page number is valid
+                if (pageNum >= 1 && pageNum <= document.getNumberOfPages()) {
+                    Table table = extractFromPage(document, pageNum);
+                    if (table != null && table.nrows() > 0) {
+                        tables.add(table);
+                    }
+                }
+            }
+        }
+        return tables;
+    }
 
     /**
      * Extracts a {@link Table} from a single page using text positions.
@@ -67,7 +103,6 @@ public class StreamParser extends BaseParser {
      * @param doc            open document
      * @param pageOneIndexed 1-based page index
      */
-
     private Table extractFromPage(PDDocument doc, int pageOneIndexed) throws IOException {
         class Collector extends PDFTextStripper {
             final List<Glyph> glyphs = new ArrayList<>();
@@ -117,7 +152,6 @@ public class StreamParser extends BaseParser {
     }
 
     /** Returns the column index i where x ∈ [bounds[i], bounds[i+1}), or clamps to last. */
-
     private static int findCol(List<Double> bounds, double x) {
         for (int i=0;i+1<bounds.size();i++) if (x>=bounds.get(i) && x<bounds.get(i+1)) return i;
         return bounds.size()-2;
