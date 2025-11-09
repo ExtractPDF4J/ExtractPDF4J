@@ -56,6 +56,15 @@ public class LatticeParser extends BaseParser {
     private File debugDir = new File("debug");
 
     public LatticeParser(String filepath){ super(filepath); }
+
+    /**
+     * Creates a {@code LatticeParser} for in-memory processing.
+     * The PDF document must be passed to the parse() method.
+     */
+    public LatticeParser() {
+        super();
+    }
+    
     /** Toggle debug overlays/artifacts. */
     public LatticeParser debug(boolean on){ this.debug = on; return this; }
     /** Keep empty cells in the final grid (useful for fixed layouts). */
@@ -66,13 +75,11 @@ public class LatticeParser extends BaseParser {
     public LatticeParser debugDir(File dir){ if (dir!=null) this.debugDir = dir; return this; }
 
     /**
-     * Parses a specific page (1-based) or all pages when {@code page == -1}.
-     *
-     * <p>For “all pages”, iterates across the document and calls {@link #extractFromPage}
-     * per page. Otherwise, only processes the requested page if it matches the user’s
-     * page selection string.</p>
+     * @deprecated This method loads the document from disk on every call.
+     *             Prefer loading the PDDocument once and using {@link #parse(PDDocument)}.
      */
     @Override
+    @Deprecated
     protected List<Table> parsePage(int page) throws IOException {
         try (PDDocument doc = PDDocument.load(new File(filepath))) {
             List<Integer> pages = PageRange.parse(this.pages);
@@ -93,6 +100,38 @@ public class LatticeParser extends BaseParser {
         }
     }
 
+    @Override
+    public List<Table> parse(PDDocument document) throws IOException {
+        List<Table> tables = new ArrayList<>();
+
+        // Parse the page selection string (e.g., "1-3,5", "all")
+        List<Integer> pagesToProcess = PageRange.parse(this.pages);
+
+        // Check for the "all pages" case
+        if (pagesToProcess.size() == 1 && pagesToProcess.get(0) == -1) {
+            // If "all", iterate from page 0 to the last page (zero-indexed for extractFromPage)
+            for (int i = 0; i < document.getNumberOfPages(); i++) {
+                Table table = extractFromPage(document, i);
+                if (table != null && table.nrows() > 0) {
+                    tables.add(table);
+                }
+            }
+        } else {
+            // Otherwise, iterate through the explicitly selected pages
+            for (int pageNum : pagesToProcess) {
+                int zeroIdx = pageNum - 1; // Convert to zero-based index
+                // Ensure the page number is valid
+                if (zeroIdx >= 0 && zeroIdx < document.getNumberOfPages()) {
+                    Table table = extractFromPage(document, zeroIdx);
+                    if (table != null && table.nrows() > 0) {
+                        tables.add(table);
+                    }
+                }
+            }
+        }
+        return tables;
+    }
+    
     /**
      * Extracts a table grid from a single zero-based page index.
      *

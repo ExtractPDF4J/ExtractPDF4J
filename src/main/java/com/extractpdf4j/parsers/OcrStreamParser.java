@@ -36,12 +36,26 @@ public class OcrStreamParser extends BaseParser {
     private boolean requiredHeadersFoundInFile = false;
 
     public OcrStreamParser(String filepath){ super(filepath); }
+    
+    /**
+     * Creates an {@code OcrStreamParser} for in-memory processing.
+     * The PDF document must be passed to the parse() method.
+     */
+    public OcrStreamParser() {
+        super();
+    }
+    
     public OcrStreamParser dpi(float dpi){ this.renderDpi = dpi; return this; }
     public OcrStreamParser debug(boolean on){ this.debug = on; return this; }
     public OcrStreamParser debugDir(File dir){ if (dir!=null) this.debugDir=dir; return this; }
     public OcrStreamParser requiredHeaders(List<String> headers){ this.requiredHeaders = headers; return this; }
 
+    /**
+     * @deprecated This method loads the document from disk on every call.
+     *             Prefer loading the PDDocument once and using {@link #parse(PDDocument)}.
+     */
     @Override
+    @Deprecated
     protected List<Table> parsePage(int page) throws IOException {
         try (PDDocument doc = PDDocument.load(new File(filepath))) {
             List<Integer> pages = com.extractpdf4j.helpers.PageRange.parse(this.pages);
@@ -52,12 +66,52 @@ public class OcrStreamParser extends BaseParser {
                 if (!pages.contains(page)) return Collections.emptyList();
                 out.add(extractFromPage(doc, page-1));
             }
-            if (!requiredHeadersFoundInFile){
+            if (!requiredHeaders.isEmpty() && !requiredHeadersFoundInFile){
                 System.err.printf("Pdf file doesn't contain required headers: %s", String.join(", ", requiredHeaders));
                 System.exit(1);
             }
             return out;
         }
+    }
+
+    @Override
+    public List<Table> parse(PDDocument document) throws IOException {
+        List<Table> tables = new ArrayList<>();
+
+        // Parse the page selection string (e.g., "1-3,5", "all")
+        List<Integer> pagesToProcess = com.extractpdf4j.helpers.PageRange.parse(this.pages);
+
+        // Check for the "all pages" case
+        if (pagesToProcess.size() == 1 && pagesToProcess.get(0) == -1) {
+            // If "all", iterate from page 0 to the last page (zero-indexed for extractFromPage)
+            for (int i = 0; i < document.getNumberOfPages(); i++) {
+                Table table = extractFromPage(document, i);
+                if (table != null && table.nrows() > 0) {
+                    tables.add(table);
+                }
+            }
+        } else {
+            // Otherwise, iterate through the explicitly selected pages
+            for (int pageNum : pagesToProcess) {
+                int zeroIdx = pageNum - 1; // Convert to zero-based index
+                // Ensure the page number is valid
+                if (zeroIdx >= 0 && zeroIdx < document.getNumberOfPages()) {
+                    Table table = extractFromPage(document, zeroIdx);
+                    if (table != null && table.nrows() > 0) {
+                        tables.add(table);
+                    }
+                }
+            }
+        }
+
+        if (!requiredHeaders.isEmpty() && !requiredHeadersFoundInFile){
+            System.err.printf("Pdf file doesn't contain required headers: %s%n", String.join(", ", requiredHeaders));
+            // In a service context, throwing an exception might be better than System.exit()
+            // For now, we'll return an empty list to avoid crashing the service.
+            return Collections.emptyList();
+        }
+
+        return tables;
     }
 
     private Table extractFromPage(PDDocument doc, int zeroIdx) throws IOException {
