@@ -1,42 +1,85 @@
-name: CI
+name: Java CI with Maven
 
 on:
   push:
-    branches: [ "**" ]
+    branches: [ "main" ]
   pull_request:
+    branches: [ "main" ]
 
 jobs:
   build:
-    name: Build & Test (JDK 17) – ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
-      fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-      - name: Set up Temurin JDK 17
-        uses: actions/setup-java@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
         with:
-          distribution: 'temurin'
           java-version: '17'
-          cache: 'maven'
+          distribution: 'temurin'
+          cache: maven
 
-      # Force OCR path to Bytedeco on all runners so CLI isn't required.
-      - name: Build & Test (force Bytedeco OCR)
-        run: mvn -B -U verify -Docr=bytedeco
-        env:
-          MAVEN_OPTS: -Docr=bytedeco
+      # ----------------------------
+      # Linux / macOS installation
+      # ----------------------------
+      - name: Install Tesseract OCR (Linux/macOS)
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          if [ "$RUNNER_OS" = "Linux" ]; then
+            echo "Installing Tesseract on Ubuntu..."
+            sudo apt-get update
+            sudo apt-get install -y tesseract-ocr tesseract-ocr-eng tesseract-ocr-fra
+          else
+            echo "Installing Tesseract on macOS..."
+            brew update
+            brew install tesseract
+            echo "Adding French language data..."
+            sudo mkdir -p /usr/local/share/tessdata
+            sudo curl -L -o /usr/local/share/tessdata/fra.traineddata \
+              https://github.com/tesseract-ocr/tessdata_best/raw/main/fra.traineddata
+          fi
 
-      - name: Upload surefire reports
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: surefire-reports-${{ matrix.os }}
-          path: |
-            **/target/surefire-reports/**
-            **/target/failsafe-reports/**
-          if-no-files-found: ignore
+      # ----------------------------
+      # Windows installation (via winget)
+      # ----------------------------
+      - name: Install Tesseract OCR (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          Write-Host "Installing Tesseract on Windows via winget..."
+          winget install --id UB-Mannheim.TesseractOCR -e --accept-package-agreements --accept-source-agreements
+
+          # Add Tesseract path
+          "C:\Program Files\Tesseract-OCR" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+
+          # Add French language
+          $tessdata = "C:\Program Files\Tesseract-OCR\tessdata"
+          if (!(Test-Path $tessdata)) { New-Item -ItemType Directory -Path $tessdata | Out-Null }
+          Invoke-WebRequest `
+            -Uri "https://github.com/tesseract-ocr/tessdata_best/raw/main/fra.traineddata" `
+            -OutFile "$tessdata\fra.traineddata"
+
+          Write-Host "✅ Tesseract + fra.traineddata installed successfully via winget."
+
+      # ----------------------------
+      # Verify installation
+      # ----------------------------
+      - name: Verify Tesseract installation
+        shell: bash
+        run: |
+          echo "🔍 Checking installed Tesseract version and languages..."
+          tesseract --version
+          echo "Available languages:"
+          tesseract --list-langs || echo "⚠️ Could not list languages"
+
+      # ----------------------------
+      # Build & Test
+      # ----------------------------
+      - name: Build and test with Maven
+        run: mvn -B verify --file pom.xml
