@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import org.apache.pdfbox.pdmodel.PDDocument;
 
 /**
  * HybridParser
@@ -59,6 +60,20 @@ public class HybridParser extends BaseParser {
         this.stream    = new StreamParser(filepath);
         this.lattice   = new LatticeParser(filepath);
         this.ocrstream = new OcrStreamParser(filepath);
+    }
+
+    /**
+     * Creates a {@code HybridParser} for in-memory processing.
+     * The PDF document must be passed to the new parse() method.
+     */
+    public HybridParser() {
+        super(); // Calls the empty constructor of BaseParser
+        
+        // These lines will cause errors until we add empty constructors
+        // to the other parser classes.
+        this.stream = new StreamParser();
+        this.lattice = new LatticeParser();
+        this.ocrstream = new OcrStreamParser();
     }
 
     // ---------------------------------------------------------------------
@@ -197,6 +212,38 @@ public class HybridParser extends BaseParser {
             stream.pages(prev);
             lattice.pages(prev);
             ocrstream.pages(prev);
+        }
+    }
+    
+    @Override
+    public List<Table> parse(PDDocument document) throws IOException {
+        // Run each strategy using the provided PDDocument
+        List<Table> streamResults = stream.parse(document);
+        List<Table> latticeResults = lattice.parse(document);
+        List<Table> ocrResults = ocrstream.parse(document);
+
+        if (streamResults.isEmpty() && latticeResults.isEmpty() && ocrResults.isEmpty()) {
+            return Collections.emptyList();
+        }
+        
+        double streamScore = scoreAll(streamResults);
+        double latticeScore = scoreAll(latticeResults);
+        double ocrScore = scoreAll(ocrResults);
+
+        double bestScore = Math.max(streamScore, Math.max(latticeScore, ocrScore));
+
+        if (bestScore < minScore) {
+            System.err.printf("Best average score (%f) is lower than minimum allowed (%f)%n", bestScore, minScore);
+    
+            return Collections.emptyList();
+        }
+
+        if (latticeScore >= streamScore && latticeScore >= ocrScore) {
+            return latticeResults;
+        } else if (ocrScore >= streamScore && ocrScore >= latticeScore) {
+            return ocrResults;
+        } else {
+            return streamResults;
         }
     }
 

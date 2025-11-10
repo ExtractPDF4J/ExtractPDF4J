@@ -1,10 +1,12 @@
 package com.extractpdf4j.parsers;
 
 import com.extractpdf4j.helpers.Table;
+import org.apache.pdfbox.pdmodel.PDDocument; // <-- IMPORTANTE: ADICIONAR ESTE IMPORT
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -27,6 +29,14 @@ class BaseParserTest {
             called.add(page);
             if (page == -1) return List.of(t("ALL"));
             return List.of(t("P"+page));
+        }
+
+        // Added to satisfy the abstract method requirement from BaseParser
+        @Override
+        public List<Table> parse(PDDocument document) throws IOException {
+            // This test class doesn't use this method, so we can return an empty list.
+            called.add(-99); 
+            return Collections.emptyList();
         }
     }
 
@@ -56,6 +66,13 @@ class BaseParserTest {
             protected List<Table> parsePage(int page) {
                 return new ArrayList<>();
             }
+
+            // Added to satisfy the abstract method requirement from BaseParser
+            @Override
+            public List<Table> parse(PDDocument document) throws IOException {
+                // Consistent with the purpose of this test class, return an empty list.
+                return Collections.emptyList();
+            }
         }
 
         BaseParser parser = new EmptyResultParser("mock_path/empty_doc.pdf");
@@ -72,6 +89,13 @@ class BaseParserTest {
             @Override
             protected List<Table> parsePage(int page) {
                 return new ArrayList<>();
+            }
+
+            // Added to satisfy the abstract method requirement from BaseParser
+            @Override
+            public List<Table> parse(PDDocument document) throws IOException {
+                // Consistent with the purpose of this test class, return an empty list.
+                return Collections.emptyList();
             }
         }
 
@@ -91,6 +115,13 @@ class BaseParserTest {
             @Override
             protected List<Table> parsePage(int page) {
                 return new ArrayList<>();
+            }
+
+            // Added to satisfy the abstract method requirement from BaseParser
+            @Override
+            public List<Table> parse(PDDocument document) throws IOException {
+                // Consistent with the purpose of this test class, return an empty list.
+                return Collections.emptyList();
             }
         }
 

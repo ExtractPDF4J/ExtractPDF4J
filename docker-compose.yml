@@ -1,0 +1,11 @@
+version: '3.9'
+
+services:
+  extractpdf4j:
+    build: .
+    container_name: extractpdf4j
+    ports:
+      - "8080:8080"
+    environment:
+      JAVA_OPTS: "-Xms512m -Xmx1024m"
+    restart: unless-stopped
