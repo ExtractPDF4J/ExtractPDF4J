@@ -163,11 +163,8 @@
                 <version>3.2.5</version>
                 <configuration>
                     <useModulePath>false</useModulePath>
-                    <redirectTestOutputToFile>false</redirectTestOutputToFile>
-                    <printSummary>true</printSummary>
                 </configuration>
             </plugin>
-
         </plugins>
     </build>
 
