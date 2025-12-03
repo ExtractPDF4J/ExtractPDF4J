@@ -14,7 +14,7 @@
 
     <groupId>io.github.mehulimukherjee</groupId>
     <artifactId>extractpdf4j-parser</artifactId>
-    <version>0.1.1</version>
+    <version>0.1.2</version>
     <name>ExtractPDF4J</name>
     <description>Java PDF table extraction via stream/lattice/OCR-hybrid with PDFBox, OpenCV and Tesseract.</description>
     <url>https://github.com/mehulimukherjee/ExtractPDF4J</url>
