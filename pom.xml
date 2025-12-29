@@ -12,12 +12,12 @@
         <relativePath/>
     </parent>
 
-    <groupId>io.github.mehulimukherjee</groupId>
+    <groupId>io.github.extractpdf4j</groupId>
     <artifactId>extractpdf4j-parser</artifactId>
-    <version>0.1.2</version>
+    <version>1.0.0</version>
     <name>ExtractPDF4J</name>
-    <description>Java PDF table extraction via stream/lattice/OCR-hybrid with PDFBox, OpenCV and Tesseract.</description>
-    <url>https://github.com/mehulimukherjee/ExtractPDF4J</url>
+    <description>The Open-Source Java Library for Extracting Tables from Scanned and Text PDFs.</description>
+    <url>https://github.com/ExtractPDF4J/ExtractPDF4J</url>
 
     <licenses>
         <license>
@@ -32,13 +32,13 @@
             <id>mehulimukherjee</id>
             <name>Mehuli Mukherjee</name>
             <email>mehulimukherjee2017@gmail.com</email>
-            <organizationUrl>https://github.com/mehulimukherjee</organizationUrl>
+            <organizationUrl>https://github.com/ExtractPDF4J</organizationUrl>
         </developer>
     </developers>
 
     <scm>
         <url>https://github.com/ExtractPDF4J/ExtractPDF4J</url>
-        <connection>scm:git:https://github.com/ExtractPDF4J/ExtractPDF4J.git</connection>
+        <connection>scm:git:https://github.com/ExtractPDF4J/https://github.com/ExtractPDF4J.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/ExtractPDF4J/ExtractPDF4J.git</developerConnection>
         <tag>HEAD</tag>
     </scm>

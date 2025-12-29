@@ -1,6 +1,6 @@
 # ExtractPDF4J
 
-A production-focused **Java** library for extracting **tables** and structured data from PDFs. This README mirrors the actual code in `package io.github.mehulimukherjee` while keeping the same depth and clarity as a full, project-level README.
+A production-focused **Java** library for extracting **tables** and structured data from PDFs. This README mirrors the actual code in `package io.github.extractpdf4j` while keeping the same depth and clarity as a full, project-level README.
 
 > Built on PDFBox (text extraction & rendering), OpenCV (grid/lines), and optional OCR (Tesseract/Leptonica via Bytedeco).
 
@@ -98,7 +98,7 @@ See also the changelog entry for this documentation pass: [CHANGELOG](CHANGELOG.
 ## Project Status
 
 - Build tool: **Maven**
-- Coordinates (current): `io.github.mehulimukherjee:extractpdf4j-parser:0.1.0`
+- Coordinates (current): `io.github.extractpdf4j:extractpdf4j-parser:0.1.0`
 - Java: **17+** (recommended 17+ runtime)
 
 ---
@@ -122,16 +122,16 @@ See also the changelog entry for this documentation pass: [CHANGELOG](CHANGELOG.
 
 ```xml
 <dependency>
-  <groupId>io.github.mehulimukherjee</groupId>
+  <groupId>io.github.extractpdf4j</groupId>
   <artifactId>extractpdf4j-parser</artifactId>
-  <version>0.1.0</version>
+  <version>1.0.0</version>
 </dependency>
 ```
 
 ### Gradle
 
 ```kotlin
-implementation("io.github.mehulimukherjee:extractpdf4j-parser:0.1.0")
+implementation("io.github.extractpdf4j:extractpdf4j-parser:0.1.0")
 ```
 
 ### Native Notes
