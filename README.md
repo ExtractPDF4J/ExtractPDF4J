@@ -114,24 +114,12 @@ for (File pdf : new File("./invoices").listFiles(f -> f.getName().endsWith(".pdf
 
 - Javadocs: https://javadoc.io/doc/io.github.extractpdf4j/extractpdf4j-parser/latest/index.html
 
-## FAQ / Troubleshooting (top 6 issues)
-
-1. **OCR not kicking in on scanned PDFs** → Use `OcrStreamParser` or `HybridParser` and ensure OCR dependencies are available.
-2. **UnsatisfiedLinkError for OpenCV/Tesseract** → Switch to `*-platform` dependencies or fix your native library path.
-3. **Tables missing in scans** → Increase DPI (300–450) and try lattice/hybrid mode.
-4. **Garbled OCR text** → Verify `TESSDATA_PREFIX` and language packs (e.g., `eng`).
-5. **Multiple tables per page** → Iterate over results instead of assuming a single table.
-6. **Slow extraction** → Limit page ranges and avoid high DPI unless needed.
-
-## Contributing + Roadmap
-
-- See `CONTRIBUTING.md` for local setup, style, and test guidance.
-- Roadmap: JSON/XLSX export helpers, optional `AutoParser`, and more batch utilities.
-
 ---
-## Visual example
+## Visual examples
 
-Visual preview placeholder (image asset intentionally removed as requested).
+![extractpdf4j-table.png](resources/extractpdf4j-table.png)
+
+![extractpdf4j-visual.png](resources/extractpdf4j-visual.png)
 
 ---
 
@@ -537,14 +525,18 @@ Before/after (conceptual):
 - Handwritten notes/stamps can confuse line detection; crop or pre-process to avoid noisy regions.
 - Nested/complex tables work best with lattice; hierarchical exports (JSON/XLSX) require additional code.
 
-## Troubleshooting (detailed)
+## FAQ / Troubleshooting (top 6 issues)
 
-- **UnsatisfiedLinkError**: ensure the bytedeco `*-platform` artifacts are used (they ship natives). If using system libs, check `LD_LIBRARY_PATH` / `DYLD_LIBRARY_PATH` / `PATH`.
-- **No tables found**: try `HybridParser`, increase scan `dpi(300f)`, enable `debug(true)` and inspect overlays in `debugDir(...)`.
-- **Garbled text on scans**: use `OcrStreamParser` instead of `StreamParser`.
+1. **OCR not kicking in on scanned PDFs** → Use `OcrStreamParser` or `HybridParser` and ensure OCR dependencies are available.
+2. **UnsatisfiedLinkError for OpenCV/Tesseract** → Switch to `*-platform` dependencies or fix your native library path.
+3. **Tables missing in scans** → Increase DPI (300–450) and try lattice/hybrid mode.
+4. **Garbled OCR text** → Verify `TESSDATA_PREFIX` and language packs (e.g., `eng`).
+5. **Multiple tables per page** → Iterate over results instead of assuming a single table.
+6. **Slow extraction** → Limit page ranges and avoid high DPI unless needed.
 
 ## Roadmap
 
+- JSON/XLSX export helpers, optional `AutoParser`, and more batch utilities.
 - Optional **AutoParser** (delegates to `HybridParser`) — convenience wrapper.
 - `Table#toJson()` and `Table#toXlsx(Path)` methods.
 - `Results.exportAllCsv/Json(...)` bulk helpers.
