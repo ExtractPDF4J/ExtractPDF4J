@@ -38,7 +38,7 @@
 
     <scm>
         <url>https://github.com/ExtractPDF4J/ExtractPDF4J</url>
-        <connection>scm:git:https://github.com/ExtractPDF4J/ExtractPDF4J.git</connection>
+        <connection>scm:git:https://github.com/ExtractPDF4J/https://github.com/ExtractPDF4J.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/ExtractPDF4J/ExtractPDF4J.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
