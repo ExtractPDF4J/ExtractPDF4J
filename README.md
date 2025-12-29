@@ -1,57 +1,143 @@
 # ExtractPDF4J
 
-A production-focused **Java** library for extracting **tables** and structured data from PDFs. This README mirrors the actual code in `package io.github.extractpdf4j` while keeping the same depth and clarity as a full, project-level README.
+A production-focused **Java** library for extracting **tables** and structured data from PDFs.
+Extract tables from scanned/image PDFs in Java using OCR + table structure detection.
 
-> Built on PDFBox (text extraction & rendering), OpenCV (grid/lines), and optional OCR (Tesseract/Leptonica via Bytedeco).
+```java
+import com.extractpdf4j.helpers.Table;
+import com.extractpdf4j.parsers.HybridParser;
+import java.util.List;
+
+public class QuickStart {
+  public static void main(String[] args) throws Exception {
+    // Works for BOTH text-based and scanned PDFs (OCR fallback)
+    List<Table> tables = new HybridParser("scanned_invoice.pdf")
+        .dpi(300f)
+        .parse();
+
+    if (!tables.isEmpty()) {
+      System.out.println(tables.get(0).toCSV(','));
+    }
+  }
+}
+```
+
+## What problem it solves
+
+Stop hand-retyping tables from scanned invoices, bank statements, or reports.
+Extract clean rows + columns even when the PDF has no text layer.
+
+## Magic snippet
+
+The copy/paste quick start is at the top of this README under the project description.
+
+## Install (Maven + Gradle)
+
+**Maven**
+
+```xml
+<dependency>
+  <groupId>io.github.extractpdf4j</groupId>
+  <artifactId>extractpdf4j-parser</artifactId>
+  <version>1.0.0</version>
+</dependency>
+```
+
+**Gradle**
+
+```kotlin
+implementation("io.github.extractpdf4j:extractpdf4j-parser:1.0.0")
+```
+
+### Why this vs Tabula/PDFBox (comparison table)
+
+| Feature | ExtractPDF4J | Tabula-Java | PDFBox |
+| --- | --- | --- | --- |
+| Text-based PDFs | ✅ | ✅ | ✅ |
+| Scanned/Image PDFs | ✅ Native OCR | ❌ | ❌ |
+| Table recognition | ✅ Stream/Lattice/OCR-hybrid | ✅ | ❌ (raw text) |
+| “Hello world” time | Low (single entrypoint) | Medium | High |
+
+## Use cases (3 quick examples)
+
+### Extract from scanned PDF (OCR)
+
+```java
+import com.extractpdf4j.helpers.Table;
+import com.extractpdf4j.parsers.OcrStreamParser;
+import java.util.List;
+
+List<Table> tables = new OcrStreamParser("scanned_invoice.pdf")
+  .dpi(300f)
+  .parse();
+```
+
+### Extract from text-based PDF (stream/lattice)
+
+```java
+import com.extractpdf4j.helpers.Table;
+import com.extractpdf4j.parsers.StreamParser;
+import java.util.List;
+
+List<Table> tables = new StreamParser("statement.pdf")
+  .pages("1-2")
+  .parse();
+```
+
+### Batch extraction (folder → CSV)
+
+```java
+import com.extractpdf4j.helpers.Table;
+import com.extractpdf4j.parsers.HybridParser;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+
+for (File pdf : new File("./invoices").listFiles(f -> f.getName().endsWith(".pdf"))) {
+  List<Table> tables = new HybridParser(pdf.getPath())
+    .dpi(300f)
+    .parse();
+  if (!tables.isEmpty()) {
+    Files.writeString(Path.of("./out/" + pdf.getName() + ".csv"), tables.get(0).toCSV(','));
+  }
+}
+```
+
+## Tesseract/OpenCV setup (only what’s necessary)
+
+- **Recommended**: use the Bytedeco `*-platform` artifacts so native binaries are bundled.
+- If you bring your own OCR/OpenCV install, ensure native libraries are on the OS path (`LD_LIBRARY_PATH`/`DYLD_LIBRARY_PATH`/`PATH`).
+- For OCR, set `TESSDATA_PREFIX` if Tesseract language data is not found.
+
+## API reference (Javadocs link)
+
+- Javadocs: https://javadoc.io/doc/io.github.extractpdf4j/extractpdf4j-parser/latest/index.html
+
+## FAQ / Troubleshooting (top 6 issues)
+
+1. **OCR not kicking in on scanned PDFs** → Use `OcrStreamParser` or `HybridParser` and ensure OCR dependencies are available.
+2. **UnsatisfiedLinkError for OpenCV/Tesseract** → Switch to `*-platform` dependencies or fix your native library path.
+3. **Tables missing in scans** → Increase DPI (300–450) and try lattice/hybrid mode.
+4. **Garbled OCR text** → Verify `TESSDATA_PREFIX` and language packs (e.g., `eng`).
+5. **Multiple tables per page** → Iterate over results instead of assuming a single table.
+6. **Slow extraction** → Limit page ranges and avoid high DPI unless needed.
+
+## Contributing + Roadmap
+
+- See `CONTRIBUTING.md` for local setup, style, and test guidance.
+- Roadmap: JSON/XLSX export helpers, optional `AutoParser`, and more batch utilities.
+
+---
+## Visual example
+
+Visual preview placeholder (image asset intentionally removed as requested).
 
 ---
 
-## Table of Contents
+# Developer documentation
 
-- [Features](#features)
-- [CLI Quickstart](#cli-quickstart)
-- [Architecture](#architecture)
-- [Project Status](#project-status)
-- [Requirements](#requirements)
-- [Install](#install)
-  - [Maven](#maven)
-  - [Gradle](#gradle)
-  - [Native Notes](#native-notes)
-- [Quick Start](#quick-start)
-  - [Stream (Text-based)](#stream-text-based)
-  - [Lattice (Ruled/Scanned)](#lattice-ruledscanned)
-  - [Hybrid (Mixed Documents)](#hybrid-mixed-documents)
-  - [OCR-assisted Stream](#ocr-assisted-stream)
-- [Configuration](#configuration)
-- [YAML Rules (Normalization)](#yaml-rules-normalization)
-- [Logging](#logging)
-- [Exports](#exports)
-- [Performance Tips](#performance-tips)
-- [OCR Preprocessing Tips](#ocr-preprocessing-tips)
-- [Error Handling](#error-handling)
-- [Known Limitations](#known-limitations)
-- [Troubleshooting](#troubleshooting)
-- [Roadmap](#roadmap)
-- [Contributing](#contributing)
-- [Versioning](#versioning)
-- [License](#license)
-- [Acknowledgements](#acknowledgements)
-
----
-
-## Features
-
-- **Parsers available**
-  - `StreamParser` — ideal for digitally generated PDFs (uses text positions via PDFBox).
-  - `LatticeParser` — detects lines/grids (OpenCV) to reconstruct table cells; works well for scans.
-  - `HybridParser` — combines strategies and returns unified tables.
-  - `OcrStreamParser` — performs OCR-backed stream parsing for image PDFs.
-- **Page selection**: `BaseParser.pages(String)` — e.g., `"1"`, `"2-5"`, `"1,3-4"`, `"all"`.
-- **CSV export**: `Table#toCSV(char)`.
-
-> The current repository does **not** include `ParserConfig`, `AutoParser`, or `ParseResult`. If you want those APIs for compatibility, see **Roadmap** for drop-in stubs.
-
----
+This section keeps the full project details (architecture, CLI, configuration, and setup) for contributors.
 
 ## Architecture
 
@@ -69,14 +155,12 @@ HybridParser ── coordinates and merges results from the above
 - `OcrStreamParser` adds OCR text where no text layer exists.
 - `HybridParser` orchestrates multiple strategies, returning a `List<Table>`.
 
----
-
 ## CLI Quickstart
 
 The CLI defaults to **hybrid mode**. If you do not pass `--mode`, it behaves like `--mode hybrid`.
 
 ```bash
-java -jar extractpdf4j-parser-0.1.1.jar input.pdf \
+java -jar extractpdf4j-parser-<version>.jar input.pdf \
   --pages all \
   --out tables.csv
 ```
@@ -93,15 +177,11 @@ Common flags:
 
 See also the changelog entry for this documentation pass: [CHANGELOG](CHANGELOG.md).
 
----
-
 ## Project Status
 
 - Build tool: **Maven**
-- Coordinates (current): `io.github.extractpdf4j:extractpdf4j-parser:0.1.0`
+- Coordinates (current): `io.github.extractpdf4j:extractpdf4j-parser:1.0.0`
 - Java: **17+** (recommended 17+ runtime)
-
----
 
 ## Requirements
 
@@ -114,9 +194,7 @@ See also the changelog entry for this documentation pass: [CHANGELOG](CHANGELOG.
 
 > Tip: Prefer bytedeco `*-platform` artifacts. They ship native binaries and avoid manual OS setup.
 
----
-
-## Install
+## Install (detailed)
 
 ### Maven
 
@@ -131,7 +209,7 @@ See also the changelog entry for this documentation pass: [CHANGELOG](CHANGELOG.
 ### Gradle
 
 ```kotlin
-implementation("io.github.extractpdf4j:extractpdf4j-parser:0.1.0")
+implementation("io.github.extractpdf4j:extractpdf4j-parser:1.0.0")
 ```
 
 ### Native Notes
@@ -141,14 +219,11 @@ implementation("io.github.extractpdf4j:extractpdf4j-parser:0.1.0")
   - Ensure the native libs are on your OS library path (e.g., `LD_LIBRARY_PATH`, `DYLD_LIBRARY_PATH`, or Windows `PATH`).
   - Set `TESSDATA_PREFIX` to find language data if OCR is enabled.
 
----
-
-## Quick Start
+## Quick Start (detailed)
 
 ### Stream (Text-based)
 
 ```java
-
 import com.extractpdf4j.helpers.Table;
 import com.extractpdf4j.parsers.StreamParser;
 import java.nio.file.*;
@@ -171,7 +246,6 @@ public class StreamQuickStart {
 ### Lattice (Ruled/Scanned)
 
 ```java
-
 import com.extractpdf4j.helpers.Table;
 import com.extractpdf4j.parsers.LatticeParser;
 import java.io.File;
@@ -199,7 +273,6 @@ public class LatticeQuickStart {
 ### Hybrid (Mixed Documents)
 
 ```java
-
 import com.extractpdf4j.helpers.Table;
 import com.extractpdf4j.parsers.HybridParser;
 import java.util.List;
@@ -217,7 +290,6 @@ public class HybridQuickStart {
 ### OCR-assisted Stream
 
 ```java
-
 import com.extractpdf4j.helpers.Table;
 import com.extractpdf4j.parsers.OcrStreamParser;
 import java.util.List;
@@ -231,8 +303,6 @@ public class OcrQuickStart {
 }
 ```
 
----
-
 ## CLI
 
 Run the bundled CLI to extract tables from a PDF.
@@ -240,7 +310,7 @@ Run the bundled CLI to extract tables from a PDF.
 Usage:
 
 ```bash
-java -jar extractpdf4j-parser-0.1.1.jar <pdf>
+java -jar extractpdf4j-parser-<version>.jar <pdf>
      [--mode stream|lattice|ocrstream|hybrid]
      [--pages 1|all|1,3-5]
      [--sep ,]
@@ -264,8 +334,8 @@ java -jar extractpdf4j-parser-0.1.1.jar <pdf>
 Examples:
 
 ```bash
-java -jar extractpdf4j-parser-0.1.1.jar scan.pdf --mode lattice --pages 1 --dpi 450 --ocr cli --debug --keep-cells --debug-dir debug_out --out p1.csv
-java -jar extractpdf4j-parser-0.1.1.jar statement.pdf --mode hybrid --pages all --dpi 400 --out tables.csv
+java -jar extractpdf4j-parser-<version>.jar scan.pdf --mode lattice --pages 1 --dpi 450 --ocr cli --debug --keep-cells --debug-dir debug_out --out p1.csv
+java -jar extractpdf4j-parser-<version>.jar statement.pdf --mode hybrid --pages all --dpi 400 --out tables.csv
 ```
 
 Notes:
@@ -274,7 +344,6 @@ Notes:
 - When multiple tables are found and `--out` is provided, files are numbered by suffix (e.g., `out-1.csv`, `out-2.csv`).
 - `--ocr` sets a system property read by OCR helpers; values: `auto`, `cli`, or `bytedeco`.
 
----
 ## Microservice (via Docker)
 
 This project includes a sample Spring Boot microservice that exposes a REST endpoint for PDF table extraction, fulfilling the requirements of a best-practice deployment.
@@ -289,28 +358,39 @@ Navigate to the project's root directory (where the `Dockerfile` is located) and
 
 ```bash
 docker build -t extractpdf4j-service .
+```
 
-Running the Microservice
+### Running the Microservice
+
 Once the image has been successfully built, you can run the microservice inside a container using the following command. This will start the service and map the container's internal port 8080 to port 8080 on your local machine, making it accessible.
 
+```bash
 docker run -p 8080:8080 extractpdf4j-service
+```
 
-Alternatively, you can run the service directly from the command line after building the project
+Alternatively, you can run the service directly from the command line after building the project.
 
-java -jar target/extractpdf4j-parser-0.1.1.jar
+```bash
+java -jar target/extractpdf4j-parser-<version>.jar
+```
 
 After running either command, you will see the Spring Boot application startup logs in your terminal.
 
-Using the Endpoint
-The service provides a POST endpoint at /api/extract for processing PDF files.
+### Using the Endpoint
 
-Example using curl
-To test the endpoint, you can send a multipart/form-data request with a PDF file. Make sure you are in the project's root directory so the command can find the sample PDF file.
+The service provides a POST endpoint at `/api/extract` for processing PDF files.
 
+Example using curl:
+
+```bash
 curl -X POST -F "file=@Scanned_Bank_Statement.pdf" http://localhost:8080/api/extract
+```
+
 Expected Response
 
 The service will respond with a 200 OK status and a plain text body containing the extracted table(s) in CSV format.
+
+```
 --- Table 1 ---
 EXAMPLE BANK,,LID.,,
 Statement of Account,,,,Page |
@@ -318,7 +398,7 @@ Account Name: Mehuli,Mukherjee,,,Branch: Wellington CBD
 Account Number:,,,,01-2345-6789012-000 BIC: EXBKNZ22
 bate,Description,,,Debit Credit a Balance
 10 Jul 2025 Uber,Trip,,Wellington,"14.18 i 5,407.18"
-“aaju 2025 Spotify,,,,"112.47 5,294.74"
+“aaju 2025 Spotify,,, ,"112.47 5,294.74"
 “42 Jul 2025,Electricity,-,Meridian,"332.20 a 4,962.5 |"
 43 Jul 2025 Salary,,ACME,Corp,"1,991.95 6,954.46"
 “14 jul2025 ATM,,Withdrawal,,"632 6,938.14"
@@ -332,24 +412,21 @@ i Jul 2025 POs,,1234,Countdown,"Lambton 253.88 6,577.26"
 “23 4Jul2025,Coffee-Mojo,,,gg 6 4846.83
 “24 Jul 2025,Parking -,Wilson,,"2B 4,800.64"
 """25 Jul2025",—Fuel-Z,Energy,,"a72eT 4,527.74"
-26 Jul 2025 ATM,,Withdrawal,_,"320.19 4,198.58"
+26 Jul 2025 ATM,,Withdrawal,_ ,"320.19 4,198.58"
 27 Jul 2025 Uber,Trip,,Wellington,"437.98 3,760.64"
 28 Jul 2025,Parking,-,Wilson,"7 38.22 3,722.38"
 29 Jul2025 _,Insurance,-,Tower,"373874 3,348.64"
 30 Jul 2025 Fuel,-7,Energy,,261.08 a 3.087.5¢
 31 Jul 2025,Salary,ACME,Corp,"385.18 3,472.74"
 For queries call,0800 000,000,or visit,examplebank.nz
- with Maven:
+```
 
----
 ## Configuration
 
 - `BaseParser#pages(String)` — set page ranges (e.g., `"1"`, `"2-5"`, `"1,3-4"`, or `"all"`).
 - `LatticeParser` chainable options (available in source): `dpi(float)`, `keepCells(boolean)`, `debug(boolean)`, `debugDir(File)`.
 
 > A full `ParserConfig` builder is **not** in this repository. If you want that style, we can add it in a minor release without breaking the current API.
-
----
 
 ## YAML Rules (Normalization)
 
@@ -384,8 +461,6 @@ How to apply:
 
 Note: The core library does not interpret YAML natively; this pattern keeps normalization explicit in your app while remaining stable across parser updates.
 
----
-
 ## Logging
 
 This project uses [SLF4J](https://www.slf4j.org/). You can bind it to any backend (e.g., Logback, Log4j2, or the simple logger).
@@ -401,10 +476,8 @@ This project uses [SLF4J](https://www.slf4j.org/). You can bind it to any backen
 If using the SLF4J Simple backend (`slf4j-simple`), enable debug output with:
 
 ```bash
-java -Dorg.slf4j.simpleLogger.defaultLogLevel=debug 
+java -Dorg.slf4j.simpleLogger.defaultLogLevel=debug
 ```
-
----
 
 ## Exports
 
@@ -419,16 +492,12 @@ Files.writeString(Path.of("out/table.csv"), table.toCSV(','));
 
 (If you want bulk exports, add the optional `Results` helper and use `Results.exportAllCsv(tables, Path.of("out/csv"), ',');`.)
 
----
-
 ## Performance Tips
 
 - Prefer **page ranges** (`pages("1-3")`) over `"all"` when you know where tables are.
 - For scans, choose appropriate **DPI** (e.g., 300f). Try `keepCells(true)` to preserve empty grid cells.
 - Enable `debug(true)` in `LatticeParser` when tuning; inspect overlays and artifacts in `debugDir`.
 - Process files in parallel if you have lots of independent documents.
-
----
 
 ## OCR Preprocessing Tips
 
@@ -447,7 +516,7 @@ Example (lattice, 450 DPI, CLI OCR, debug artifacts):
 
 ```bash
 java -Dtess.lang=eng -Dtess.psm=6 -Dtess.oem=1 -Docr.debug=true \
-  -jar extractpdf4j-hybrid-0.2.0.jar scan.pdf \
+  -jar extractpdf4j-parser-<version>.jar scan.pdf \
   --mode lattice --dpi 450 --ocr cli --debug --debug-dir debug \
   --out tables.csv
 ```
@@ -457,14 +526,10 @@ Before/after (conceptual):
 - Before: low-DPI scan at 150, faint grid → few or no tables detected.
 - After: re-run at `--dpi 400` with `--debug` to inspect binarization; switch to `--mode ocrstream` if the text layer is missing.
 
----
-
 ## Error Handling
 
 - `parse()` methods throw `IOException` for file issues.
 - When no tables are found, parsers typically return an **empty list** — check `tables.isEmpty()` before writing files.
-
----
 
 ## Known Limitations
 
@@ -472,15 +537,11 @@ Before/after (conceptual):
 - Handwritten notes/stamps can confuse line detection; crop or pre-process to avoid noisy regions.
 - Nested/complex tables work best with lattice; hierarchical exports (JSON/XLSX) require additional code.
 
----
-
-## Troubleshooting
+## Troubleshooting (detailed)
 
 - **UnsatisfiedLinkError**: ensure the bytedeco `*-platform` artifacts are used (they ship natives). If using system libs, check `LD_LIBRARY_PATH` / `DYLD_LIBRARY_PATH` / `PATH`.
 - **No tables found**: try `HybridParser`, increase scan `dpi(300f)`, enable `debug(true)` and inspect overlays in `debugDir(...)`.
 - **Garbled text on scans**: use `OcrStreamParser` instead of `StreamParser`.
-
----
 
 ## Roadmap
 
@@ -491,31 +552,21 @@ Before/after (conceptual):
 
 A **stubs & patch** bundle is available to enable these APIs today without breaking changes.
 
----
-
 ## Contributing
 
 PRs welcome! For lattice/OCR changes, include screenshots of debug artifacts if possible. Keep sample PDFs **tiny and sanitized**.
 (See `CONTRIBUTING.md`)
 
----
-
 ## Versioning
 
 Semantic Versioning (**SemVer**): MAJOR.MINOR.PATCH.
 
----
-
 ## License
 
 ExtractPDF4J is licensed under Apache-2.0 (See `LICENSE`).
-
----
 
 ## Acknowledgements
 
 - Inspired by **Camelot** (Python) and **Tabula**.
 - Built on **Apache PDFBox**, **OpenCV/JavaCV**, and **Tesseract**.
 - Thanks to contributors and users who reported edge cases and shared sample PDFs.
-
----
