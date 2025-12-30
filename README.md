@@ -103,6 +103,27 @@ for (File pdf : new File("./invoices").listFiles(f -> f.getName().endsWith(".pdf
   }
 }
 ```
+## Annotation-based configuration
+
+If you prefer declarative configuration, you can annotate a class and build the parser
+from that annotation.
+
+```java
+import com.extractpdf4j.annotations.ExtractPdfAnnotations;
+import com.extractpdf4j.annotations.ExtractPdfConfig;
+import com.extractpdf4j.annotations.ParserMode;
+import com.extractpdf4j.parsers.BaseParser;
+
+@ExtractPdfConfig(
+  parser = ParserMode.HYBRID,
+  pages = "all",
+  dpi = 300f,
+  debug = true
+)
+class InvoiceParserConfig {}
+
+BaseParser parser = ExtractPdfAnnotations.parserFrom(InvoiceParserConfig.class, "invoice.pdf");
+```
 
 ## Tesseract/OpenCV setup (only what’s necessary)
 

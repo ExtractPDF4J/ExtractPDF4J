@@ -1,8 +1,11 @@
 
 package com.microservice.extractpdf4j.service;
 
+import com.extractpdf4j.annotations.ExtractPdfAnnotations;
+import com.extractpdf4j.annotations.ExtractPdfConfig;
+import com.extractpdf4j.annotations.ParserMode;
 import com.extractpdf4j.helpers.Table;
-import com.extractpdf4j.parsers.HybridParser;
+import com.extractpdf4j.parsers.BaseParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +28,13 @@ import java.util.concurrent.CompletableFuture;
 public class PdfExtractService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PdfExtractService.class);
+
+    @ExtractPdfConfig(
+            parser = ParserMode.HYBRID,
+            pages = "all"
+    )
+    private static class DefaultParserConfig {
+    }
 
     /**
      * Asynchronously extracts tables from a given PDF file.
@@ -67,12 +77,8 @@ public class PdfExtractService {
 
         // Use a try-with-resources statement to ensure the PDDocument is closed automatically
         try (PDDocument document = PDDocument.load(file.getInputStream())) {
-            
-            // 1. Create a parser instance using the parameterless constructor
-            HybridParser parser = new HybridParser();
-            
-            // (Optional) Configure the parser. Using defaults for now.
-            parser.pages("all");
+
+            BaseParser parser = ExtractPdfAnnotations.parserFrom(DefaultParserConfig.class);
 
             // 2. Call the parse method that accepts a PDDocument
             List<Table> tables = parser.parse(document);
