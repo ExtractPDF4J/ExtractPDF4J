@@ -150,6 +150,22 @@ public class HybridParser extends BaseParser {
         return this;
     }
 
+    /**
+     * Enables or disables text normalization for stream-style extraction across
+     * all underlying strategies.
+     *
+     * @param strip {@code true} to normalize/strip text, {@code false} to keep raw text
+     * @return this parser (for chaining)
+     */
+    @Override
+    public HybridParser stripText(boolean strip) {
+        super.stripText(strip);
+        stream.stripText(strip);
+        lattice.stripText(strip);
+        ocrstream.stripText(strip);
+        return this;
+    }
+
     // ---------------------------------------------------------------------
     // Parsing
     // ---------------------------------------------------------------------
