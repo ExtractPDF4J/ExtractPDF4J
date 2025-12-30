@@ -24,6 +24,7 @@
 
 # --- Build outputs ---
 # Maven
+target/
 
 # Gradle (if present)
 .gradle/
