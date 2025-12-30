@@ -1,4 +1,5 @@
 com.extractpdf4j
+com.extractpdf4j.annotations
 com.extractpdf4j.helpers
 com.extractpdf4j.parsers
 com.microservice.extractpdf4j
