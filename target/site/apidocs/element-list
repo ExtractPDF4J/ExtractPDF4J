@@ -1,0 +1,6 @@
+com.extractpdf4j
+com.extractpdf4j.helpers
+com.extractpdf4j.parsers
+com.microservice.extractpdf4j
+com.microservice.extractpdf4j.controller
+com.microservice.extractpdf4j.service
