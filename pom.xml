@@ -6,8 +6,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.github.extractpdf4j</groupId>
-    <artifactId>extractpdf4j-parent</artifactId>
-    <version>1.0.0</version>
+    <artifactId>extractpdf4j-parser</artifactId>
+    <version>2.0.0</version>
     <packaging>pom</packaging>
 
     <name>ExtractPDF4J</name>
