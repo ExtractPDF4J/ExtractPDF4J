@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"com.extractpdf4j"},{"l":"com.extractpdf4j.helpers"},{"l":"com.extractpdf4j.parsers"},{"l":"com.microservice.extractpdf4j"},{"l":"com.microservice.extractpdf4j.controller"},{"l":"com.microservice.extractpdf4j.service"}];updateSearchResults();
