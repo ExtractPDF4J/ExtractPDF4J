@@ -57,7 +57,6 @@ import java.util.List;
 @Command(
         name = "extractpdf4j",
         mixinStandardHelpOptions = true,
-        caseInsensitiveEnumValues = true,
         description = "Extract tables from PDFs using ExtractPDF4J.")
 public class Main implements Runnable {
 
