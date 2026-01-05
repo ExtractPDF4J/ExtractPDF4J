@@ -39,14 +39,14 @@ The copy/paste quick start is at the top of this README under the project descri
 <dependency>
   <groupId>io.github.extractpdf4j</groupId>
   <artifactId>extractpdf4j-parser</artifactId>
-  <version>1.0.0</version>
+  <version>2.0.0</version>
 </dependency>
 ```
 
 **Gradle**
 
 ```kotlin
-implementation("io.github.extractpdf4j:extractpdf4j-parser:1.0.0")
+implementation("io.github.extractpdf4j:extractpdf4j-parser:2.0.0")
 ```
 
 ### Why this vs Tabula/PDFBox (comparison table)
@@ -188,7 +188,7 @@ See also the changelog entry for this documentation pass: [CHANGELOG](CHANGELOG.
 ## Project Status
 
 - Build tool: **Maven**
-- Coordinates (current): `io.github.extractpdf4j:extractpdf4j-parser:1.0.0`
+- Coordinates (current): `io.github.extractpdf4j:extractpdf4j-parser:2.0.0`
 - Java: **17+** (recommended 17+ runtime)
 
 ## Requirements
@@ -210,14 +210,14 @@ See also the changelog entry for this documentation pass: [CHANGELOG](CHANGELOG.
 <dependency>
   <groupId>io.github.extractpdf4j</groupId>
   <artifactId>extractpdf4j-parser</artifactId>
-  <version>1.0.0</version>
+  <version>2.0.0</version>
 </dependency>
 ```
 
 ### Gradle
 
 ```kotlin
-implementation("io.github.extractpdf4j:extractpdf4j-parser:1.0.0")
+implementation("io.github.extractpdf4j:extractpdf4j-parser:2.0.0")
 ```
 
 ### Native Notes
