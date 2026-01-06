@@ -43,10 +43,46 @@ The copy/paste quick start is at the top of this README under the project descri
 </dependency>
 ```
 
+```xml
+<dependency>
+  <groupId>io.github.extractpdf4j</groupId>
+  <artifactId>extractpdf4j-core</artifactId>
+  <version>2.0.0</version>
+</dependency>
+```
+
+```xml
+<dependency>
+  <groupId>io.github.extractpdf4j</groupId>
+  <artifactId>extractpdf4j-cli</artifactId>
+  <version>2.0.0</version>
+</dependency>
+```
+
+```xml
+<dependency>
+  <groupId>io.github.extractpdf4j</groupId>
+  <artifactId>extractpdf4j-service</artifactId>
+  <version>2.0.0</version>
+</dependency>
+```
+
 **Gradle**
 
 ```kotlin
 implementation("io.github.extractpdf4j:extractpdf4j-parser:2.0.0")
+```
+
+```kotlin
+implementation("io.github.extractpdf4j:extractpdf4j-core:2.0.0")
+```
+
+```kotlin
+implementation("io.github.extractpdf4j:extractpdf4j-cli:2.0.0")
+```
+
+```kotlin
+implementation("io.github.extractpdf4j:extractpdf4j-service:2.0.0")
 ```
 
 ### Why this vs Tabula/PDFBox (comparison table)
