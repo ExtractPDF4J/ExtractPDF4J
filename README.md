@@ -171,6 +171,21 @@ BaseParser parser = ExtractPdfAnnotations.parserFrom(InvoiceParserConfig.class, 
 
 - Javadocs: https://extractpdf4j.github.io/ExtractPDF4J/
 ---
+## Sample PDFs
+
+The `/examples` directory contains publicly available, non-sensitive PDF files
+that can be used to test and understand different extraction scenarios supported
+by ExtractPDF4J.
+
+- **sample_utility_bill.pdf**  
+  A sample utility bill demonstrating structured text extraction, including
+  dates, addresses, account identifiers, and billing totals.
+
+- **sample_monthly_statement.pdf**  
+  A multi-page sample financial statement demonstrating table extraction from
+  repeated layouts and tabular data. All content is explicitly marked as sample data.
+
+---
 ## Visual examples
 
 ![extractpdf4j-table.png](resources/extractpdf4j-table.png)
