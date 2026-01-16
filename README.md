@@ -189,7 +189,6 @@ BaseParser parser = ExtractPdfAnnotations.parserFrom(InvoiceParserConfig.class, 
 ![extractpdf4j-visual.png](resources/extractpdf4j-visual.png)
 
 ---
----
 
 # Developer documentation
 
