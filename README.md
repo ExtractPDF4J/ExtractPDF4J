@@ -22,6 +22,8 @@ public class QuickStart {
 }
 ```
 
+---
+
 ## What problem it solves
 
 Stop hand-retyping tables from scanned invoices, bank statements, or reports.
@@ -30,6 +32,8 @@ Extract clean rows + columns even when the PDF has no text layer.
 ## Magic snippet
 
 The copy/paste quick start is at the top of this README under the project description.
+
+---
 
 ## Install (Maven + Gradle)
 
@@ -85,6 +89,8 @@ implementation("io.github.extractpdf4j:extractpdf4j-cli:2.0.0")
 implementation("io.github.extractpdf4j:extractpdf4j-service:2.0.0")
 ```
 
+---
+
 ### Why this vs Tabula/PDFBox (comparison table)
 
 | Feature | ExtractPDF4J | Tabula-Java | PDFBox |
@@ -93,7 +99,7 @@ implementation("io.github.extractpdf4j:extractpdf4j-service:2.0.0")
 | Scanned/Image PDFs | ✅ Native OCR | ❌ | ❌ |
 | Table recognition | ✅ Stream/Lattice/OCR-hybrid | ✅ | ❌ (raw text) |
 | “Hello world” time | Low (single entrypoint) | Medium | High |
-
+---
 ## Use cases (3 quick examples)
 
 ### Extract from scanned PDF (OCR)
@@ -139,6 +145,9 @@ for (File pdf : new File("./invoices").listFiles(f -> f.getName().endsWith(".pdf
   }
 }
 ```
+
+---
+
 ## Annotation-based configuration
 
 If you prefer declarative configuration, you can annotate a class and build the parser
@@ -160,12 +169,14 @@ class InvoiceParserConfig {}
 
 BaseParser parser = ExtractPdfAnnotations.parserFrom(InvoiceParserConfig.class, "invoice.pdf");
 ```
-
+---
 ## Tesseract/OpenCV setup (only what’s necessary)
 
 - **Recommended**: use the Bytedeco `*-platform` artifacts so native binaries are bundled.
 - If you bring your own OCR/OpenCV install, ensure native libraries are on the OS path (`LD_LIBRARY_PATH`/`DYLD_LIBRARY_PATH`/`PATH`).
 - For OCR, set `TESSDATA_PREFIX` if Tesseract language data is not found.
+
+---
 
 ## API reference (Javadocs link)
 
@@ -214,6 +225,8 @@ HybridParser ── coordinates and merges results from the above
 - `OcrStreamParser` adds OCR text where no text layer exists.
 - `HybridParser` orchestrates multiple strategies, returning a `List<Table>`.
 
+---
+
 ## CLI Quickstart
 
 The CLI defaults to **hybrid mode**. If you do not pass `--mode`, it behaves like `--mode hybrid`.
@@ -236,11 +249,15 @@ Common flags:
 
 See also the changelog entry for this documentation pass: [CHANGELOG](CHANGELOG.md).
 
+---
+
 ## Project Status
 
 - Build tool: **Maven**
 - Coordinates (current): `io.github.extractpdf4j:extractpdf4j-parser:2.0.0`
 - Java: **17+** (recommended 17+ runtime)
+
+---
 
 ## Requirements
 
@@ -252,6 +269,8 @@ See also the changelog entry for this documentation pass: [CHANGELOG](CHANGELOG.
   - (Optional) Bytedeco **Tesseract** + **Leptonica** for OCR
 
 > Tip: Prefer bytedeco `*-platform` artifacts. They ship native binaries and avoid manual OS setup.
+
+---
 
 ## Install (detailed)
 
@@ -277,6 +296,8 @@ implementation("io.github.extractpdf4j:extractpdf4j-parser:2.0.0")
 - If you bring your own OpenCV/Tesseract:
   - Ensure the native libs are on your OS library path (e.g., `LD_LIBRARY_PATH`, `DYLD_LIBRARY_PATH`, or Windows `PATH`).
   - Set `TESSDATA_PREFIX` to find language data if OCR is enabled.
+
+---
 
 ## Quick Start (detailed)
 
@@ -362,6 +383,8 @@ public class OcrQuickStart {
 }
 ```
 
+---
+
 ## CLI
 
 Run the bundled CLI to extract tables from a PDF.
@@ -402,6 +425,8 @@ Notes:
 - When `--out` is omitted, tables are printed to STDOUT in CSV form.
 - When multiple tables are found and `--out` is provided, files are numbered by suffix (e.g., `out-1.csv`, `out-2.csv`).
 - `--ocr` sets a system property read by OCR helpers; values: `auto`, `cli`, or `bytedeco`.
+
+---
 
 ## Microservice (via Docker)
 
@@ -480,12 +505,16 @@ i Jul 2025 POs,,1234,Countdown,"Lambton 253.88 6,577.26"
 For queries call,0800 000,000,or visit,examplebank.nz
 ```
 
+---
+
 ## Configuration
 
 - `BaseParser#pages(String)` — set page ranges (e.g., `"1"`, `"2-5"`, `"1,3-4"`, or `"all"`).
 - `LatticeParser` chainable options (available in source): `dpi(float)`, `keepCells(boolean)`, `debug(boolean)`, `debugDir(File)`.
 
 > A full `ParserConfig` builder is **not** in this repository. If you want that style, we can add it in a minor release without breaking the current API.
+
+---
 
 ## YAML Rules (Normalization)
 
@@ -520,6 +549,8 @@ How to apply:
 
 Note: The core library does not interpret YAML natively; this pattern keeps normalization explicit in your app while remaining stable across parser updates.
 
+---
+
 ## Logging
 
 This project uses [SLF4J](https://www.slf4j.org/). You can bind it to any backend (e.g., Logback, Log4j2, or the simple logger).
@@ -538,6 +569,8 @@ If using the SLF4J Simple backend (`slf4j-simple`), enable debug output with:
 java -Dorg.slf4j.simpleLogger.defaultLogLevel=debug
 ```
 
+---
+
 ## Exports
 
 - **CSV**: `Table#toCSV(char sep)` → returns the CSV as a string.
@@ -551,12 +584,16 @@ Files.writeString(Path.of("out/table.csv"), table.toCSV(','));
 
 (If you want bulk exports, add the optional `Results` helper and use `Results.exportAllCsv(tables, Path.of("out/csv"), ',');`.)
 
+---
+
 ## Performance Tips
 
 - Prefer **page ranges** (`pages("1-3")`) over `"all"` when you know where tables are.
 - For scans, choose appropriate **DPI** (e.g., 300f). Try `keepCells(true)` to preserve empty grid cells.
 - Enable `debug(true)` in `LatticeParser` when tuning; inspect overlays and artifacts in `debugDir`.
 - Process files in parallel if you have lots of independent documents.
+
+---
 
 ## OCR Preprocessing Tips
 
@@ -585,16 +622,22 @@ Before/after (conceptual):
 - Before: low-DPI scan at 150, faint grid → few or no tables detected.
 - After: re-run at `--dpi 400` with `--debug` to inspect binarization; switch to `--mode ocrstream` if the text layer is missing.
 
+---
+
 ## Error Handling
 
 - `parse()` methods throw `IOException` for file issues.
 - When no tables are found, parsers typically return an **empty list** — check `tables.isEmpty()` before writing files.
+
+---
 
 ## Known Limitations
 
 - Low-resolution or skewed scans can reduce grid detection and OCR accuracy.
 - Handwritten notes/stamps can confuse line detection; crop or pre-process to avoid noisy regions.
 - Nested/complex tables work best with lattice; hierarchical exports (JSON/XLSX) require additional code.
+
+---
 
 ## FAQ / Troubleshooting (top 6 issues)
 
@@ -604,6 +647,8 @@ Before/after (conceptual):
 4. **Garbled OCR text** → Verify `TESSDATA_PREFIX` and language packs (e.g., `eng`).
 5. **Multiple tables per page** → Iterate over results instead of assuming a single table.
 6. **Slow extraction** → Limit page ranges and avoid high DPI unless needed.
+
+---
 
 ## Roadmap
 
@@ -615,18 +660,26 @@ Before/after (conceptual):
 
 A **stubs & patch** bundle is available to enable these APIs today without breaking changes.
 
+---
+
 ## Contributing
 
 PRs welcome! For lattice/OCR changes, include screenshots of debug artifacts if possible. Keep sample PDFs **tiny and sanitized**.
 (See `CONTRIBUTING.md`)
 
+---
+
 ## Versioning
 
 Semantic Versioning (**SemVer**): MAJOR.MINOR.PATCH.
 
+---
+
 ## License
 
 ExtractPDF4J is licensed under Apache-2.0 (See `LICENSE`).
+
+---
 
 ## Acknowledgements
 
