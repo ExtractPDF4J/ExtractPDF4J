@@ -20,11 +20,14 @@ import java.util.List;
 /**
  * Main
  *
- * <p>CLI entry point for ExtractPDF4J. Parses command-line flags, constructs the
+ * <p>
+ * CLI entry point for ExtractPDF4J. Parses command-line flags, constructs the
  * appropriate parser (stream / lattice / ocrstream / hybrid), runs extraction,
- * and writes CSV output either to STDOUT or to file(s).</p>
+ * and writes CSV output either to STDOUT or to file(s).
+ * </p>
  *
  * <h3>Synopsis</h3>
+ * 
  * <pre>{@code
  * java -jar extractpdf4j-cli-1.0.0.jar <pdf>
  *      [--mode stream|lattice|ocrstream|hybrid]
@@ -42,58 +45,94 @@ import java.util.List;
  *
  * <h3>Notes</h3>
  * <ul>
- *   <li>When <code>--out</code> is omitted, tables are printed to STDOUT in CSV form.</li>
- *   <li>When multiple tables are found and <code>--out</code> is provided, files are
- *       numbered by suffix (e.g., <code>out-1.csv</code>, <code>out-2.csv</code>).</li>
- *   <li><code>--pages</code> accepts <code>"1"</code>, <code>"2-5"</code>, <code>"1,3-4"</code>, or <code>"all"</code>.</li>
- *   <li><code>--ocr</code> sets a system property read by the OCR helpers; values: <i>auto</i>, <i>cli</i>, or <i>bytedeco</i>.</li>
+ * <li>When <code>--out</code> is omitted, tables are printed to STDOUT in CSV
+ * form.</li>
+ * <li>When multiple tables are found and <code>--out</code> is provided, files
+ * are
+ * numbered by suffix (e.g., <code>out-1.csv</code>,
+ * <code>out-2.csv</code>).</li>
+ * <li><code>--pages</code> accepts <code>"1"</code>, <code>"2-5"</code>,
+ * <code>"1,3-4"</code>, or <code>"all"</code>.</li>
+ * <li><code>--ocr</code> sets a system property read by the OCR helpers;
+ * values: <i>auto</i>, <i>cli</i>, or <i>bytedeco</i>.</li>
  * </ul>
  *
- * <p>Exit behavior: this method returns after printing errors/usage; it does not call {@code System.exit}.</p>
+ * <p>
+ * Exit behavior: this method returns after printing errors/usage; it does not
+ * call {@code System.exit}.
+ * </p>
  *
  * @author Mehuli Mukherjee
  * @since 2025
  */
-@Command(
-        name = "extractpdf4j",
-        mixinStandardHelpOptions = true,
-        description = "Extract tables from PDFs using ExtractPDF4J.")
+@Command(name = "extractpdf4j", mixinStandardHelpOptions = true, description = "%nExtract tables from PDF files and output as CSV.%n", footer = {
+        "%nExamples:%n",
+        "  Extract all tables from a PDF using default (hybrid) mode:",
+        "    extractpdf4j document.pdf%n",
+        "  Extract tables from specific pages and save to a file:",
+        "    extractpdf4j invoice.pdf --pages 1,3-5 --out tables.csv%n",
+        "  Use lattice mode for PDFs with visible table borders:",
+        "    extractpdf4j report.pdf --mode LATTICE --dpi 150%n",
+        "  Use OCR for scanned PDFs with custom headers:",
+        "    extractpdf4j scanned.pdf --mode OCRSTREAM --require-headers Date,Amount%n",
+        "%nFor more information, visit: https://github.com/extractpdf4j/ExtractPDF4J"
+})
 public class Main implements Runnable {
 
-    @Parameters(index = "0", description = "Path to the PDF file.")
+    @Parameters(index = "0", description = "Path to the input PDF file to extract tables from.")
     private String pdf;
 
-    @Option(names = "--mode", description = "Extraction mode: ${COMPLETION-CANDIDATES}.", defaultValue = "HYBRID")
+    @Option(names = { "-m", "--mode" }, description = "Extraction mode: STREAM, LATTICE, OCRSTREAM, HYBRID.%n" +
+            "  STREAM    - Text-based PDFs (invisible table structure)%n" +
+            "  LATTICE   - PDFs with visible table borders/lines%n" +
+            "  OCRSTREAM - Scanned/image-based PDFs (requires Tesseract)%n" +
+            "  HYBRID    - Auto-selects best mode per page (default)", defaultValue = "HYBRID")
     private Mode mode;
 
-    @Option(names = "--pages", description = "Pages to parse (1, 1,3-5, all).", defaultValue = "all")
+    @Option(names = { "-p", "--pages" }, description = "Pages to extract tables from.%n" +
+            "  Examples: '1' (first page), '1,3-5' (pages 1 and 3-5), 'all' (all pages)%n" +
+            "  Default: ${DEFAULT-VALUE}", defaultValue = "all")
     private String pages;
 
-    @Option(names = "--sep", description = "CSV separator.", defaultValue = ",")
+    @Option(names = { "-s",
+            "--sep" }, description = "Field separator character for CSV output. Default: '${DEFAULT-VALUE}'", defaultValue = ",")
     private String sep;
 
-    @Option(names = "--out", description = "Output CSV file path. If omitted, writes to STDOUT.")
+    @Option(names = { "-o", "--out" }, description = "Output file path for extracted CSV.%n" +
+            "  If omitted, results are printed to STDOUT.%n" +
+            "  For multiple tables, files are numbered (e.g., out-1.csv, out-2.csv).")
     private String out;
 
-    @Option(names = "--debug", description = "Enable debug output.")
+    @Option(names = { "-d", "--debug" }, description = "Enable debug mode to output diagnostic information.")
     private boolean debug;
 
-    @Option(names = "--dpi", description = "OCR DPI.", defaultValue = "300")
+    @Option(names = "--dpi", description = "Resolution (DPI) for rendering PDF pages during OCR/lattice detection.%n" +
+            "  Higher values improve accuracy but increase processing time.%n" +
+            "  Default: ${DEFAULT-VALUE}", defaultValue = "300")
     private float dpi;
 
-    @Option(names = "--ocr", description = "OCR mode: auto, cli, bytedeco.")
+    @Option(names = "--ocr", description = "OCR engine selection:%n" +
+            "  auto     - Automatically select available engine (default)%n" +
+            "  cli      - Use Tesseract command-line tool%n" +
+            "  bytedeco - Use Tesseract via Bytedeco native bindings")
     private String ocrMode;
 
-    @Option(names = "--keep-cells", description = "Keep detected cells (lattice/hybrid).")
+    @Option(names = "--keep-cells", description = "Preserve individual cell boundaries in lattice/hybrid modes.%n" +
+            "  Useful for debugging cell detection issues.")
     private boolean keepCells;
 
-    @Option(names = "--debug-dir", description = "Directory for debug artifacts.")
+    @Option(names = "--debug-dir", description = "Directory path for saving debug artifacts (images, overlays).%n" +
+            "  Default: ./debug")
     private String debugDirPath;
 
-    @Option(names = "--min-score", description = "Minimum hybrid score threshold.", defaultValue = "0")
+    @Option(names = "--min-score", description = "Minimum confidence score (0.0-1.0) for hybrid mode table detection.%n"
+            +
+            "  Tables below this threshold are discarded. Default: ${DEFAULT-VALUE}", defaultValue = "0")
     private double minScore;
 
-    @Option(names = "--require-headers", description = "Comma-separated headers required for OCR stream.")
+    @Option(names = "--require-headers", description = "Comma-separated list of required column headers for OCR stream mode.%n"
+            +
+            "  Example: --require-headers Date,Description,Amount")
     private String requiredHeadersCsv;
 
     /** Prints CLI usage and examples to STDOUT. */
@@ -104,9 +143,12 @@ public class Main implements Runnable {
     /**
      * Program entry point.
      *
-     * <p>Parses flags, constructs a {@link BaseParser} (or subclass), runs extraction,
-     * then writes or prints CSV results. Errors and invalid flags cause usage to be printed
-     * and the method to return.</p>
+     * <p>
+     * Parses flags, constructs a {@link BaseParser} (or subclass), runs extraction,
+     * then writes or prints CSV results. Errors and invalid flags cause usage to be
+     * printed
+     * and the method to return.
+     * </p>
      *
      * @param args command-line arguments (see {@link #usage()} for details)
      * @throws Exception if an unrecoverable I/O error occurs during parsing/writing
