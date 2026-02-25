@@ -1,0 +1,53 @@
+name: Challenge Feature Proposal
+description: Propose or implement a feature as part of ExtractPDF4J Global Build Challenge 2026.
+title: "[Challenge] <Short descriptive title>"
+labels: ["challenge-march-2026", "enhancement"]
+body:
+  - type: dropdown
+    id: track
+    attributes:
+      label: Challenge Track
+      description: Select the relevant track.
+      options:
+        - Parser Improvements
+        - OCR & Vision Enhancements
+        - Performance Engineering
+        - Enterprise Integrations
+        - Developer Experience & Documentation
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem Statement
+      description: What problem does this address?
+      placeholder: Describe the current limitation or gap.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed_solution
+    attributes:
+      label: Proposed Solution
+      description: Explain your approach in detail.
+    validations:
+      required: true
+
+  - type: textarea
+    id: impact
+    attributes:
+      label: Expected Impact
+      description: How will this improve accuracy, performance, usability, or reliability?
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Contributor Checklist
+      options:
+        - label: I have forked the repository.
+        - label: I will submit a PR against this issue.
+        - label: I will include tests or reproducible validation steps.
+        - label: I will Star the Repo for more reach
