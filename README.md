@@ -1,3 +1,5 @@
+Announcement: 🚀 ExtractPDF4J Global Build Challenge 2026
+
 # ExtractPDF4J
 
 A production-focused **Java** library for extracting **tables** and structured data from PDFs.
