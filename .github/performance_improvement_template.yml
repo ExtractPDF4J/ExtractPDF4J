@@ -1,0 +1,26 @@
+name: Performance Improvement Proposal
+description: Suggest performance enhancements for ExtractPDF4J.
+title: "[Performance] <Short description>"
+labels: ["challenge-2026", "performance"]
+body:
+  - type: textarea
+    id: bottleneck
+    attributes:
+      label: Identified Bottleneck
+      description: Where is performance degrading?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed Optimization
+      description: Describe the optimization approach.
+    validations:
+      required: true
+
+  - type: textarea
+    id: benchmarking
+    attributes:
+      label: Benchmark Plan
+      description: How will performance improvements be measured?
