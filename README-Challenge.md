@@ -76,6 +76,95 @@ Submission Deadline: 31st March 2026
 Results Announcement: 14th April 2026
 
 ---
+## 📦 Submission Requirements (Must-Haves)
+
+For PRs:
+- Clear Description (what/why/how) - Follow the PR Template
+- Tests OR clear manual verification steps
+- No breaking API changes unless discussed first
+- Follow project style and packaging conventions
+
+For demo repos:
+- Public repo with README
+- Simple run instructions
+- Sample input/output
+- Link back to ExtractPDF4J
+
+---
+
+## 🧪 Review Process
+
+All PRs will be reviewed. To keep momentum:
+- Maintainership will provide initial feedback quickly
+- PRs may be asked to add tests/docs
+- Smaller, focused PRs merge faster than giant ones
+
+---
+
+## 🧭 Communication
+
+- Use GitHub Issues for work tracking
+- Use GitHub Discussions for Q&A and ideas (recommended)
+- Tag issues with `challenge-2026` + track label
+
+---
+
+## 🧑‍⚖️ Judging Criteria (Scoring)
+
+Each submission is scored out of 100.
+
+### 1) Technical Correctness & Reliability — 30
+- Works as described
+- Handles edge cases
+- Doesn’t regress existing behavior
+
+### 2) Real-World Impact — 20
+- Solves an actual production pain point
+- Improves accuracy, coverage, or stability
+
+### 3) Code Quality & Maintainability — 15
+- Clean design, readable code
+- Fits existing architecture
+- Minimal complexity for the gain
+
+### 4) Tests / Verification Quality — 15
+- Unit/integration tests preferred
+- Or strong reproducible steps with sample artifacts
+
+### 5) Performance / Efficiency — 10
+- Demonstrates measurable improvement where relevant
+
+### 6) Documentation & Developer Experience — 10
+- Usage clarity (README, Javadoc, examples)
+- Smooth onboarding
+
+Bonus points:
+- Benchmarks + sample corpus
+- Diagnostic tooling that helps users debug extraction issues
+
+---
+
+## ✅ Rules (Keep It Fair)
+
+- No plagiarism
+- Respect licensing
+- Don’t submit malicious code
+- If adding new dependencies, explain why
+- If you use sample PDFs, ensure you have rights to share them (or use synthetic samples)
+
+---
+
+## 🚀 Getting Started
+
+1. Fork the repo
+2. Run existing tests
+3. Pick an issue labeled `challenge-march-2026`
+4. Implement a focused PR
+5. Submit with proof (tests/benchmarks/examples)
+
+Good luck — and thanks for helping build the JVM PDF extraction ecosystem.
+
+---
 
 Let’s build a stronger PDF processing ecosystem for the JVM.
 
