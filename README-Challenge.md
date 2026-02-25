@@ -23,7 +23,7 @@ Participants must:
 5. Submit a Pull Request with tests and documentation 
 
 🔎 Browse Challenge Issues:  
-👉 https://github.com/ExtractPDF4J/ExtractPDF4J/issues?q=label%3Achallenge-2026
+👉 https://github.com/ExtractPDF4J/ExtractPDF4J/issues?q=label%3Achallenge-march-2026
 
 ---
 
