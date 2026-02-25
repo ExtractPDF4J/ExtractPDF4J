@@ -1,5 +1,3 @@
----
-
 # 🚀 ExtractPDF4J Global Build Challenge 2026
 
 ExtractPDF4J is launching a global open-source engineering challenge to expand the Java-native PDF table extraction ecosystem.
@@ -59,6 +57,15 @@ Outstanding contributors will be:
 📢 Highlighted in community announcements  
 📝 Included in a Challenge Highlights publication
 
+## 🎁 Special Reward
+
+In addition to public recognition, the Best Overall Implementation will receive:
+
+🎉 A 1-Year ChatGPT Plus Subscription (personally sponsored)
+
+This award will be granted based on technical excellence, innovation, code quality, and real-world applicability.
+
+The goal is to encourage serious engineering contributions that push the ExtractPDF4J ecosystem forward.
 
 ---
 
