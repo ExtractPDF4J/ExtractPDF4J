@@ -1,4 +1,4 @@
-Announcement: 🚀 ExtractPDF4J Global Build Challenge 2026
+_**Announcement:**_ 🚀 ExtractPDF4J Global Build Challenge 2026
 The challenge is now live.
 👉 Read full details here: [Challenge Page](README-Challenge.md)
 
