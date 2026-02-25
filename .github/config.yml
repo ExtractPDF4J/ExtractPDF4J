@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Challenge Discussions
+    url: https://github.com/ExtractPDF4J/ExtractPDF4J/discussions
+    about: Use discussions for general ideas, architecture questions, and challenge clarifications.
