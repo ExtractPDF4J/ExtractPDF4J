@@ -35,7 +35,7 @@ jobs:
       - name: Upload Javadocs artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: target/site/apidocs
+          path: target/site
 
   deploy:
     needs: build
