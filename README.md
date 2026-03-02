@@ -184,7 +184,7 @@ BaseParser parser = ExtractPdfAnnotations.parserFrom(InvoiceParserConfig.class, 
 
 ## API reference (Javadocs link)
 
-- Javadocs: https://extractpdf4j.github.io/ExtractPDF4J/
+- Javadocs: [https://extractpdf4j.github.io/ExtractPDF4J/apidocs](https://extractpdf4j.github.io/ExtractPDF4J/apidocs/index.html)
 ---
 ## Sample PDFs
 
