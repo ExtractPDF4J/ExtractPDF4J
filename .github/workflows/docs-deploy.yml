@@ -23,7 +23,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build docs with Material action (bundled MkDocs)
-        uses: squidfunk/mkdocs-material@v9.5.18
+        uses: squidfunk/mkdocs-material@v9
         with:
           command: build --strict
 

@@ -53,3 +53,4 @@ nav:
       - Models: api/models.md
   - FAQ: faq.md
   - Contributing: contributing.md
+  - Docs Development: docs-development.md
