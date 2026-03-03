@@ -50,6 +50,7 @@ public class QuickStart {
 ## What problem it solves
 
 **Use ExtractPDF4J when you need to:**
+
 - extract tables from invoices
 - parse bank statements
 - convert PDF reports into CSV
