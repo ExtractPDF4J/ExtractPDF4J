@@ -18,4 +18,4 @@ Thanks for improving ExtractPDF4J.
 
 For detailed docs workflow (local build, local serve, and CI behavior), see [Documentation Development](docs-development.md).
 
-See the repository-level [CONTRIBUTING.md](../CONTRIBUTING.md) for project policies.
+See the repository-level [CONTRIBUTING.md](https://github.com/ExtractPDF4J/ExtractPDF4J/blob/main/CONTRIBUTING.md) for project policies.
