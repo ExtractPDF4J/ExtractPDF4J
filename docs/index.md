@@ -1,52 +1,74 @@
 # ExtractPDF4J
 
-## Extract tables from any PDF — text-based, scanned, or image-heavy.
+**Java-native PDF table extraction for text-based, scanned, and image-heavy documents.**
 
-ExtractPDF4J is a Java-native table extraction toolkit built for real-world documents.
+ExtractPDF4J is a production-focused Java library for extracting **tables** and structured data from PDFs. It supports both:
 
-- **Text PDFs**: Use coordinate-based parsing.
-- **Scanned PDFs**: Use OCR + structure detection.
-- **Mixed PDFs**: Use hybrid extraction.
+- **text-based PDFs** (where a text layer exists), and
+- **scanned/image-heavy PDFs** (where OCR and image-based table detection are required).
 
-<div class="grid cards" markdown>
+It is built for real-world extraction problems such as invoices, statements, reports, forms, and mixed-layout documents.
 
--   :material-rocket-launch: **Start quickly**
+## Why ExtractPDF4J?
 
-    ---
+PDF extraction often fails in production because real documents are inconsistent:
 
-    Install dependencies and run your first extraction in minutes.
+- some pages are text-based, others are scanned,
+- some tables are ruled, others are free-form,
+- headers can shift,
+- rows can wrap,
+- and OCR quality can vary.
 
-    [Getting Started](getting-started.md)
+ExtractPDF4J addresses that by offering multiple extraction modes:
 
--   :material-console: **Use CLI or Java API**
+- **StreamParser** for text-based layouts
+- **LatticeParser** for ruled tables and grid-based layouts
+- **OcrStreamParser** for OCR-assisted recovery
+- **HybridParser** for mixed or uncertain document types
 
-    ---
-
-    Use the command line for fast exports, or embed parsers in your app.
-
-    [CLI Guide](cli.md)
-
--   :material-cog-transfer: **Choose parser strategy**
-
-    ---
-
-    Stream, Lattice, OCR Stream, and Hybrid each target different PDF structures.
-
-    [How It Works](how-it-works/overview.md)
-
-</div>
-
-## Java example
+## Quick example
 
 ```java
 import com.extractpdf4j.helpers.Table;
 import com.extractpdf4j.parsers.HybridParser;
+
 import java.util.List;
 
-List<Table> tables = new HybridParser("sample.pdf")
-    .pages("all")
-    .dpi(300f)
-    .parse();
+public class QuickStart {
+    public static void main(String[] args) throws Exception {
+        List<Table> tables = new HybridParser("scanned_invoice.pdf")
+                .dpi(300f)
+                .parse();
+
+        if (!tables.isEmpty()) {
+            System.out.println(tables.get(0).toCSV(','));
+        }
+    }
+}
 ```
 
-> This project evolves quickly. If method names differ in your version, treat snippets as implementation patterns.
+## What problem it solves
+
+**Use ExtractPDF4J when you need to:**
+- extract tables from invoices
+- parse bank statements
+- convert PDF reports into CSV
+- automate ingestion of scanned operational documents
+- reduce manual retyping of rows and columns
+
+## Key strengths
+
+- Java-native extraction workflow
+- Supports scanned and OCR-driven documents
+- Multiple parser strategies for different layouts
+- CLI support for batch and one-off extraction
+- Docker-ready sample microservice
+- Suitable for developer tooling and production integrations
+
+## Choose your path
+
+- New to the project? Start with [Getting Started](getting-started.md)
+- Installing dependencies? Go to [Installation](installation.md)
+- Want code examples? See [Quickstart](quickstart.md)
+- Want terminal usage? See [CLI](cli.md)
+- Want deeper internals? Explore [How It Works](how-it-works/overview.md)
