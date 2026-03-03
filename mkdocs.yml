@@ -1,0 +1,55 @@
+site_name: ExtractPDF4J Docs
+site_description: Java-native PDF table extraction for text-based, scanned, and image-heavy PDFs.
+site_url: https://extractpdf4j.github.io/ExtractPDF4J/
+repo_url: https://github.com/ExtractPDF4J/ExtractPDF4J
+repo_name: ExtractPDF4J/ExtractPDF4J
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - content.code.copy
+    - search.suggest
+    - search.highlight
+  palette:
+    - scheme: default
+      primary: blue
+      accent: indigo
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.highlight
+  - pymdownx.superfences
+
+nav:
+  - Home: index.md
+  - Getting Started: getting-started.md
+  - Installation: installation.md
+  - Quickstart: quickstart.md
+  - CLI: cli.md
+  - How It Works:
+      - Overview: how-it-works/overview.md
+      - Stream Parser: how-it-works/stream.md
+      - Lattice Parser: how-it-works/lattice.md
+      - OCR Stream Parser: how-it-works/ocr-stream.md
+      - Hybrid Parser: how-it-works/hybrid.md
+  - Advanced Usage:
+      - Page Ranges: advanced-usage/page-ranges.md
+      - Table Areas: advanced-usage/table-areas.md
+      - Columns: advanced-usage/columns.md
+      - OCR Tuning: advanced-usage/ocr-tuning.md
+      - Debug Images: advanced-usage/debug-images.md
+  - API Reference:
+      - Overview: api/overview.md
+      - Extractor: api/extractor.md
+      - Parsers: api/parsers.md
+      - Models: api/models.md
+  - FAQ: faq.md
+  - Contributing: contributing.md
