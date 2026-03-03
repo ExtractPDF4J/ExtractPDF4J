@@ -2,6 +2,70 @@ _**Announcement:**_ 🚀 ExtractPDF4J Global Build Challenge 2026
 The challenge is now live.
 👉 Read full details here: [Challenge Page](README-Challenge.md)
 
+---
+<br />
+
+<p align="center">
+  <a href="https://extractpdf4j.github.io/ExtractPDF4J/">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="./docs/images/extractpdf4j-banner-dark.png">
+      <img
+        alt="ExtractPDF4J - Java-native PDF table extraction for real-world documents"
+        width="900"
+        src="./docs/images/extractpdf4j-banner-light.png"
+      />
+    </picture>
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://extractpdf4j.github.io/ExtractPDF4J/" target="_blank">→ extractpdf4j.github.io/ExtractPDF4J ←</a>
+</p>
+
+<p align="center">
+  Java-native PDF table extraction for text-based, scanned, and image-heavy documents.
+  <br />
+  <br />
+  <a href="https://search.maven.org/search?q=io.github.extractpdf4j">
+    <img src="https://img.shields.io/badge/Maven%20Central-io.github.extractpdf4j-1565C0?style=for-the-badge" alt="Maven Central" />
+  </a>
+  <a href="https://github.com/ExtractPDF4J/ExtractPDF4J">
+    <img src="https://img.shields.io/badge/Java-17%2B-1976D2?style=for-the-badge&logo=openjdk&logoColor=white" alt="Java 17+" />
+  </a>
+  <a href="https://github.com/ExtractPDF4J/ExtractPDF4J/releases">
+    <img src="https://img.shields.io/github/v/release/ExtractPDF4J/ExtractPDF4J?style=for-the-badge" alt="Latest Release" />
+  </a>
+  <a href="https://github.com/ExtractPDF4J/ExtractPDF4J">
+    <img src="https://img.shields.io/badge/OCR-supported-5E35B1?style=for-the-badge" alt="OCR Supported" />
+  </a>
+  <a href="https://extractpdf4j.github.io/ExtractPDF4J/">
+    <img src="https://img.shields.io/badge/Docs-live-1E88E5?style=for-the-badge" alt="Docs" />
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/ExtractPDF4J/ExtractPDF4J/stargazers">
+    <img src="https://img.shields.io/github/stars/ExtractPDF4J/ExtractPDF4J?style=for-the-badge" alt="GitHub Stars" />
+  </a>
+  <a href="https://github.com/ExtractPDF4J/ExtractPDF4J/network/members">
+    <img src="https://img.shields.io/github/forks/ExtractPDF4J/ExtractPDF4J?style=for-the-badge" alt="GitHub Forks" />
+  </a>
+  <a href="https://github.com/ExtractPDF4J/ExtractPDF4J/actions">
+    <img src="https://img.shields.io/github/actions/workflow/status/ExtractPDF4J/ExtractPDF4J/ci.yml?style=for-the-badge&label=build" alt="Build Status" />
+  </a>
+  <a href="https://github.com/ExtractPDF4J/ExtractPDF4J">
+    <img src="https://img.shields.io/badge/Downloads-4K%2B-3949AB?style=for-the-badge" alt="Downloads" />
+  </a>
+</p>
+
+<br />
+
+<p align="center">
+  <img src="./docs/images/extractpdf4j-demo.gif" alt="ExtractPDF4J demo" width="100%" />
+</p>
+
+---
+
 # ExtractPDF4J
 
 A production-focused **Java** library for extracting **tables** and structured data from PDFs.
