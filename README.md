@@ -32,8 +32,8 @@ The challenge is now live.
   <a href="https://github.com/ExtractPDF4J/ExtractPDF4J">
     <img src="https://img.shields.io/badge/Java-17%2B-1976D2?style=for-the-badge&logo=openjdk&logoColor=white" alt="Java 17+" />
   </a>
-  <a href="https://github.com/ExtractPDF4J/ExtractPDF4J/releases">
-    <img src="https://img.shields.io/github/v/release/ExtractPDF4J/ExtractPDF4J?style=for-the-badge" alt="Latest Release" />
+  <a href="https://github.com/ExtractPDF4J/ExtractPDF4J/releases/tag/v2.0.0">
+  <img src="https://img.shields.io/badge/release-v2.0.0-616161?style=for-the-badge" alt="Release v2.0.0" />
   </a>
   <a href="https://github.com/ExtractPDF4J/ExtractPDF4J">
     <img src="https://img.shields.io/badge/OCR-supported-5E35B1?style=for-the-badge" alt="OCR Supported" />
