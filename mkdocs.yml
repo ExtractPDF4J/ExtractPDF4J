@@ -1,4 +1,4 @@
-site_name: ExtractPDF4J Docs
+site_name: ExtractPDF4J
 site_description: Java-native PDF table extraction for text-based, scanned, and image-heavy PDFs.
 site_url: https://extractpdf4j.github.io/ExtractPDF4J/
 repo_url: https://github.com/ExtractPDF4J/ExtractPDF4J
@@ -7,17 +7,25 @@ edit_uri: edit/main/docs/
 
 theme:
   name: material
+  language: en
+  logo: images/extractpdf4j-logo.png
+  favicon: images/extractpdf4j-favicon.png
   features:
     - navigation.tabs
     - navigation.sections
     - navigation.expand
+    - navigation.top
     - content.code.copy
     - search.suggest
     - search.highlight
+    - content.action.edit
   palette:
     - scheme: default
       primary: blue
       accent: indigo
+
+plugins:
+  - search
 
 markdown_extensions:
   - admonition
@@ -25,8 +33,16 @@ markdown_extensions:
   - tables
   - toc:
       permalink: true
-  - pymdownx.highlight
+  - pymdownx.highlight:
+      anchor_linenums: true
   - pymdownx.superfences
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/ExtractPDF4J/ExtractPDF4J
 
 nav:
   - Home: index.md
@@ -34,23 +50,28 @@ nav:
   - Installation: installation.md
   - Quickstart: quickstart.md
   - CLI: cli.md
+
   - How It Works:
       - Overview: how-it-works/overview.md
       - Stream Parser: how-it-works/stream.md
       - Lattice Parser: how-it-works/lattice.md
       - OCR Stream Parser: how-it-works/ocr-stream.md
       - Hybrid Parser: how-it-works/hybrid.md
+
   - Advanced Usage:
       - Page Ranges: advanced-usage/page-ranges.md
       - Table Areas: advanced-usage/table-areas.md
       - Columns: advanced-usage/columns.md
       - OCR Tuning: advanced-usage/ocr-tuning.md
       - Debug Images: advanced-usage/debug-images.md
+
   - API Reference:
       - Overview: api/overview.md
       - Extractor: api/extractor.md
       - Parsers: api/parsers.md
       - Models: api/models.md
+
+  - Javadocs: https://extractpdf4j.github.io/ExtractPDF4J/apidocs/index.html
   - FAQ: faq.md
   - Contributing: contributing.md
   - Docs Development: docs-development.md

@@ -1,4 +1,4 @@
-name: Publish Javadocs
+name: Publish Docs Site
 
 on:
   workflow_dispatch:
@@ -16,10 +16,17 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
+
     permissions:
       contents: read
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
       - name: Checkout
@@ -32,30 +39,34 @@ jobs:
           java-version: '17'
           cache: maven
 
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install docs dependencies
+        run: pip install -r docs/requirements.txt
+
+      - name: Build MkDocs site
+        run: mkdocs build --strict
+
       - name: Generate aggregated Javadocs
         run: mvn -B -DskipTests=true javadoc:aggregate
 
-      - name: Upload Javadocs artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: target/site
+      - name: Copy Javadocs into MkDocs site
+        run: |
+          mkdir -p site/apidocs
+          cp -R target/site/apidocs/. site/apidocs/
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-
-    steps:
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
         with:
           enablement: true
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
 
       - name: Deploy to GitHub Pages
         id: deployment
