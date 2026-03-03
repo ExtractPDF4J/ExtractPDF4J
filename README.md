@@ -159,6 +159,29 @@ implementation("io.github.extractpdf4j:extractpdf4j-service:2.0.0")
 
 ---
 
+
+## Documentation
+
+Project documentation lives in [`/docs`](./docs) and is published to GitHub Pages.
+For contributor-focused MkDocs workflow details, see [`docs/docs-development.md`](./docs/docs-development.md).
+
+### Build docs locally
+
+```bash
+pip install mkdocs-material
+mkdocs build --strict
+```
+
+### Serve docs locally
+
+```bash
+mkdocs serve
+```
+
+The CI workflow uses `squidfunk/mkdocs-material@v9` so docs builds track the latest v9 patch releases and avoid pinning to unavailable tags.
+
+---
+
 ### Why this vs Tabula/PDFBox (comparison table)
 
 | Feature | ExtractPDF4J | Tabula-Java | PDFBox |
