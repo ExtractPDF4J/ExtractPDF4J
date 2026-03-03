@@ -1,0 +1,89 @@
+name: Publish GitHub Pages
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Temurin JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+
+      - name: Generate aggregated Javadocs
+        run: mvn -B -DskipTests=true javadoc:aggregate
+
+      # Build one final Pages bundle:
+      #   /index.html        -> homepage
+      #   /apidocs/index.html -> Javadocs
+      - name: Prepare combined Pages site
+        run: |
+          rm -rf _site
+          mkdir -p _site
+          mkdir -p _site/apidocs
+
+          # 1) Copy homepage / docs site content to root
+          # Adjust this block depending on where your homepage files live.
+          if [ -f docs/index.html ]; then
+            cp docs/index.html _site/index.html
+          elif [ -f index.html ]; then
+            cp index.html _site/index.html
+          elif [ -f README.md ]; then
+            echo "No docs/index.html or root index.html found. Please add a homepage file."
+            exit 1
+          fi
+
+          # Copy docs assets if present
+          if [ -d docs ]; then
+            rsync -av --exclude 'index.html' docs/ _site/
+          fi
+
+          # 2) Copy generated Javadocs into /apidocs
+          rsync -av target/site/apidocs/ _site/apidocs/
+
+          # Optional: prevent Jekyll interference
+          touch _site/.nojekyll
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+
+    steps:
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
