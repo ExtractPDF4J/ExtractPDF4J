@@ -16,7 +16,7 @@ This page explains how to work on the MkDocs site locally and how documentation 
 Install MkDocs Material:
 
 ```bash
-pip install mkdocs-material
+pip install -r docs/requirements.txt
 ```
 
 ## Build docs locally
@@ -41,17 +41,23 @@ Default URL:
 
 ## CI behavior (GitHub Actions)
 
-Docs are built in GitHub Actions using the Material-maintained action:
+Docs are built in GitHub Actions with Python + pinned docs dependencies:
 
 ```yaml
-- name: Build docs with Material action (bundled MkDocs)
-  uses: squidfunk/mkdocs-material@v9
+- name: Set up Python
+  uses: actions/setup-python@v5
   with:
-    command: build --strict
+    python-version: '3.11'
+
+- name: Install docs dependencies
+  run: pip install -r docs/requirements.txt
+
+- name: Build docs
+  run: mkdocs build --strict
 ```
 
-Why `@v9`?
+Why pinned requirements?
 
-- It tracks stable v9 patch updates.
-- It avoids hard-pinning to a patch ref that may not exist.
-- It keeps CI behavior aligned with the local `mkdocs build --strict` command documented in the README.
+- They keep local and CI behavior aligned.
+- They avoid pulling MkDocs 2.0 while Material for MkDocs reports incompatibility warnings.
+- They preserve strict docs builds with predictable versions.

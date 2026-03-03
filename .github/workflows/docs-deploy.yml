@@ -22,10 +22,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Build docs with Material action (bundled MkDocs)
-        uses: squidfunk/mkdocs-material@master
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          command: build --strict
+          python-version: '3.11'
+
+      - name: Install docs dependencies
+        run: pip install -r docs/requirements.txt
+
+      - name: Build docs
+        run: mkdocs build --strict
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
