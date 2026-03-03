@@ -168,7 +168,7 @@ For contributor-focused MkDocs workflow details, see [`docs/docs-development.md`
 ### Build docs locally
 
 ```bash
-pip install mkdocs-material
+pip install -r docs/requirements.txt
 mkdocs build --strict
 ```
 
@@ -178,7 +178,7 @@ mkdocs build --strict
 mkdocs serve
 ```
 
-The CI workflow uses `squidfunk/mkdocs-material@v9` so docs builds track the latest v9 patch releases and avoid pinning to unavailable tags.
+Docs dependencies are pinned to MkDocs 1.x in [`docs/requirements.txt`](./docs/requirements.txt) because MkDocs 2.0 currently warns as incompatible with Material for MkDocs.
 
 ---
 
