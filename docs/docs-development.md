@@ -4,9 +4,9 @@ This page explains how to work on the MkDocs site locally and how documentation 
 
 ## Where docs live
 
-- Source pages: [`/docs`](./)
-- Site config: [`mkdocs.yml`](../mkdocs.yml)
-- Deployment workflow: [`.github/workflows/docs-deploy.yml`](../.github/workflows/docs-deploy.yml)
+- Source pages: [`/docs`](index.md)
+- Site config: [`mkdocs.yml`](https://github.com/ExtractPDF4J/ExtractPDF4J/blob/main/mkdocs.yml)
+- Deployment workflow: [`.github/workflows/docs-deploy.yml`](https://github.com/ExtractPDF4J/ExtractPDF4J/blob/main/.github/workflows/docs-deploy.yml)
 
 ## Local prerequisites
 
