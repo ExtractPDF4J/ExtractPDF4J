@@ -1,9 +1,3 @@
-
----
-
-## `docs/how-it-works/lattice.md`
-
-```md
 # Lattice Parser
 
 `LatticeParser` is designed for **ruled** or **grid-based** tables where visible lines define the table structure.
