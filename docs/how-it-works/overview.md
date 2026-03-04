@@ -129,6 +129,6 @@ This gives you a consistent downstream contract even when the underlying extract
 
 [Hybrid Parser](hybrid.md)
 
-[Quickstart](quickstart.md)
+[Quickstart](./quickstart.md)
 
-[CLI](cli.md)
+[CLI](./cli.md)
