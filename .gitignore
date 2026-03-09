@@ -46,3 +46,6 @@ Thumbs.db
 # --- Security/keystores (keep private) ---
 *.jks
 *.keystore
+
+# --- Extraction build outputs ---
+/mv_output.txt

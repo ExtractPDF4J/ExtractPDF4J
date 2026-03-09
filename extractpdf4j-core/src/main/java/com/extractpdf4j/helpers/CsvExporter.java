@@ -16,6 +16,12 @@ public class CsvExporter {
     private String delimiter = ",";
 
     public void setDelimiter(String delimiter) {
+        if (delimiter == null || delimiter.isEmpty()) {
+            throw new IllegalArgumentException("Delimiter cannot be null or empty");
+        }
+        if (delimiter.length() != 1) {
+            throw new IllegalArgumentException("Delimiter must be a single character");
+        }
         this.delimiter = delimiter;
     }
 
@@ -29,14 +35,14 @@ public class CsvExporter {
                     if (v == null)
                         v = "";
 
-                    boolean quote = v.contains(delimiter) || v.contains("\"") || v.contains("\n");
+                    boolean quote = v.contains(delimiter) || v.contains("\"") || v.contains(System.lineSeparator());
                     if (quote) {
                         row.add("\"" + v.replace("\"", "\"\"") + "\"");
                     } else {
                         row.add(v);
                     }
                 }
-                result.append(String.join(delimiter, row)).append("\n");
+                result.append(String.join(delimiter, row)).append(System.lineSeparator());
             }
         }
         return result.toString();
