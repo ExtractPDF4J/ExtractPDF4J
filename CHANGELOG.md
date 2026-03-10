@@ -12,7 +12,7 @@ The project follows **Semantic Versioning** and this changelog format is inspire
 - Introduced **`extractpdf4j-bom`** module for centralized dependency management.
 - Added support for importing ExtractPDF4J dependencies via **Maven BOM**.
 - Simplified dependency alignment across all ExtractPDF4J modules.
-- Updated the documentation and published in GitHub pages.
+- Introduces a full documentation site powered by MkDocs.
 
 Example:
 
