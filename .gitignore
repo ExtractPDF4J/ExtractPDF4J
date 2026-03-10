@@ -48,4 +48,5 @@ Thumbs.db
 *.keystore
 
 # --- Extraction build outputs ---
-/mv_output.txt
+/mvn_output.txt
+/test_out.txt
