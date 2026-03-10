@@ -11,9 +11,24 @@ import java.util.List;
 import java.util.Locale;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import org.junit.jupiter.api.Assumptions;
 
 /** No mocking: check benign behavior paths regardless of local Tesseract availability. */
 class OcrTest {
+
+    private boolean isTesseractAvailable() {
+        String[] candidates = {
+                "tesseract", "/opt/homebrew/bin/tesseract", "/usr/local/bin/tesseract", 
+                "/usr/bin/tesseract", "C:\\Program Files\\Tesseract-OCR\\tesseract.exe"
+        };
+        for (String bin : candidates) {
+            try {
+                Process p = new ProcessBuilder(bin, "--version").start();
+                if (p.waitFor() == 0) return true;
+            } catch (Exception ignore) {}
+        }
+        return false;
+    }
 
     // --- Original project tests (no changes) ---
     @Test
@@ -43,6 +58,7 @@ class OcrTest {
     // --- Test 1: VISA Bank Statement ---
     @Test
     public void testOcrHeuristicallyOnVisaStatement() {
+        Assumptions.assumeTrue(isTesseractAvailable(), "Tesseract not installed");
         URL imageUrl = getClass().getClassLoader().getResource("test-images/visa-statement.png");
         Assertions.assertNotNull(imageUrl, "Test image 'visa-statement.png' not found.");
 
@@ -57,6 +73,7 @@ class OcrTest {
     // --- Test 2: ANZ Bank Statement ---
     @Test
     public void testOcrHeuristicallyOnAnzStatement() {
+        Assumptions.assumeTrue(isTesseractAvailable(), "Tesseract not installed");
         URL imageUrl = getClass().getClassLoader().getResource("test-images/anz-statement.png");
         Assertions.assertNotNull(imageUrl, "Test image 'anz-statement.png' not found.");
 
@@ -71,6 +88,7 @@ class OcrTest {
     // --- Test 3: Multi-language OCR (eng + fra) ---
     @Test
     public void testOcrHeuristicallyOnMultiLanguageImage() {
+        Assumptions.assumeTrue(isTesseractAvailable(), "Tesseract not installed");
         URL imageUrl = getClass().getClassLoader().getResource("test-images/multi-lang-text.png");
         Assertions.assertNotNull(imageUrl, "Test image 'multi-lang-text.png' not found.");
 
