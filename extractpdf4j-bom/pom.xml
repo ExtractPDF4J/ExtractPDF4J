@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>io.github.extractpdf4j</groupId>
+        <artifactId>extractpdf4j-parser</artifactId>
+        <version>2.1.0</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>extractpdf4j-bom</artifactId>
+    <packaging>pom</packaging>
+
+    <name>ExtractPDF4J BOM</name>
+    <description>Bill of Materials for ExtractPDF4J modules.</description>
+    <url>https://github.com/ExtractPDF4J/ExtractPDF4J</url>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.github.extractpdf4j</groupId>
+                <artifactId>extractpdf4j-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.github.extractpdf4j</groupId>
+                <artifactId>extractpdf4j-service</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.github.extractpdf4j</groupId>
+                <artifactId>extractpdf4j-cli</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>

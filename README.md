@@ -97,6 +97,27 @@ public class QuickStart {
 Stop hand-retyping tables from scanned invoices, bank statements, or reports.
 Extract clean rows + columns even when the PDF has no text layer.
 
+## Supported Document Types
+
+ExtractPDF4J works well with documents such as:
+
+- bank statements
+- financial reports
+- invoices
+- operational documents
+- structured business reports
+
+## Production Use Cases
+
+ExtractPDF4J is designed for production environments such as:
+
+- fintech and banking platforms
+- document processing pipelines
+- analytics platforms
+- enterprise ingestion workflows
+- AI / ML data preparation pipelines
+
+
 ## Magic snippet
 
 The copy/paste quick start is at the top of this README under the project description.
@@ -105,13 +126,40 @@ The copy/paste quick start is at the top of this README under the project descri
 
 ## Install (Maven + Gradle)
 
-**Maven**
+### **Maven**
+
+### Recommended: Using the BOM
+
+```xml
+<dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>io.github.extractpdf4j</groupId>
+      <artifactId>extractpdf4j-bom</artifactId>
+      <version>2.1.0</version>
+      <type>pom</type>
+      <scope>import</scope>
+    </dependency>
+  </dependencies>
+</dependencyManagement>
+
+<dependencies>
+  <dependency>
+    <groupId>io.github.extractpdf4j</groupId>
+    <artifactId>extractpdf4j-service</artifactId>
+  </dependency>
+</dependencies>
+```
+
+### Direct Module Usage
+
+If you prefer not to use the BOM:
 
 ```xml
 <dependency>
   <groupId>io.github.extractpdf4j</groupId>
   <artifactId>extractpdf4j-parser</artifactId>
-  <version>2.0.0</version>
+  <version>2.1.0</version>
 </dependency>
 ```
 
@@ -119,7 +167,7 @@ The copy/paste quick start is at the top of this README under the project descri
 <dependency>
   <groupId>io.github.extractpdf4j</groupId>
   <artifactId>extractpdf4j-core</artifactId>
-  <version>2.0.0</version>
+  <version>2.1.0</version>
 </dependency>
 ```
 
@@ -127,7 +175,7 @@ The copy/paste quick start is at the top of this README under the project descri
 <dependency>
   <groupId>io.github.extractpdf4j</groupId>
   <artifactId>extractpdf4j-cli</artifactId>
-  <version>2.0.0</version>
+  <version>2.1.0</version>
 </dependency>
 ```
 
@@ -135,11 +183,11 @@ The copy/paste quick start is at the top of this README under the project descri
 <dependency>
   <groupId>io.github.extractpdf4j</groupId>
   <artifactId>extractpdf4j-service</artifactId>
-  <version>2.0.0</version>
+  <version>2.1.0</version>
 </dependency>
 ```
 
-**Gradle**
+### **Gradle**
 
 ```kotlin
 implementation("io.github.extractpdf4j:extractpdf4j-parser:2.0.0")
@@ -371,7 +419,7 @@ See also the changelog entry for this documentation pass: [CHANGELOG](CHANGELOG.
 <dependency>
   <groupId>io.github.extractpdf4j</groupId>
   <artifactId>extractpdf4j-parser</artifactId>
-  <version>2.0.0</version>
+  <version>2.1.0</version>
 </dependency>
 ```
 
@@ -743,11 +791,25 @@ Before/after (conceptual):
 
 ## Roadmap
 
-- JSON/XLSX export helpers, optional `AutoParser`, and more batch utilities.
-- Optional **AutoParser** (delegates to `HybridParser`) — convenience wrapper.
-- `Table#toJson()` and `Table#toXlsx(Path)` methods.
-- `Results.exportAllCsv/Json(...)` bulk helpers.
-- (Future) A formal `ParserConfig` builder with common options.
+### Dependency Management & Developer Experience
+- Expand BOM-based dependency management for smoother consumer setup.
+- Add clearer module-level installation examples for `core`, `service`, and `cli`.
+- Improve starter/dependency onboarding documentation for Maven users.
+
+### Parsing & Extraction
+- Optional **AutoParser** (delegates to `HybridParser`) as a convenience wrapper.
+- Formal `ParserConfig` builder with shared parser options.
+- More batch extraction utilities for multi-file workflows.
+
+### Export & Results API
+- `Table#toJson()` and `Table#toXlsx(Path)` helpers.
+- `Results.exportAllCsv(...)` and `Results.exportAllJson(...)` bulk export helpers.
+- Additional structured export formats for downstream processing.
+
+### Documentation & Samples
+- More end-to-end examples for text PDFs, scanned PDFs, and OCR workflows.
+- Service and CLI usage examples for production-style integration.
+- Expanded docs for configuration, tuning, and troubleshooting.
 
 A **stubs & patch** bundle is available to enable these APIs today without breaking changes.
 
