@@ -4,6 +4,8 @@ The challenge is now live.
 
 [![GitHub stars](https://img.shields.io/github/stars/ExtractPDF4J/ExtractPDF4J?style=social)](https://github.com/ExtractPDF4J/ExtractPDF4J)
 
+![Maven Central Downloads](https://img.shields.io/maven-central/dt/io.github.extractpdf4j/extractpdf4j)
+
 ---
 <br />
 
