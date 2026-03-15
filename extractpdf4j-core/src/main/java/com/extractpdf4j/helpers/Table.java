@@ -52,19 +52,13 @@ public class Table {
      * embedded quotes are escaped as a pair of quotes. No trailing newline is added.
      */
     public String toCSV(char sep) {
-        StringBuilder sb = new StringBuilder();
-        for (int r=0;r<nrows();r++) {
-            for (int c=0;c<ncols();c++) {
-                String v = cells.get(r).get(c);
-                if (v == null) v = "";
-                boolean quote = v.indexOf(sep) >= 0 || v.contains("\"") || v.contains("\n");
-                if (quote) sb.append('"').append(v.replace("\"", "\"\"")).append('"');
-                else sb.append(v);
-                if (c < ncols()-1) sb.append(sep);
-            }
-            if (r < nrows()-1) sb.append('\n');
+        CsvExporter exporter = new CsvExporter();
+        exporter.setDelimiter(String.valueOf(sep));
+        String csv = exporter.export(Collections.singletonList(this));
+        if (csv.endsWith(System.lineSeparator())) {
+            csv = csv.substring(0, csv.length() - System.lineSeparator().length());
         }
-        return sb.toString();
+        return csv;
     }
     public List<Double> getColBoundaries(){ return Collections.unmodifiableList(colBoundaries); }
     public List<Double> getRowBoundaries(){ return Collections.unmodifiableList(rowBoundaries); }

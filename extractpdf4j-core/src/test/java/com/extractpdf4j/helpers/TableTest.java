@@ -21,11 +21,11 @@ class TableTest {
     @Test
     void csvQuoting() {
         Table t = new Table(List.of(
-                new ArrayList<>(List.of("a","b,c","d\"e", "x\ny"))),
+                new ArrayList<>(List.of("a","b,c","d\"e", "x" + System.lineSeparator() + "y"))),
                 List.of(0.0, 10.0, 20.0, 30.0, 40.0),
                 List.of(0.0, 10.0));
         String csv = t.toCSV(',');
-        assertEquals("a,\"b,c\",\"d\"\"e\",\"x\ny\"", csv);
+        assertEquals("a,\"b,c\",\"d\"\"e\",\"x" + System.lineSeparator() + "y\"", csv);
     }
 
     @Test

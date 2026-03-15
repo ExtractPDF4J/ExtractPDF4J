@@ -236,12 +236,12 @@ Docs dependencies are pinned to MkDocs 1.x in [`docs/requirements.txt`](./docs/r
 
 ### Why this vs Tabula/PDFBox (comparison table)
 
-| Feature | ExtractPDF4J | Tabula-Java | PDFBox |
-| --- | --- | --- | --- |
-| Text-based PDFs | ✅ | ✅ | ✅ |
-| Scanned/Image PDFs | ✅ Native OCR | ❌ | ❌ |
-| Table recognition | ✅ Stream/Lattice/OCR-hybrid | ✅ | ❌ (raw text) |
-| “Hello world” time | Low (single entrypoint) | Medium | High |
+| Feature            | ExtractPDF4J                | Tabula-Java | PDFBox       |
+| ------------------ | --------------------------- | ----------- | ------------ |
+| Text-based PDFs    | ✅                           | ✅           | ✅            |
+| Scanned/Image PDFs | ✅ Native OCR                | ❌           | ❌            |
+| Table recognition  | ✅ Stream/Lattice/OCR-hybrid | ✅           | ❌ (raw text) |
+| “Hello world” time | Low (single entrypoint)     | Medium      | High         |
 ---
 ## Use cases (3 quick examples)
 
@@ -287,6 +287,16 @@ for (File pdf : new File("./invoices").listFiles(f -> f.getName().endsWith(".pdf
     Files.writeString(Path.of("./out/" + pdf.getName() + ".csv"), tables.get(0).toCSV(','));
   }
 }
+```
+
+### Custom CSV Delimiter
+
+```java
+import com.extractpdf4j.helpers.CsvExporter;
+
+CsvExporter exporter = new CsvExporter();
+exporter.setDelimiter(";");
+exporter.export(data);
 ```
 
 ---
