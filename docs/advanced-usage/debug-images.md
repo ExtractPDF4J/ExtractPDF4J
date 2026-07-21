@@ -49,7 +49,7 @@ public class DebugImagesExample {
 ## Typical CLI usage
 
 ```bash
-java -jar extractpdf4j-parser-<version>.jar scanned.pdf \
+java -jar extractpdf4j-cli-<version>.jar scanned.pdf \
   --mode lattice \
   --pages 1 \
   --dpi 300 \

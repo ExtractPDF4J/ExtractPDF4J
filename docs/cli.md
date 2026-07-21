@@ -17,7 +17,7 @@ That means it behaves like:
 ## Basic usage
 
 ```bash
-java -jar extractpdf4j-parser-<version>.jar input.pdf \
+java -jar extractpdf4j-cli-<version>.jar input.pdf \
   --pages all \
   --out tables.csv
 ```
@@ -98,7 +98,7 @@ Use these to tighten output control in more advanced workflows.
 ## Example: scanned PDF with lattice mode
 
 ```bash
-java -jar extractpdf4j-parser-<version>.jar scan.pdf \
+java -jar extractpdf4j-cli-<version>.jar scan.pdf \
   --mode lattice \
   --pages 1 \
   --dpi 450 \
@@ -112,7 +112,7 @@ java -jar extractpdf4j-parser-<version>.jar scan.pdf \
 ## Example: full-document hybrid extraction
 
 ```bash
-java -jar extractpdf4j-parser-<version>.jar statement.pdf \
+java -jar extractpdf4j-cli-<version>.jar statement.pdf \
   --mode hybrid \
   --pages all \
   --dpi 400 \
