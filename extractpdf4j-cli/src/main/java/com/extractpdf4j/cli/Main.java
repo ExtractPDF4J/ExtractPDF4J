@@ -1,5 +1,6 @@
 package com.extractpdf4j.cli;
 
+import com.extractpdf4j.helpers.JsonExporter;
 import com.extractpdf4j.helpers.Table;
 import com.extractpdf4j.parsers.BaseParser;
 import com.extractpdf4j.parsers.HybridParser;
@@ -13,6 +14,9 @@ import picocli.CommandLine.Parameters;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -23,7 +27,7 @@ import java.util.List;
  * <p>
  * CLI entry point for ExtractPDF4J. Parses command-line flags, constructs the
  * appropriate parser (stream / lattice / ocrstream / hybrid), runs extraction,
- * and writes CSV output either to STDOUT or to file(s).
+ * and writes CSV or JSON output either to STDOUT or to file(s).
  * </p>
  *
  * <h3>Synopsis</h3>
@@ -34,6 +38,7 @@ import java.util.List;
  *      [--pages 1|all|1,3-5]
  *      [--sep ,]
  *      [--out out.csv]
+ *      [--json]
  *      [--debug]
  *      [--dpi 300]
  *      [--ocr auto|cli|bytedeco]
@@ -45,8 +50,8 @@ import java.util.List;
  *
  * <h3>Notes</h3>
  * <ul>
- * <li>When <code>--out</code> is omitted, tables are printed to STDOUT in CSV
- * form.</li>
+ * <li>When <code>--out</code> is omitted, tables are printed to STDOUT in the
+ * selected output format.</li>
  * <li>When multiple tables are found and <code>--out</code> is provided, files
  * are
  * numbered by suffix (e.g., <code>out-1.csv</code>,
@@ -65,12 +70,14 @@ import java.util.List;
  * @author Mehuli Mukherjee
  * @since 2025
  */
-@Command(name = "extractpdf4j", mixinStandardHelpOptions = true, description = "%nExtract tables from PDF files and output as CSV.%n", footer = {
+@Command(name = "extractpdf4j", mixinStandardHelpOptions = true, description = "%nExtract tables from PDF files and output as CSV or JSON.%n", footer = {
         "%nExamples:%n",
         "  Extract all tables from a PDF using default (hybrid) mode:",
         "    extractpdf4j document.pdf%n",
         "  Extract tables from specific pages and save to a file:",
         "    extractpdf4j invoice.pdf --pages 1,3-5 --out tables.csv%n",
+        "  Export all detected tables as JSON:",
+        "    extractpdf4j invoice.pdf --json --out tables.json%n",
         "  Use lattice mode for PDFs with visible table borders:",
         "    extractpdf4j report.pdf --mode LATTICE --dpi 150%n",
         "  Use OCR for scanned PDFs with custom headers:",
@@ -102,6 +109,10 @@ public class Main implements Runnable {
             "  If omitted, results are printed to STDOUT.%n" +
             "  For multiple tables, files are numbered (e.g., out-1.csv, out-2.csv).")
     private String out;
+
+    @Option(names = "--json", description = "Output all detected tables as one JSON document. " +
+            "When used with --out, writes a single JSON file.")
+    private boolean json;
 
     @Option(names = { "-d", "--debug" }, description = "Enable debug mode to output diagnostic information.")
     private boolean debug;
@@ -145,7 +156,7 @@ public class Main implements Runnable {
      *
      * <p>
      * Parses flags, constructs a {@link BaseParser} (or subclass), runs extraction,
-     * then writes or prints CSV results. Errors and invalid flags cause usage to be
+     * then writes or prints CSV or JSON results. Errors and invalid flags cause usage to be
      * printed
      * and the method to return.
      * </p>
@@ -212,7 +223,9 @@ public class Main implements Runnable {
             return;
         }
 
-        if (out == null) {
+        if (json) {
+            writeJson(tables, out);
+        } else if (out == null) {
             int i = 1;
             for (Table table : tables) {
                 System.out.println("### Table " + (i++));
@@ -268,6 +281,22 @@ public class Main implements Runnable {
             System.out.println("Wrote " + file.getAbsolutePath());
             i++;
         }
+    }
+
+    static void writeJson(List<Table> tables, String outPath) {
+        String output = JsonExporter.export(tables);
+        if (outPath == null) {
+            System.out.println(output);
+            return;
+        }
+
+        File outFile = new File(outPath);
+        try {
+            Files.writeString(outFile.toPath(), output, StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            throw new CommandLine.ExecutionException(new CommandLine(new Main()), e.getMessage(), e);
+        }
+        System.out.println("Wrote " + outFile.getAbsolutePath());
     }
 
     enum Mode {

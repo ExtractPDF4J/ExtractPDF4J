@@ -344,6 +344,7 @@ Common flags:
 - `--pages 1|all|1,3-5`
 - `--sep ,` (CSV separator)
 - `--out out.csv` (omit to print to STDOUT)
+- `--json` (emit all detected tables as one JSON document)
 - `--dpi 300` (use 300–450 for scans)
 - `--debug` and `--debug-dir debug/`
 - `--ocr auto|cli|bytedeco`
@@ -498,6 +499,7 @@ java -jar extractpdf4j-parser-<version>.jar <pdf>
      [--pages 1|all|1,3-5]
      [--sep ,]
      [--out out.csv]
+     [--json]
      [--debug]
      [--dpi 300]
      [--ocr auto|cli|bytedeco]
@@ -519,12 +521,14 @@ Examples:
 ```bash
 java -jar extractpdf4j-parser-<version>.jar scan.pdf --mode lattice --pages 1 --dpi 450 --ocr cli --debug --keep-cells --debug-dir debug_out --out p1.csv
 java -jar extractpdf4j-parser-<version>.jar statement.pdf --mode hybrid --pages all --dpi 400 --out tables.csv
+java -jar extractpdf4j-cli-2.0.0.jar examples/Sample_Utility_Bill.pdf --mode stream --json --out tables.json
 ```
 
 Notes:
 
 - When `--out` is omitted, tables are printed to STDOUT in CSV form.
 - When multiple tables are found and `--out` is provided, files are numbered by suffix (e.g., `out-1.csv`, `out-2.csv`).
+- `--json` emits one parseable JSON document with a top-level `tables` array; when paired with `--out`, all tables are written to that one file.
 - `--ocr` sets a system property read by OCR helpers; values: `auto`, `cli`, or `bytedeco`.
 
 ---
