@@ -1,8 +1,13 @@
 package com.extractpdf4j.parsers;
 
+import com.extractpdf4j.helpers.ExtractionDiagnostics;
+import com.extractpdf4j.helpers.ExtractionResult;
+import com.extractpdf4j.helpers.ParserSelection;
 import com.extractpdf4j.helpers.Table;
 import java.io.File;
 import java.io.IOException;
+import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -134,6 +139,12 @@ public class HybridParser extends BaseParser {
         return this;
     }
 
+    @Override
+    public HybridParser diagnostics(boolean enabled) {
+        super.diagnostics(enabled);
+        return this;
+    }
+
     /**
      * Sets the page selection for this parser and propagates the same selection
      * to all underlying strategies.
@@ -164,6 +175,79 @@ public class HybridParser extends BaseParser {
         lattice.stripText(strip);
         ocrstream.stripText(strip);
         return this;
+    }
+
+    @Override
+    public ExtractionResult parseResult() throws IOException {
+        if (!diagnosticsEnabled) {
+            return new ExtractionResult(parse(), null);
+        }
+
+        long totalStart = System.nanoTime();
+        TimedTables streamTimed = parseTimed(stream);
+        TimedTables latticeTimed = parseTimed(lattice);
+        TimedTables ocrTimed = parseTimed(ocrstream);
+
+        double streamScore = scoreAll(streamTimed.tables);
+        double latticeScore = scoreAll(latticeTimed.tables);
+        double ocrScore = scoreAll(ocrTimed.tables);
+        double bestScore = Math.max(streamScore, Math.max(latticeScore, ocrScore));
+
+        List<Table> selectedTables;
+        ParserSelection selectedParser;
+        String reason;
+        List<String> fallbackActions = new ArrayList<>();
+
+        if (streamTimed.tables.isEmpty() && latticeTimed.tables.isEmpty() && ocrTimed.tables.isEmpty()) {
+            selectedTables = Collections.emptyList();
+            selectedParser = ParserSelection.HYBRID;
+            reason = "No parser detected tables";
+        } else if (latticeScore >= streamScore && latticeScore >= ocrScore) {
+            selectedTables = latticeTimed.tables;
+            selectedParser = ParserSelection.LATTICE;
+            reason = "Lattice strategy produced the highest table score";
+        } else if (ocrScore >= streamScore && ocrScore >= latticeScore) {
+            selectedTables = ocrTimed.tables;
+            selectedParser = ParserSelection.OCR_STREAM;
+            reason = streamTimed.tables.isEmpty() ? "No usable text layer detected" : "OCR strategy produced the highest table score";
+            fallbackActions.add("Used OCR stream fallback");
+        } else {
+            selectedTables = streamTimed.tables;
+            selectedParser = ParserSelection.STREAM;
+            reason = "Text stream strategy produced the highest table score";
+        }
+
+        if (bestScore < minScore) {
+            selectedTables = Collections.emptyList();
+            reason = "Best average score was lower than the configured minimum";
+        }
+
+        List<String> warnings = collectWarnings(selectedTables);
+        if (selectedParser == ParserSelection.OCR_STREAM) {
+            warnings.add("OCR fallback was required for the selected result");
+        }
+
+        Duration total = Duration.ofNanos(System.nanoTime() - totalStart);
+        Duration parsing = streamTimed.duration.plus(latticeTimed.duration);
+        ExtractionDiagnostics diagnostics = new ExtractionDiagnostics(selectedParser, reason, total, ocrTimed.duration, parsing,
+                pagesProcessedCount(), selectedTables.size(), warnings, fallbackActions);
+        return new ExtractionResult(finalizeResults(selectedTables, this.filepath), diagnostics);
+    }
+
+    private static TimedTables parseTimed(BaseParser parser) throws IOException {
+        long start = System.nanoTime();
+        List<Table> tables = parser.parse();
+        return new TimedTables(tables == null ? Collections.emptyList() : tables, Duration.ofNanos(System.nanoTime() - start));
+    }
+
+    private static class TimedTables {
+        final List<Table> tables;
+        final Duration duration;
+
+        TimedTables(List<Table> tables, Duration duration) {
+            this.tables = tables;
+            this.duration = duration;
+        }
     }
 
     // ---------------------------------------------------------------------

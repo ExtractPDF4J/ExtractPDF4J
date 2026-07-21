@@ -1,10 +1,4 @@
-_**Announcement:**_ 🚀 ExtractPDF4J Global Build Challenge 2026
-The challenge is now live.
-👉 Read full details here: [Challenge Page](README-Challenge.md)
-
 [![GitHub stars](https://img.shields.io/github/stars/ExtractPDF4J/ExtractPDF4J?style=social)](https://github.com/ExtractPDF4J/ExtractPDF4J)
-
-![Maven Central Downloads](https://img.shields.io/maven-central/dt/io.github.extractpdf4j/extractpdf4j)
 
 ---
 <br />
@@ -518,6 +512,35 @@ public class HybridQuickStart {
     // process tables as needed
   }
 }
+```
+### Extraction diagnostics
+
+Use `parseResult()` with diagnostics enabled when you need production-friendly timing and parser-selection details without changing the table extraction algorithms.
+
+```java
+import com.extractpdf4j.helpers.ExtractionResult;
+import com.extractpdf4j.parsers.HybridParser;
+
+ExtractionResult result = new HybridParser("statement.pdf")
+    .diagnostics(true)
+    .parseResult();
+
+System.out.println(result.diagnostics());
+```
+
+Diagnostics report the selected parser, selection reason, pages processed, tables detected, OCR duration, parsing duration, total duration, warnings, and fallback actions.
+
+```text
+Parser selected: OCR_STREAM
+Reason: No usable text layer detected
+Pages processed: 4
+Tables detected: 2
+OCR duration: 1.74 seconds
+Parsing duration: 286 ms
+Total duration: 2.11 seconds
+Warnings:
+- Page 3 required OCR fallback
+- Table 2 contains inconsistent row widths
 ```
 
 ### OCR-assisted Stream

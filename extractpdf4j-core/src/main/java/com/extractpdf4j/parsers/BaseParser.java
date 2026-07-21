@@ -1,8 +1,10 @@
 package com.extractpdf4j.parsers;
 
-import com.extractpdf4j.helpers.PageRange;
-import com.extractpdf4j.helpers.Table;
+import com.extractpdf4j.helpers.*;
+
+import java.io.File;
 import java.io.IOException;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -66,6 +68,9 @@ public abstract class BaseParser {
      */
     protected boolean stripText = true;
 
+    /** Whether parseResult() should populate structured extraction diagnostics. */
+    protected boolean diagnosticsEnabled = false;
+
     /**
      * Constructs a parser for the given PDF file.
      *
@@ -103,6 +108,17 @@ public abstract class BaseParser {
      */
     public BaseParser stripText(boolean strip) {
         this.stripText = strip;
+        return this;
+    }
+
+    /**
+     * Enables or disables structured diagnostics for {@link #parseResult()}.
+     *
+     * @param enabled {@code true} to capture diagnostics, {@code false} to return tables only
+     * @return this parser (for chaining)
+     */
+    public BaseParser diagnostics(boolean enabled) {
+        this.diagnosticsEnabled = enabled;
         return this;
     }
 
@@ -154,7 +170,57 @@ public abstract class BaseParser {
      * @since 2025
      */
     protected abstract List<Table> parsePage(int page) throws IOException;
-    
+
+    /**
+     * Parses the configured input and returns both extracted tables and optional diagnostics.
+     *
+     * @return extraction result containing tables and diagnostics when enabled
+     * @throws IOException if reading the file fails or a parsing error occurs
+     */
+    public ExtractionResult parseResult() throws IOException {
+        long start = System.nanoTime();
+        List<Table> tables = parse();
+        Duration total = Duration.ofNanos(System.nanoTime() - start);
+        ExtractionDiagnostics diagnostics = diagnosticsEnabled
+                ? new ExtractionDiagnostics(parserSelection(), "Explicit parser requested", total, Duration.ZERO, total,
+                pagesProcessedCount(), tables.size(), collectWarnings(tables), Collections.emptyList())
+                : null;
+        return new ExtractionResult(tables, diagnostics);
+    }
+
+    protected ParserSelection parserSelection() {
+        String name = getClass().getSimpleName();
+        if ("StreamParser".equals(name)) return ParserSelection.STREAM;
+        if ("LatticeParser".equals(name)) return ParserSelection.LATTICE;
+        if ("OcrStreamParser".equals(name)) return ParserSelection.OCR_STREAM;
+        if ("HybridParser".equals(name)) return ParserSelection.HYBRID;
+        return ParserSelection.HYBRID;
+    }
+
+    protected int pagesProcessedCount() {
+        List<Integer> pageList = PageRange.parse(this.pages);
+        if (pageList.size() == 1 && pageList.get(0) == -1) {
+            if (filepath == null) return 0;
+            try (PDDocument document = PDDocument.load(new File(filepath))) {
+                return document.getNumberOfPages();
+            } catch (IOException | RuntimeException e) {
+                return 0;
+            }
+        }
+        return pageList.size();
+    }
+
+    protected List<String> collectWarnings(List<Table> tables) {
+        List<String> warnings = new ArrayList<>();
+        if (tables == null) return warnings;
+        for (int i = 0; i < tables.size(); i++) {
+            Table table = tables.get(i);
+            int expected = table.ncols();
+            boolean inconsistent = table.asList().stream().anyMatch(row -> row.size() != expected);
+            if (inconsistent) warnings.add("Table " + (i + 1) + " contains inconsistent row widths");
+        }
+        return warnings;
+    }
     
     /** 
      * Normalizes parser output for "no tables" situations.
