@@ -31,7 +31,7 @@
     <img src="https://img.shields.io/badge/Java-17%2B-1976D2?style=for-the-badge&logo=openjdk&logoColor=white" alt="Java 17+" />
   </a>
   <a href="https://github.com/ExtractPDF4J/ExtractPDF4J/releases/tag/v2.1.0">
-  <img src="https://img.shields.io/badge/release-v2.0.0-616161?style=for-the-badge" alt="Release v2.1.0" />
+  <img src="https://img.shields.io/badge/release-v2.1.0-616161?style=for-the-badge" alt="Release v2.1.0" />
   </a>
   <a href="https://github.com/ExtractPDF4J/ExtractPDF4J">
     <img src="https://img.shields.io/badge/OCR-supported-5E35B1?style=for-the-badge" alt="OCR Supported" />
@@ -156,14 +156,6 @@ If you prefer not to use the BOM:
 ```xml
 <dependency>
   <groupId>io.github.extractpdf4j</groupId>
-  <artifactId>extractpdf4j-parser</artifactId>
-  <version>2.1.0</version>
-</dependency>
-```
-
-```xml
-<dependency>
-  <groupId>io.github.extractpdf4j</groupId>
   <artifactId>extractpdf4j-core</artifactId>
   <version>2.1.0</version>
 </dependency>
@@ -188,19 +180,15 @@ If you prefer not to use the BOM:
 ### **Gradle**
 
 ```kotlin
-implementation("io.github.extractpdf4j:extractpdf4j-parser:2.0.0")
+implementation("io.github.extractpdf4j:extractpdf4j-core:2.1.0")
 ```
 
 ```kotlin
-implementation("io.github.extractpdf4j:extractpdf4j-core:2.0.0")
+implementation("io.github.extractpdf4j:extractpdf4j-cli:2.1.0")
 ```
 
 ```kotlin
-implementation("io.github.extractpdf4j:extractpdf4j-cli:2.0.0")
-```
-
-```kotlin
-implementation("io.github.extractpdf4j:extractpdf4j-service:2.0.0")
+implementation("io.github.extractpdf4j:extractpdf4j-service:2.1.0")
 ```
 
 ---
@@ -379,7 +367,7 @@ HybridParser ── coordinates and merges results from the above
 The CLI defaults to **hybrid mode**. If you do not pass `--mode`, it behaves like `--mode hybrid`.
 
 ```bash
-java -jar extractpdf4j-parser-<version>.jar input.pdf \
+java -jar extractpdf4j-cli-<version>.jar input.pdf \
   --pages all \
   --out tables.csv
 ```
@@ -401,7 +389,7 @@ See also the changelog entry for this documentation pass: [CHANGELOG](CHANGELOG.
 ## Project Status
 
 - Build tool: **Maven**
-- Coordinates (current): `io.github.extractpdf4j:extractpdf4j-parser:2.0.0`
+- Coordinates (current): `io.github.extractpdf4j:extractpdf4j-core:2.1.0`
 - Java: **17+** (recommended 17+ runtime)
 
 ---
@@ -426,7 +414,7 @@ See also the changelog entry for this documentation pass: [CHANGELOG](CHANGELOG.
 ```xml
 <dependency>
   <groupId>io.github.extractpdf4j</groupId>
-  <artifactId>extractpdf4j-parser</artifactId>
+  <artifactId>extractpdf4j-core</artifactId>
   <version>2.1.0</version>
 </dependency>
 ```
@@ -434,7 +422,7 @@ See also the changelog entry for this documentation pass: [CHANGELOG](CHANGELOG.
 ### Gradle
 
 ```kotlin
-implementation("io.github.extractpdf4j:extractpdf4j-parser:2.0.0")
+implementation("io.github.extractpdf4j:extractpdf4j-core:2.1.0")
 ```
 
 ### Native Notes
@@ -568,7 +556,7 @@ Run the bundled CLI to extract tables from a PDF.
 Usage:
 
 ```bash
-java -jar extractpdf4j-parser-<version>.jar <pdf>
+java -jar extractpdf4j-cli-<version>.jar <pdf>
      [--mode stream|lattice|ocrstream|hybrid]
      [--pages 1|all|1,3-5]
      [--sep ,]
@@ -592,8 +580,8 @@ java -jar extractpdf4j-parser-<version>.jar <pdf>
 Examples:
 
 ```bash
-java -jar extractpdf4j-parser-<version>.jar scan.pdf --mode lattice --pages 1 --dpi 450 --ocr cli --debug --keep-cells --debug-dir debug_out --out p1.csv
-java -jar extractpdf4j-parser-<version>.jar statement.pdf --mode hybrid --pages all --dpi 400 --out tables.csv
+java -jar extractpdf4j-cli-<version>.jar scan.pdf --mode lattice --pages 1 --dpi 450 --ocr cli --debug --keep-cells --debug-dir debug_out --out p1.csv
+java -jar extractpdf4j-cli-<version>.jar statement.pdf --mode hybrid --pages all --dpi 400 --out tables.csv
 ```
 
 Notes:
@@ -631,7 +619,7 @@ docker run -p 8080:8080 extractpdf4j-service
 Alternatively, you can run the service directly from the command line after building the project.
 
 ```bash
-java -jar target/extractpdf4j-parser-<version>.jar
+java -jar target/extractpdf4j-service-<version>.jar
 ```
 
 After running either command, you will see the Spring Boot application startup logs in your terminal.
@@ -788,7 +776,7 @@ Example (lattice, 450 DPI, CLI OCR, debug artifacts):
 
 ```bash
 java -Dtess.lang=eng -Dtess.psm=6 -Dtess.oem=1 -Docr.debug=true \
-  -jar extractpdf4j-parser-<version>.jar scan.pdf \
+  -jar extractpdf4j-cli-<version>.jar scan.pdf \
   --mode lattice --dpi 450 --ocr cli --debug --debug-dir debug \
   --out tables.csv
 ```
