@@ -13,8 +13,7 @@ The API is designed to give you:
 
 Depending on how you use the project, you may interact with one or more modules:
 
-- `extractpdf4j-parser` — parser implementations and extraction entry points
-- `extractpdf4j-core` — shared helpers and core data structures
+- `extractpdf4j-core` — parser implementations, extraction entry points, shared helpers, and core data structures
 - `extractpdf4j-cli` — command-line execution layer
 - `extractpdf4j-service` — service-oriented integration layer
 

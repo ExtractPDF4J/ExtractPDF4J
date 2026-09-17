@@ -170,7 +170,7 @@ ExtractPDF4J includes CLI support for quick runs, scripting, and batch jobs.
 Example:
 
 ```bash
-java -jar extractpdf4j-parser-<version>.jar input.pdf \
+java -jar extractpdf4j-cli-<version>.jar input.pdf \
   --mode hybrid \
   --pages all \
   --out output.csv

@@ -76,7 +76,7 @@ public class OcrTuningExample {
 ## Example: CLI
 
 ```bash
-java -jar extractpdf4j-parser-<version>.jar scan.pdf \
+java -jar extractpdf4j-cli-<version>.jar scan.pdf \
   --mode ocrstream \
   --pages 1-2 \
   --dpi 400 \

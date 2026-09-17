@@ -1,6 +1,4 @@
-_**Announcement:**_ 🚀 ExtractPDF4J Global Build Challenge 2026
-The challenge is now live.
-👉 Read full details here: [Challenge Page](README-Challenge.md)
+[![GitHub stars](https://img.shields.io/github/stars/ExtractPDF4J/ExtractPDF4J?style=social)](https://github.com/ExtractPDF4J/ExtractPDF4J)
 
 ---
 <br />
@@ -32,8 +30,8 @@ The challenge is now live.
   <a href="https://github.com/ExtractPDF4J/ExtractPDF4J">
     <img src="https://img.shields.io/badge/Java-17%2B-1976D2?style=for-the-badge&logo=openjdk&logoColor=white" alt="Java 17+" />
   </a>
-  <a href="https://github.com/ExtractPDF4J/ExtractPDF4J/releases/tag/v2.0.0">
-  <img src="https://img.shields.io/badge/release-v2.0.0-616161?style=for-the-badge" alt="Release v2.0.0" />
+  <a href="https://github.com/ExtractPDF4J/ExtractPDF4J/releases/tag/v2.1.0">
+  <img src="https://img.shields.io/badge/release-v2.1.0-616161?style=for-the-badge" alt="Release v2.1.0" />
   </a>
   <a href="https://github.com/ExtractPDF4J/ExtractPDF4J">
     <img src="https://img.shields.io/badge/OCR-supported-5E35B1?style=for-the-badge" alt="OCR Supported" />
@@ -97,6 +95,27 @@ public class QuickStart {
 Stop hand-retyping tables from scanned invoices, bank statements, or reports.
 Extract clean rows + columns even when the PDF has no text layer.
 
+## Supported Document Types
+
+ExtractPDF4J works well with documents such as:
+
+- bank statements
+- financial reports
+- invoices
+- operational documents
+- structured business reports
+
+## Production Use Cases
+
+ExtractPDF4J is designed for production environments such as:
+
+- fintech and banking platforms
+- document processing pipelines
+- analytics platforms
+- enterprise ingestion workflows
+- AI / ML data preparation pipelines
+
+
 ## Magic snippet
 
 The copy/paste quick start is at the top of this README under the project description.
@@ -105,21 +124,40 @@ The copy/paste quick start is at the top of this README under the project descri
 
 ## Install (Maven + Gradle)
 
-**Maven**
+### **Maven**
+
+### Recommended: Using the BOM
 
 ```xml
-<dependency>
-  <groupId>io.github.extractpdf4j</groupId>
-  <artifactId>extractpdf4j-parser</artifactId>
-  <version>2.0.0</version>
-</dependency>
+<dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>io.github.extractpdf4j</groupId>
+      <artifactId>extractpdf4j-bom</artifactId>
+      <version>2.1.0</version>
+      <type>pom</type>
+      <scope>import</scope>
+    </dependency>
+  </dependencies>
+</dependencyManagement>
+
+<dependencies>
+  <dependency>
+    <groupId>io.github.extractpdf4j</groupId>
+    <artifactId>extractpdf4j-service</artifactId>
+  </dependency>
+</dependencies>
 ```
+
+### Direct Module Usage
+
+If you prefer not to use the BOM:
 
 ```xml
 <dependency>
   <groupId>io.github.extractpdf4j</groupId>
   <artifactId>extractpdf4j-core</artifactId>
-  <version>2.0.0</version>
+  <version>2.1.0</version>
 </dependency>
 ```
 
@@ -127,7 +165,7 @@ The copy/paste quick start is at the top of this README under the project descri
 <dependency>
   <groupId>io.github.extractpdf4j</groupId>
   <artifactId>extractpdf4j-cli</artifactId>
-  <version>2.0.0</version>
+  <version>2.1.0</version>
 </dependency>
 ```
 
@@ -135,26 +173,22 @@ The copy/paste quick start is at the top of this README under the project descri
 <dependency>
   <groupId>io.github.extractpdf4j</groupId>
   <artifactId>extractpdf4j-service</artifactId>
-  <version>2.0.0</version>
+  <version>2.1.0</version>
 </dependency>
 ```
 
-**Gradle**
+### **Gradle**
 
 ```kotlin
-implementation("io.github.extractpdf4j:extractpdf4j-parser:2.0.0")
+implementation("io.github.extractpdf4j:extractpdf4j-core:2.1.0")
 ```
 
 ```kotlin
-implementation("io.github.extractpdf4j:extractpdf4j-core:2.0.0")
+implementation("io.github.extractpdf4j:extractpdf4j-cli:2.1.0")
 ```
 
 ```kotlin
-implementation("io.github.extractpdf4j:extractpdf4j-cli:2.0.0")
-```
-
-```kotlin
-implementation("io.github.extractpdf4j:extractpdf4j-service:2.0.0")
+implementation("io.github.extractpdf4j:extractpdf4j-service:2.1.0")
 ```
 
 ---
@@ -333,7 +367,7 @@ HybridParser ── coordinates and merges results from the above
 The CLI defaults to **hybrid mode**. If you do not pass `--mode`, it behaves like `--mode hybrid`.
 
 ```bash
-java -jar extractpdf4j-parser-<version>.jar input.pdf \
+java -jar extractpdf4j-cli-<version>.jar input.pdf \
   --pages all \
   --out tables.csv
 ```
@@ -356,7 +390,7 @@ See also the changelog entry for this documentation pass: [CHANGELOG](CHANGELOG.
 ## Project Status
 
 - Build tool: **Maven**
-- Coordinates (current): `io.github.extractpdf4j:extractpdf4j-parser:2.0.0`
+- Coordinates (current): `io.github.extractpdf4j:extractpdf4j-core:2.1.0`
 - Java: **17+** (recommended 17+ runtime)
 
 ---
@@ -381,15 +415,15 @@ See also the changelog entry for this documentation pass: [CHANGELOG](CHANGELOG.
 ```xml
 <dependency>
   <groupId>io.github.extractpdf4j</groupId>
-  <artifactId>extractpdf4j-parser</artifactId>
-  <version>2.0.0</version>
+  <artifactId>extractpdf4j-core</artifactId>
+  <version>2.1.0</version>
 </dependency>
 ```
 
 ### Gradle
 
 ```kotlin
-implementation("io.github.extractpdf4j:extractpdf4j-parser:2.0.0")
+implementation("io.github.extractpdf4j:extractpdf4j-core:2.1.0")
 ```
 
 ### Native Notes
@@ -468,6 +502,35 @@ public class HybridQuickStart {
   }
 }
 ```
+### Extraction diagnostics
+
+Use `parseResult()` with diagnostics enabled when you need production-friendly timing and parser-selection details without changing the table extraction algorithms.
+
+```java
+import com.extractpdf4j.helpers.ExtractionResult;
+import com.extractpdf4j.parsers.HybridParser;
+
+ExtractionResult result = new HybridParser("statement.pdf")
+    .diagnostics(true)
+    .parseResult();
+
+System.out.println(result.diagnostics());
+```
+
+Diagnostics report the selected parser, selection reason, pages processed, tables detected, OCR duration, parsing duration, total duration, warnings, and fallback actions.
+
+```text
+Parser selected: OCR_STREAM
+Reason: No usable text layer detected
+Pages processed: 4
+Tables detected: 2
+OCR duration: 1.74 seconds
+Parsing duration: 286 ms
+Total duration: 2.11 seconds
+Warnings:
+- Page 3 required OCR fallback
+- Table 2 contains inconsistent row widths
+```
 
 ### OCR-assisted Stream
 
@@ -494,7 +557,7 @@ Run the bundled CLI to extract tables from a PDF.
 Usage:
 
 ```bash
-java -jar extractpdf4j-parser-<version>.jar <pdf>
+java -jar extractpdf4j-cli-<version>.jar <pdf>
      [--mode stream|lattice|ocrstream|hybrid]
      [--pages 1|all|1,3-5]
      [--sep ,]
@@ -560,7 +623,7 @@ docker run -p 8080:8080 extractpdf4j-service
 Alternatively, you can run the service directly from the command line after building the project.
 
 ```bash
-java -jar target/extractpdf4j-parser-<version>.jar
+java -jar target/extractpdf4j-service-<version>.jar
 ```
 
 After running either command, you will see the Spring Boot application startup logs in your terminal.
@@ -717,7 +780,7 @@ Example (lattice, 450 DPI, CLI OCR, debug artifacts):
 
 ```bash
 java -Dtess.lang=eng -Dtess.psm=6 -Dtess.oem=1 -Docr.debug=true \
-  -jar extractpdf4j-parser-<version>.jar scan.pdf \
+  -jar extractpdf4j-cli-<version>.jar scan.pdf \
   --mode lattice --dpi 450 --ocr cli --debug --debug-dir debug \
   --out tables.csv
 ```
@@ -757,11 +820,25 @@ Before/after (conceptual):
 
 ## Roadmap
 
-- JSON/XLSX export helpers, optional `AutoParser`, and more batch utilities.
-- Optional **AutoParser** (delegates to `HybridParser`) — convenience wrapper.
-- `Table#toJson()` and `Table#toXlsx(Path)` methods.
-- `Results.exportAllCsv/Json(...)` bulk helpers.
-- (Future) A formal `ParserConfig` builder with common options.
+### Dependency Management & Developer Experience
+- Expand BOM-based dependency management for smoother consumer setup.
+- Add clearer module-level installation examples for `core`, `service`, and `cli`.
+- Improve starter/dependency onboarding documentation for Maven users.
+
+### Parsing & Extraction
+- Optional **AutoParser** (delegates to `HybridParser`) as a convenience wrapper.
+- Formal `ParserConfig` builder with shared parser options.
+- More batch extraction utilities for multi-file workflows.
+
+### Export & Results API
+- `Table#toJson()` and `Table#toXlsx(Path)` helpers.
+- `Results.exportAllCsv(...)` and `Results.exportAllJson(...)` bulk export helpers.
+- Additional structured export formats for downstream processing.
+
+### Documentation & Samples
+- More end-to-end examples for text PDFs, scanned PDFs, and OCR workflows.
+- Service and CLI usage examples for production-style integration.
+- Expanded docs for configuration, tuning, and troubleshooting.
 
 A **stubs & patch** bundle is available to enable these APIs today without breaking changes.
 
