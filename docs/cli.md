@@ -62,6 +62,39 @@ Examples:
 
 If omitted, output is written to STDOUT.
 
+## JSON output
+
+Use `--json` to produce one structured JSON document for all detected tables.
+This is useful when the result is consumed by services, Kafka consumers, or
+other JSON-aware pipeline stages.
+
+```bash
+java -jar extractpdf4j-cli-2.0.0.jar examples/Sample_Utility_Bill.pdf \
+  --mode stream \
+  --json \
+  --out tables.json
+```
+
+The command writes one file even if the PDF contains multiple tables:
+
+```json
+{"tables":[{"rows":[["Date","Description","Amount"],["2026-01-01","Example","42.00"]]}]}
+```
+
+Omit `--out` to send the same JSON document to STDOUT, for example:
+
+```bash
+java -jar extractpdf4j-cli-2.0.0.jar examples/Sample_Utility_Bill.pdf --mode stream --json
+```
+
+`--json` requires no additional libraries or environment variables. For scanned
+PDFs, use the usual OCR prerequisites: bundled Bytedeco native artifacts are
+recommended; otherwise ensure OpenCV/Tesseract libraries are available on the
+system `PATH` and set `TESSDATA_PREFIX` when Tesseract language data is not
+found. The repository Docker image packages the Spring Boot service rather than
+the CLI, so run the CLI command on the host or add the CLI shaded JAR to a
+custom image.
+
 ## DPI
 ```bash
 --dpi 300
