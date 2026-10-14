@@ -118,7 +118,7 @@ public class StreamParser extends BaseParser {
 
         // Group into lines by Y
         double yTol = 2.0;
-        Map<Integer, List<Glyph>> lines = new TreeMap<>(Comparator.reverseOrder());
+        Map<Integer, List<Glyph>> lines = new TreeMap<>();
         for (Glyph g : stripper.glyphs) {
             int bucket = (int)Math.round(g.y / yTol);
             lines.computeIfAbsent(bucket, k->new ArrayList<>()).add(g);
@@ -162,23 +162,51 @@ public class StreamParser extends BaseParser {
      * and keeping separators that persist across multiple rows.
      */
     private static List<Double> inferColumnBounds(List<Row> rows) {
-        Map<Integer,Integer> hist = new HashMap<>();
-        for (Row r : rows) {
-            List<Glyph> gs = r.glyphs;
-            for (int i=0;i+1<gs.size();i++) {
-                double right = gs.get(i).x + gs.get(i).w;
-                double gap = gs.get(i+1).x - right;
-                if (gap > 12.0) {
-                    int bucket = (int)Math.round((right + gap/2)/10.0);
-                    hist.put(bucket, hist.getOrDefault(bucket,0)+1);
+        // Vote for the whole whitespace interval, rather than its midpoint: descriptions
+        // have different lengths even when the next column starts at the same X.
+        Map<Integer, Integer> support = new TreeMap<>();
+        Set<Integer> occupied = new HashSet<>();
+        int tabularRows = 0;
+        for (Row row : rows) {
+            Set<Integer> rowGaps = new HashSet<>();
+            int gapCount = 0;
+            for (int i = 0; i + 1 < row.glyphs.size(); i++) {
+                Glyph left = row.glyphs.get(i), right = row.glyphs.get(i + 1);
+                double start = left.x + left.w;
+                if (right.x - start <= 12.0) continue;
+                gapCount++;
+                for (int x = (int) Math.ceil(start + 2); x <= Math.floor(right.x - 2); x++) {
+                    rowGaps.add(x);
                 }
             }
+            if (!rowGaps.isEmpty()) tabularRows++;
+            // Empty debit/credit cells can join otherwise distinct whitespace intervals.
+            // Text in other table rows must break those intervals into separate columns.
+            // Exclude two-field metadata rows from this veto.
+            if (gapCount >= 2) {
+                for (Glyph glyph : row.glyphs) {
+                    for (int x = (int) Math.floor(glyph.x); x <= Math.ceil(glyph.x + glyph.w); x++) {
+                        occupied.add(x);
+                    }
+                }
+            }
+            for (int x : rowGaps) support.merge(x, 1, Integer::sum);
         }
-        List<Integer> keys = hist.entrySet().stream().sorted((a,b)->Integer.compare(a.getKey(), b.getKey()))
-                .map(Map.Entry::getKey).collect(Collectors.toList());
+        int minimumSupport = Math.max(2, (int) Math.ceil(tabularRows * 0.5));
         List<Double> bounds = new ArrayList<>();
         bounds.add(0.0);
-        for (int k : keys) bounds.add(k*10.0);
+        Integer start = null, previous = null;
+        for (var entry : support.entrySet()) {
+            int x = entry.getKey();
+            if (entry.getValue() < minimumSupport || occupied.contains(x)) continue;
+            if (previous != null && x > previous + 1) {
+                bounds.add((start + previous) / 2.0);
+                start = null;
+            }
+            if (start == null) start = x;
+            previous = x;
+        }
+        if (start != null) bounds.add((start + previous) / 2.0);
         bounds.add(1e9);
         return bounds;
     }
