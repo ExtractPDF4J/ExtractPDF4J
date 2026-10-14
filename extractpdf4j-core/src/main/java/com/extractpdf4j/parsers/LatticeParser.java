@@ -5,10 +5,10 @@ import com.extractpdf4j.helpers.Ocr;
 import com.extractpdf4j.helpers.PageRange;
 import com.extractpdf4j.helpers.Table;
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.apache.pdfbox.text.TextPosition;
 import org.bytedeco.opencv.opencv_core.Mat;
+import org.bytedeco.opencv.opencv_core.MatVector;
 import org.bytedeco.opencv.opencv_core.Point;
 import org.bytedeco.opencv.opencv_core.Rect;
 import org.bytedeco.opencv.opencv_core.Scalar;
@@ -88,12 +88,12 @@ public class LatticeParser extends BaseParser {
             if (pages.size()==1 && pages.get(0)==-1) {
                 // “all” → iterate all pages
                 for (int p=1; p<=doc.getNumberOfPages(); p++) {
-                    out.add(extractFromPage(doc, p-1));
+                    out.addAll(extractFromPage(doc, p-1));
                 }
             } else {
                 // Process only if requested page is in selection
                 if (!pages.contains(page)) return Collections.emptyList();
-                out.add(extractFromPage(doc, page-1));
+                out.addAll(extractFromPage(doc, page-1));
             }
             // Keep only non-empty tables
             return out.stream().filter(t -> t.nrows()>0 && t.ncols()>0).collect(Collectors.toList());
@@ -111,10 +111,7 @@ public class LatticeParser extends BaseParser {
         if (pagesToProcess.size() == 1 && pagesToProcess.get(0) == -1) {
             // If "all", iterate from page 0 to the last page (zero-indexed for extractFromPage)
             for (int i = 0; i < document.getNumberOfPages(); i++) {
-                Table table = extractFromPage(document, i);
-                if (table != null && table.nrows() > 0) {
-                    tables.add(table);
-                }
+                tables.addAll(extractFromPage(document, i));
             }
         } else {
             // Otherwise, iterate through the explicitly selected pages
@@ -122,10 +119,7 @@ public class LatticeParser extends BaseParser {
                 int zeroIdx = pageNum - 1; // Convert to zero-based index
                 // Ensure the page number is valid
                 if (zeroIdx >= 0 && zeroIdx < document.getNumberOfPages()) {
-                    Table table = extractFromPage(document, zeroIdx);
-                    if (table != null && table.nrows() > 0) {
-                        tables.add(table);
-                    }
+                    tables.addAll(extractFromPage(document, zeroIdx));
                 }
             }
         }
@@ -139,9 +133,9 @@ public class LatticeParser extends BaseParser {
      *
      * @param doc     open document
      * @param zeroIdx zero-based page index
-     * @return a {@link Table} with cell contents and boundaries (empty if no grid)
+     * @return independent ruled tables with cell contents and boundaries (empty if no grid)
      */
-    private Table extractFromPage(PDDocument doc, int zeroIdx) throws IOException {
+    private List<Table> extractFromPage(PDDocument doc, int zeroIdx) throws IOException {
         // 1) Render page to binary image, convert to OpenCV Mat, and binarize for line finding
         BufferedImage bim = ImagePdfUtils.renderPage(doc, zeroIdx, renderDpi);
         Mat gray = ImagePdfUtils.bufferedToMat(bim);
@@ -156,16 +150,35 @@ public class LatticeParser extends BaseParser {
         Mat vStruct = getStructuringElement(MORPH_RECT, new org.bytedeco.opencv.opencv_core.Size(1, Math.max(10*scale,10)));
         erode(vertical, vertical, vStruct); dilate(vertical, vertical, vStruct);
 
-        // 3) Projections → candidate line positions (threshold by coverage), then dedupe near-duplicates
-        List<Integer> rowsY = dedupe(projectLines(horizontal, true), 3);
-        List<Integer> colsX = dedupe(projectLines(vertical, false), 3);
+        // Each connected ruled region has its own grid. Page-wide projections merge
+        // account summaries and transactions, and miss lines shorter than the page.
+        Mat mask = new Mat();
+        bitwise_or(horizontal, vertical, mask);
+        MatVector contours = new MatVector();
+        findContours(mask, contours, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE);
+        List<Rect> regions = new ArrayList<>();
+        for (long i = 0; i < contours.size(); i++) {
+            Rect region = boundingRect(contours.get(i));
+            if (region.width() >= 40 * scale && region.height() >= 20 * scale) regions.add(region);
+        }
+        regions.sort(Comparator.comparingInt((Rect r) -> r.y()).thenComparingInt(r -> r.x()));
+        List<Table> tables = new ArrayList<>();
+        for (Rect region : regions) {
+            List<Integer> rowsY = projectLines(new Mat(horizontal, region), true).stream()
+                    .map(y -> y + region.y()).collect(Collectors.toList());
+            List<Integer> colsX = projectLines(new Mat(vertical, region), false).stream()
+                    .map(x -> x + region.x()).collect(Collectors.toList());
+            rowsY = dedupe(rowsY, Math.max(3, scale * 2));
+            colsX = dedupe(colsX, Math.max(3, scale * 2));
+            // Do not fabricate a table from page borders when no grid was detected.
+            if (rowsY.size() < 2 || colsX.size() < 2) continue;
+            tables.add(extractGrid(doc, zeroIdx, tables.size() + 1, gray, rowsY, colsX));
+        }
+        return tables;
+    }
 
-        // Ensure borders are present so we can form a closed grid
-        if (rowsY.isEmpty() || rowsY.get(0) > 3) rowsY.add(0, 0);
-        if (rowsY.get(rowsY.size()-1) < gray.rows()-3) rowsY.add(gray.rows()-1);
-        if (colsX.isEmpty() || colsX.get(0) > 3) colsX.add(0, 0);
-        if (colsX.get(colsX.size()-1) < gray.cols()-3) colsX.add(gray.cols()-1);
-
+    private Table extractGrid(PDDocument doc, int zeroIdx, int tableNumber, Mat gray,
+                              List<Integer> rowsY, List<Integer> colsX) throws IOException {
         int nrows = Math.max(0, rowsY.size()-1), ncols = Math.max(0, colsX.size()-1);
         if (nrows==0 || ncols==0) return new Table(List.of(), List.of(), List.of());
 
@@ -173,16 +186,15 @@ public class LatticeParser extends BaseParser {
         List<List<String>> grid = new ArrayList<>();
         for (int r=0;r<nrows;r++) grid.add(new ArrayList<>(Collections.nCopies(ncols, "")));
 
-        // 4) Map PDF text positions (72 DPI, origin bottom-left) into image pixel coords
-        PDPage page = doc.getPage(zeroIdx);
-        float pageH = page.getMediaBox().getHeight();
+        // 4) Map adjusted PDF text positions (72 DPI, origin top-left) into image pixels
         double scaleXY = renderDpi / 72.0; // PDF points → image pixels
-        List<Glyph> glyphs = collectGlyphsAsImageCoords(doc, zeroIdx+1, pageH, scaleXY);
+        List<Glyph> glyphs = collectGlyphsAsImageCoords(doc, zeroIdx+1, scaleXY);
+        glyphs.sort(Comparator.comparingDouble((Glyph g) -> g.cy).thenComparingDouble(g -> g.cx));
         for (Glyph g : glyphs) {
             int ci = locate(colsX, g.cx), ri = locate(rowsY, g.cy);
             if (ri>=0 && ri<nrows && ci>=0 && ci<ncols) {
                 String prev = grid.get(ri).get(ci);
-                grid.get(ri).set(ci, prev.isEmpty()? g.s : prev + " " + g.s);
+                grid.get(ri).set(ci, prev.isEmpty()? g.s : prev + g.s);
             }
         }
 
@@ -194,7 +206,7 @@ public class LatticeParser extends BaseParser {
         // Optional debug directory for cell crops
         File cellsDir = null;
         if (debug && keepCells) {
-            cellsDir = new File(new File(debugDir, "cells"), "page"+(zeroIdx+1));
+            cellsDir = new File(new File(debugDir, "cells"), "page"+(zeroIdx+1)+"_table"+tableNumber);
             if (!cellsDir.exists()) cellsDir.mkdirs();
         }
 
@@ -249,7 +261,7 @@ public class LatticeParser extends BaseParser {
             Mat dbg = new Mat(); cvtColor(gray, dbg, COLOR_GRAY2BGR);
             for (int y : rowsY) line(dbg, new Point(0,y), new Point(gray.cols()-1, y), new Scalar(0,255,0,0),1,LINE_AA,0);
             for (int x : colsX) line(dbg, new Point(x,0), new Point(x, gray.rows()-1), new Scalar(255,0,0,0),1,LINE_AA,0);
-            File outDbg = new File(debugDir, "debug_lattice_grid_page"+(zeroIdx+1)+".png");
+            File outDbg = new File(debugDir, "debug_lattice_grid_page"+(zeroIdx+1)+"_table"+tableNumber+".png");
             imwrite(outDbg.getAbsolutePath(), dbg);
             System.out.println("Wrote debug grid: " + outDbg.getAbsolutePath());
         }
@@ -321,23 +333,22 @@ public class LatticeParser extends BaseParser {
     /**
      * Collects glyphs (characters) for one page and maps their centers from PDF
      * coordinate space (points, origin bottom-left) to raster image pixel space
-     * (origin top-left). The Y coordinate is inverted via {@code pageHeightPt - y}.
+     * (origin top-left). Adjusted PDFBox Y coordinates already use a top-left origin; do not invert them.
      *
      * @param doc             document
      * @param pageOneIndexed  page number starting at 1
-     * @param pageHeightPt    page height in PDF points
      * @param scaleXY         pixels-per-point factor (e.g., dpi/72)
      */
-    private List<Glyph> collectGlyphsAsImageCoords(PDDocument doc, int pageOneIndexed, float pageHeightPt, double scaleXY) throws IOException {
+    private List<Glyph> collectGlyphsAsImageCoords(PDDocument doc, int pageOneIndexed, double scaleXY) throws IOException {
         class Collector extends PDFTextStripper {
             final List<Glyph> glyphs = new ArrayList<>();
             Collector() throws IOException { setSortByPosition(true); setStartPage(pageOneIndexed); setEndPage(pageOneIndexed); }
             @Override protected void processTextPosition(TextPosition t) {
                 String s = t.getUnicode(); if (s == null || s.isEmpty()) return;
                 double cxPdf = t.getXDirAdj() + t.getWidthDirAdj()/2.0;
-                double cyPdf = t.getYDirAdj() + t.getHeightDir()/2.0;
+                double cyPdf = t.getYDirAdj() - t.getHeightDir()/2.0;
                 double cxImg = cxPdf * scaleXY;
-                double cyImg = (pageHeightPt - cyPdf) * scaleXY;
+                double cyImg = cyPdf * scaleXY;
                 glyphs.add(new Glyph(s, cxImg, cyImg));
             }
         }

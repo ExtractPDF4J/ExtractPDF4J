@@ -400,7 +400,7 @@ public class HybridParser extends BaseParser {
 
         double fill = (double) nonEmpty / total;
         double structure = (double) multiColRows / rows;
-        double richness = Math.log(1 + cols) / Math.log(4); // grows slowly with #cols
+        double richness = Math.min(1.0, Math.log(1 + cols) / Math.log(4)); // grows slowly with #cols
 
         return 0.6 * fill + 0.3 * structure + 0.1 * richness;
     }
