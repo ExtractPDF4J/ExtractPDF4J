@@ -54,6 +54,7 @@
         <module>extractpdf4j-core</module>
         <module>extractpdf4j-cli</module>
         <module>extractpdf4j-service</module>
+        <module>examples/batch-folder-processing</module>
     </modules>
 
     <properties>
