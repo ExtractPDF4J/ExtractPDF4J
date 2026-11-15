@@ -12,6 +12,10 @@ COPY extractpdf4j-service ./extractpdf4j-service
 COPY extractpdf4j-cli ./extractpdf4j-cli
 COPY extractpdf4j-core ./extractpdf4j-core
 
+# Create the directory that will contains the CLI commands results, and inputs to be analyzed
+RUN mkdir -p /app/outputs
+RUN mkdir -p /app/inputs
+
 # Build the JARs and avoid the 'extractpdf4j-bom' module
 RUN mvn -Djavacpp.platform=${JAVACPP_PLATFORM} \
     -pl '!extractpdf4j-bom' -am clean package -DskipTests
@@ -31,6 +35,7 @@ FROM gcr.io/distroless/java17-debian12:nonroot
 WORKDIR /app
 
 COPY --from=build /app/app.jar ./app.jar
+COPY --from=build --chown=65532:65532 --chmod=777 /app/outputs ./outputs
 # Optional
 #COPY examples ./examples
 
