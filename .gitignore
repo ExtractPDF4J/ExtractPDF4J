@@ -22,6 +22,10 @@
 .classpath
 .settings/
 
+# CLI Docker image
+input-tests/
+output-tests/
+
 # --- Build outputs ---
 # Maven
 target/
