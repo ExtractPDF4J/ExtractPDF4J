@@ -253,6 +253,8 @@ List<Table> tables = new StreamParser("statement.pdf")
 
 ### Batch extraction (folder → CSV)
 
+Runnable Maven example: [`examples/batch-folder-processing`](examples/batch-folder-processing/README.md) (process all PDFs in a directory to CSV).
+
 ```java
 import com.extractpdf4j.helpers.Table;
 import com.extractpdf4j.parsers.HybridParser;
