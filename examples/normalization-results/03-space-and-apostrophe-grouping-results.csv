@@ -1,0 +1,10 @@
+row_id,field,raw_value,normalized_value,expected_value,result
+S01,amount,"1 234,56",1234.56,1234.56,PASS
+S02,amount,"1 234,56",1234.56,1234.56,PASS
+S03,amount,"1 234,56",1234.56,1234.56,PASS
+S04,amount,"1 234,56 €",1234.56,1234.56,PASS
+S05,amount,1'234.56,1234.56,1234.56,PASS
+S06,amount,1’234.56,1234.56,1234.56,PASS
+S07,amount,"1 234 567,89",1234567.89,1234567.89,PASS
+S08,amount,"−1 234,56",-1234.56,-1234.56,PASS
+S09,amount,-1'234.56,-1234.56,-1234.56,PASS

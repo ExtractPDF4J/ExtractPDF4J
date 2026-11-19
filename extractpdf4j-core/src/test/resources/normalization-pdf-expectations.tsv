@@ -1,0 +1,111 @@
+pdf	id	field	expected
+01-negative-amounts.pdf	N01	date	01 Nov 26
+01-negative-amounts.pdf	N01	amount	-1234.56
+01-negative-amounts.pdf	N02	date	02 Nov 26
+01-negative-amounts.pdf	N02	amount	-1234.56
+01-negative-amounts.pdf	N03	date	03 Nov 26
+01-negative-amounts.pdf	N03	amount	-1234.56
+01-negative-amounts.pdf	N04	date	04 Nov 26
+01-negative-amounts.pdf	N04	amount	-1234.56
+01-negative-amounts.pdf	N05	date	05 Nov 26
+01-negative-amounts.pdf	N05	amount	-1234.56
+01-negative-amounts.pdf	N06	date	06 Nov 26
+01-negative-amounts.pdf	N06	amount	-1234.56
+01-negative-amounts.pdf	N07	date	07 Nov 26
+01-negative-amounts.pdf	N07	amount	-1234.56
+01-negative-amounts.pdf	N08	date	08 Nov 26
+01-negative-amounts.pdf	N08	amount	-0.00
+01-negative-amounts.pdf	N09	date	09 Nov 26
+01-negative-amounts.pdf	N09	amount	1234.56
+02-locale-decimal-grouping.pdf	L01	amount	1234.56
+02-locale-decimal-grouping.pdf	L02	amount	1234.56
+02-locale-decimal-grouping.pdf	L03	amount	1234.56
+02-locale-decimal-grouping.pdf	L04	amount	1234.56
+02-locale-decimal-grouping.pdf	L05	amount	1234
+02-locale-decimal-grouping.pdf	L06	amount	1.234
+02-locale-decimal-grouping.pdf	L07	amount	1.234
+02-locale-decimal-grouping.pdf	L08	amount	1234
+02-locale-decimal-grouping.pdf	L09	amount	1234567.89
+02-locale-decimal-grouping.pdf	L10	amount	1234567.89
+02-locale-decimal-grouping.pdf	L11	amount	-1234.56
+03-space-and-apostrophe-grouping.pdf	S01	amount	1234.56
+03-space-and-apostrophe-grouping.pdf	S02	amount	1234.56
+03-space-and-apostrophe-grouping.pdf	S03	amount	1234.56
+03-space-and-apostrophe-grouping.pdf	S04	amount	1234.56
+03-space-and-apostrophe-grouping.pdf	S05	amount	1234.56
+03-space-and-apostrophe-grouping.pdf	S06	amount	1234.56
+03-space-and-apostrophe-grouping.pdf	S07	amount	1234567.89
+03-space-and-apostrophe-grouping.pdf	S08	amount	-1234.56
+03-space-and-apostrophe-grouping.pdf	S09	amount	-1234.56
+04-credit-cr-markers.pdf	C01	date	01 Nov 26
+04-credit-cr-markers.pdf	C01	amount	-1234.56
+04-credit-cr-markers.pdf	C02	date	02 Nov 26
+04-credit-cr-markers.pdf	C02	amount	-1234.56
+04-credit-cr-markers.pdf	C03	date	03 Nov 26
+04-credit-cr-markers.pdf	C03	amount	-1234.56
+04-credit-cr-markers.pdf	C04	date	04 Nov 26
+04-credit-cr-markers.pdf	C04	amount	-1234.56
+04-credit-cr-markers.pdf	C05	date	05 Nov 26
+04-credit-cr-markers.pdf	C05	amount	-1234.56
+04-credit-cr-markers.pdf	C06	date	06 Nov 26
+04-credit-cr-markers.pdf	C06	amount	-1234.56
+04-credit-cr-markers.pdf	C07	date	07 Nov 26
+04-credit-cr-markers.pdf	C07	amount	-1234.56
+04-credit-cr-markers.pdf	C08	date	08 Nov 26
+04-credit-cr-markers.pdf	C08	amount	-1234.56
+04-credit-cr-markers.pdf	C09	date	09 Nov 26
+04-credit-cr-markers.pdf	C09	amount	-1234.56
+04-credit-cr-markers.pdf	C10	date	10 Nov 26
+04-credit-cr-markers.pdf	C10	amount	1234.56
+04-credit-cr-markers.pdf	C11	date	11 Nov 26
+04-credit-cr-markers.pdf	C11	amount	-0.00
+05-dd-mmm-yy-dates.pdf	D01	date	01 Jan 26
+05-dd-mmm-yy-dates.pdf	D01	amount	10.00
+05-dd-mmm-yy-dates.pdf	D02	date	09 Feb 26
+05-dd-mmm-yy-dates.pdf	D02	amount	20.00
+05-dd-mmm-yy-dates.pdf	D03	date	15 Mar 26
+05-dd-mmm-yy-dates.pdf	D03	amount	30.00
+05-dd-mmm-yy-dates.pdf	D04	date	29 Feb 24
+05-dd-mmm-yy-dates.pdf	D04	amount	40.00
+05-dd-mmm-yy-dates.pdf	D05	date	29-Feb-25
+05-dd-mmm-yy-dates.pdf	D05	amount	50.00
+05-dd-mmm-yy-dates.pdf	D06	date	31-Apr-26
+05-dd-mmm-yy-dates.pdf	D06	amount	60.00
+05-dd-mmm-yy-dates.pdf	D07	date	31 Dec 99
+05-dd-mmm-yy-dates.pdf	D07	amount	70.00
+05-dd-mmm-yy-dates.pdf	D08	date	01 Jan 00
+05-dd-mmm-yy-dates.pdf	D08	amount	80.00
+05-dd-mmm-yy-dates.pdf	D09	date	31 Dec 49
+05-dd-mmm-yy-dates.pdf	D09	amount	90.00
+05-dd-mmm-yy-dates.pdf	D10	date	01 Jan 50
+05-dd-mmm-yy-dates.pdf	D10	amount	100.00
+05-dd-mmm-yy-dates.pdf	D11	date	1 May 26
+05-dd-mmm-yy-dates.pdf	D11	amount	110.00
+05-dd-mmm-yy-dates.pdf	D12	date	01 Jan 26
+05-dd-mmm-yy-dates.pdf	D12	amount	120.00
+05-dd-mmm-yy-dates.pdf	D13	date	01 Jan 26
+05-dd-mmm-yy-dates.pdf	D13	amount	130.00
+06-mixed-statement.pdf	M01	date	01 Jan 26
+06-mixed-statement.pdf	M01	amount	1234.56
+06-mixed-statement.pdf	M02	date	02 Jan 26
+06-mixed-statement.pdf	M02	amount	-123.45
+06-mixed-statement.pdf	M03	date	03 Jan 26
+06-mixed-statement.pdf	M03	amount	1234.56
+06-mixed-statement.pdf	M04	date	04 Jan 26
+06-mixed-statement.pdf	M04	amount	-123.45
+06-mixed-statement.pdf	M05	date	05 Jan 26
+06-mixed-statement.pdf	M05	amount	1234.56
+06-mixed-statement.pdf	M06	date	06 Jan 26
+06-mixed-statement.pdf	M06	amount	-123.45
+06-mixed-statement.pdf	M07	date	07 Jan 26
+06-mixed-statement.pdf	M07	amount	1234.56
+06-mixed-statement.pdf	M08	date	08 Jan 26
+06-mixed-statement.pdf	M08	amount	-123.45
+06-mixed-statement.pdf	M09	date	09 Jan 26
+06-mixed-statement.pdf	M09	amount	-123.45
+06-mixed-statement.pdf	M10	date	10 Jan 26
+06-mixed-statement.pdf	M10	amount	-123.45
+06-mixed-statement.pdf	M11	date	29 Feb 24
+06-mixed-statement.pdf	M11	amount	-123.45
+06-mixed-statement.pdf	M12	date	31-Apr-26
+06-mixed-statement.pdf	M12	amount	0.00

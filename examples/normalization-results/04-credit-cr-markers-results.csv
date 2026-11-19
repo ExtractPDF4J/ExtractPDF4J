@@ -1,0 +1,23 @@
+row_id,field,raw_value,normalized_value,expected_value,result
+C01,date,01-Nov-26,01 Nov 26,01 Nov 26,PASS
+C01,amount,"1,234.56 CR",-1234.56,-1234.56,PASS
+C02,date,02-Nov-26,02 Nov 26,02 Nov 26,PASS
+C02,amount,"1,234.56CR",-1234.56,-1234.56,PASS
+C03,date,03-Nov-26,03 Nov 26,03 Nov 26,PASS
+C03,amount,"1,234.56 cr",-1234.56,-1234.56,PASS
+C04,date,04-Nov-26,04 Nov 26,04 Nov 26,PASS
+C04,amount,"1,234.56 Cr",-1234.56,-1234.56,PASS
+C05,date,05-Nov-26,05 Nov 26,05 Nov 26,PASS
+C05,amount,"CR 1,234.56",-1234.56,-1234.56,PASS
+C06,date,06-Nov-26,06 Nov 26,06 Nov 26,PASS
+C06,amount,"$1,234.56 CR",-1234.56,-1234.56,PASS
+C07,date,07-Nov-26,07 Nov 26,07 Nov 26,PASS
+C07,amount,"1.234,56 CR",-1234.56,-1234.56,PASS
+C08,date,08-Nov-26,08 Nov 26,08 Nov 26,PASS
+C08,amount,"-1,234.56 CR",-1234.56,-1234.56,PASS
+C09,date,09-Nov-26,09 Nov 26,09 Nov 26,PASS
+C09,amount,"(1,234.56) CR",-1234.56,-1234.56,PASS
+C10,date,10-Nov-26,10 Nov 26,10 Nov 26,PASS
+C10,amount,"1,234.56",1234.56,1234.56,PASS
+C11,date,11-Nov-26,11 Nov 26,11 Nov 26,PASS
+C11,amount,0.00 CR,-0.00,-0.00,PASS
