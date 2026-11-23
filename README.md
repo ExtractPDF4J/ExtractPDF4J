@@ -4,13 +4,15 @@
 <br />
 
 <p align="center">
-  <a href="https://extractpdf4j.github.io/ExtractPDF4J/">
+  <a href="https://extractpdf4j.github.io/ExtractPDF4J/apidocs/index.html">
     <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="./docs/images/extractpdf4j-banner-dark.png">
+      <source media="(prefers-reduced-motion: reduce) and (prefers-color-scheme: dark)" srcset="./docs/images/extractpdf4j-banner-dark.png">
+      <source media="(prefers-reduced-motion: reduce)" srcset="./docs/images/extractpdf4j-banner-light.png">
+      <source media="(prefers-color-scheme: dark)" srcset="./docs/images/extractpdf4j-banner-dark-motion.gif">
       <img
-        alt="ExtractPDF4J - Java-native PDF table extraction for real-world documents"
-        width="900"
-        src="./docs/images/extractpdf4j-banner-light.png"
+        alt="Open the ExtractPDF4J Java API documentation. Animated banner: A ₹10,000 ATM withdrawal from a synthetic PDF appears in the Debit column of the exported CSV."
+        width="100%"
+        src="./docs/images/extractpdf4j-banner-light-motion.gif"
       />
     </picture>
   </a>
@@ -18,6 +20,8 @@
 
 <p align="center">
   <a href="https://extractpdf4j.github.io/ExtractPDF4J/" target="_blank">→ extractpdf4j.github.io/ExtractPDF4J ←</a>
+  ·
+  <a href="./docs/images/extractpdf4j-banner-motion.mp4">Watch the banner video</a>
 </p>
 
 <p align="center">
@@ -62,6 +66,10 @@
 
 A production-focused **Java** library for extracting **tables** and structured data from PDFs.
 Extract tables from scanned/image PDFs in Java using OCR + table structure detection.
+
+**Scroll down for [all four parsing demos](#try-it-pdf-to-csv-in-four-parsing-modes).**
+
+If ExtractPDF4J saves you time, [give it a star](https://github.com/ExtractPDF4J/ExtractPDF4J) to help other Java developers find it. Found a bug or have an idea? [Open an issue](https://github.com/ExtractPDF4J/ExtractPDF4J/issues/new/choose). Want to contribute? [Fork the repo](https://github.com/ExtractPDF4J/ExtractPDF4J/fork) and follow the [contributing guide](CONTRIBUTING.md).
 
 ## Try it: PDF to CSV in four parsing modes
 
@@ -130,8 +138,6 @@ java -jar extractpdf4j-cli.jar \
   examples/synthetic-bank-statement/synthetic_bank_statement_text.pdf \
   --mode HYBRID --pages all --out hybrid.csv
 ```
-
-If ExtractPDF4J saves you time, [give it a star on GitHub](https://github.com/ExtractPDF4J/ExtractPDF4J). It helps other Java developers find the project.
 
 ## Java quickstart
 
