@@ -10,7 +10,11 @@ import org.bytedeco.opencv.opencv_core.Size;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.text.DecimalFormatSymbols;
+import java.time.DateTimeException;
+import java.time.LocalDate;
 import java.util.*;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -347,9 +351,10 @@ public class OcrStreamParser extends BaseParser {
     }
 
     private static boolean isLikelyNumeric(String s){
-        if (s == null) return false;
-        String t = s.trim().toUpperCase(Locale.ROOT).replace("CR","");
-        return NUM_LIKE.matcher(t).matches();
+        if (s == null || !NUM_LIKE.matcher(s).matches()) return false;
+        Matcher signs = AMOUNT_SIGN.matcher(s);
+        if (signs.find() && signs.find()) return false;
+        return !hasConflictingCurrencies(s);
     }
 
     // ---------- Fallback separator inference ----------
@@ -394,12 +399,41 @@ public class OcrStreamParser extends BaseParser {
         return Math.max(0, bounds.size()-2);
     }
 
-    private static final Pattern NUM_LIKE  = Pattern.compile("^[\\s\\$\\-\\.,0-9CR]+$", Pattern.CASE_INSENSITIVE);
-    private static final Pattern DATE_LIKE = Pattern.compile("^\\d{1,2}\\s?[A-Za-z]{3}(?:\\s?\\d{2,4})?$");
+    // Grouping marks must separate groups of three. Decimal dots/commas may follow
+    // grouping, while horizontal whitespace includes NBSP and narrow NBSP.
+    private static final String NUMBER = "(?:[0-9]{1,3}(?:,[0-9]{3})+(?:\\.[0-9]+)?"
+            + "|[0-9]{1,2}(?:,[0-9]{2})+,[0-9]{3}(?:\\.[0-9]+)?"
+            + "|[0-9]{1,3}(?:\\.[0-9]{3})+(?:,[0-9]+)?"
+            + "|[0-9]{1,3}(?:(?:\\h+|['\u2019])[0-9]{3})+(?:[.,][0-9]+)?"
+            + "|[0-9]+(?:[.,][0-9]+)?|[.,][0-9]+)";
+    private static final Pattern NUMBER_TOKEN = Pattern.compile(NUMBER);
+    private static final String CURRENCY_CODES = Currency.getAvailableCurrencies().stream()
+            .map(Currency::getCurrencyCode).sorted().collect(Collectors.joining("|"));
+    private static final String CURRENCY = "(?:US\\$|CA\\$|C\\$|AU\\$|A\\$|NZ\\$|HK\\$|SG\\$|S\\$|R\\$|\\p{Sc}|"
+            + CURRENCY_CODES + ")";
+    private static final Pattern CURRENCY_TOKEN = Pattern.compile(CURRENCY, Pattern.CASE_INSENSITIVE);
+    private static final String SIGN = "[+\\-\u2212\uff0d]";
+    private static final Pattern AMOUNT_SIGN = Pattern.compile(SIGN);
+    // A sign may surround the currency or number. isLikelyNumeric rejects multiple signs.
+    private static final String AMOUNT = "(?:" + SIGN + "\\h*)?(?:" + CURRENCY + "\\h*)?"
+            + "(?:" + SIGN + "\\h*)?" + NUMBER + "(?:\\h*" + SIGN + ")?"
+            + "(?:\\h*" + CURRENCY + ")?(?:\\h*" + SIGN + ")?";
+    private static final Pattern NUM_LIKE = Pattern.compile(
+            "^\\h*(?<creditPrefix>CR\\h*)?(?<value>(?:(?:" + SIGN + "\\h*)?(?:" + CURRENCY + "\\h*)?"
+                    + "\\(\\h*" + AMOUNT + "\\h*\\)(?:\\h*" + CURRENCY + ")?"
+                    + "(?:\\h*" + SIGN + ")?|" + AMOUNT + "))\\h*(?<creditSuffix>CR)?\\h*$",
+            Pattern.CASE_INSENSITIVE);
+    private static final Set<Locale> SOURCE_LOCALES = Set.copyOf(Arrays.asList(Locale.getAvailableLocales()));
+    private static final String MONTHS = "Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec";
+    private static final Pattern DATE_LIKE = Pattern.compile(
+            "^\\h*([0-9]{1,2})(?:\\h*-\\h*|\\h*)(" + MONTHS + ")"
+                    + "(?:(?:\\h*-\\h*|\\h*)([0-9]{4}|[0-9]{2}))?\\h*$",
+            Pattern.CASE_INSENSITIVE);
 
     private static void normalizeNumericLikeColumns(List<List<String>> grid) {
         if (grid.isEmpty()) return;
         int cols = grid.get(0).size();
+        int localeColumn = sourceLocaleColumn(grid.get(0));
         for (int c=0;c<cols;c++){
             int numish=0, dateish=0, nonempty=0;
             for (var row : grid) {
@@ -407,15 +441,15 @@ public class OcrStreamParser extends BaseParser {
                 String s = row.get(c);
                 if (s==null || s.isBlank()) continue;
                 nonempty++;
-                String t = s.replace("CR","").trim();
-                if (NUM_LIKE.matcher(t).matches()) numish++;
-                else if (DATE_LIKE.matcher(s.trim()).matches()) dateish++;
+                if (isLikelyNumeric(s)) numish++;
+                else if (DATE_LIKE.matcher(s).matches()) dateish++;
             }
             if (nonempty==0) continue;
 
             double pNum = (double)numish/nonempty, pDate = (double)dateish/nonempty;
             if (pNum >= 0.6) {
-                for (var row : grid) if (c < row.size()) row.set(c, normalizeAmount(row.get(c)));
+                for (var row : grid) if (c < row.size() && isLikelyNumeric(row.get(c)))
+                    row.set(c, normalizeAmount(row.get(c), sourceLocale(row, localeColumn)));
             } else if (pDate >= 0.6) {
                 for (var row : grid) if (c < row.size()) row.set(c, normalizeDate(row.get(c)));
             }
@@ -423,17 +457,135 @@ public class OcrStreamParser extends BaseParser {
     }
 
     private static String normalizeAmount(String s) {
-        if (s == null) return "";
-        s = s.replaceAll("[\\s]+","").toUpperCase(Locale.ROOT);
-        s = s.replace('O','0').replace('I','1').replace('L','1').replace('S','5');
-        s = s.replaceAll("(?<=\\d),(?=\\d{3}\\b)", ",");
-        s = s.replaceAll("(\\d),(\\d{2})$", ".$2");
-        return s;
+        return normalizeAmount(s, null);
+    }
+
+    /** Source locale describes the original text; normalization runs once per extracted grid. */
+    private static String normalizeAmount(String s, Locale sourceLocale) {
+        if (s == null || s.replaceAll("\\h", "").isBlank()) return "";
+        if (!isLikelyNumeric(s)) return s;
+        Matcher number = NUMBER_TOKEN.matcher(s);
+        if (!number.find()) return s;
+        String value = number.group().replaceAll("[\\h'\u2019]", "");
+        int comma = value.lastIndexOf(',');
+        int dot = value.lastIndexOf('.');
+        if (comma >= 0 && dot >= 0) {
+            // With both marks present, the rightmost one is the decimal separator.
+            value = comma > dot ? value.replace(".", "").replace(',', '.')
+                    : value.replace(",", "");
+        } else if (comma >= 0 || dot >= 0) {
+            int separator = Math.max(comma, dot);
+            char mark = value.charAt(separator);
+            if (value.indexOf(mark) != separator) {
+                value = value.replace(String.valueOf(mark), "");
+            } else if (value.length() - separator - 1 == 3 && separator > 0 && separator <= 3) {
+                if (sourceLocale != null) {
+                    DecimalFormatSymbols symbols = DecimalFormatSymbols.getInstance(sourceLocale);
+                    if (mark == symbols.getDecimalSeparator()) value = value.replace(',', '.');
+                    else if (mark == symbols.getGroupingSeparator()) value = value.replace(String.valueOf(mark), "");
+                    else return s;
+                } else {
+                    Character decimal = currencyDecimalSeparator(s);
+                    if (decimal == null) return s;
+                    value = mark == decimal ? value.replace(',', '.')
+                            : value.replace(String.valueOf(mark), "");
+                }
+            } else {
+                value = value.replace(',', '.');
+            }
+        }
+        if (value.startsWith(".")) value = "0" + value;
+        Matcher amount = NUM_LIKE.matcher(s);
+        if (!amount.matches()) return s;
+        boolean negative = s.indexOf('-') >= 0 || s.indexOf('\u2212') >= 0 || s.indexOf('\uff0d') >= 0
+                || s.indexOf('(') >= 0 || amount.group("creditPrefix") != null || amount.group("creditSuffix") != null;
+        return negative ? "-" + value : value;
+    }
+
+    private static int sourceLocaleColumn(List<String> header) {
+        int column = -1;
+        for (int c = 0; c < header.size(); c++) {
+            if (header.get(c) != null && header.get(c).strip().equalsIgnoreCase("Locale")) {
+                if (column != -1) return -1;
+                column = c;
+            }
+        }
+        return column;
+    }
+
+    private static Locale sourceLocale(List<String> row, int column) {
+        if (column < 0 || column >= row.size() || row.get(column) == null) return null;
+        String tag = row.get(column).strip();
+        if (!tag.matches("(?i)[a-z]{2,3}[-_][a-z]{2}")) return null;
+        Locale locale = Locale.forLanguageTag(tag.replace('_', '-'));
+        return SOURCE_LOCALES.contains(locale) ? locale : null;
+    }
+
+    private static Set<String> amountCurrencies(String s) {
+        Set<String> currencies = new HashSet<>();
+        Matcher amount = NUM_LIKE.matcher(s);
+        if (!amount.matches()) return currencies;
+        Matcher tokens = CURRENCY_TOKEN.matcher(amount.group("value"));
+        while (tokens.find()) {
+            String currency = switch (tokens.group().toUpperCase(Locale.ROOT)) {
+                case "R$" -> "BRL";
+                case "US$" -> "USD";
+                case "CA$", "C$" -> "CAD";
+                case "AU$", "A$" -> "AUD";
+                case "NZ$" -> "NZD";
+                case "HK$" -> "HKD";
+                case "SG$", "S$" -> "SGD";
+                case "\u20ac" -> "EUR";
+                case "\u00a3" -> "GBP";
+                case "\u20b9" -> "INR";
+                case "\u20bd" -> "RUB";
+                case "\u20a9" -> "KRW";
+                default -> tokens.group().toUpperCase(Locale.ROOT);
+            };
+            currencies.add(currency);
+        }
+        if (!Collections.disjoint(currencies, Set.of("USD", "CAD", "AUD", "NZD", "HKD", "SGD")))
+            currencies.remove("$");
+        if (currencies.contains("JPY") || currencies.contains("CNY")) currencies.remove("\u00a5");
+        return currencies;
+    }
+
+    private static boolean hasConflictingCurrencies(String s) {
+        return amountCurrencies(s).size() > 1;
+    }
+
+    /**
+     * Currency-specific formatting conventions are hints, not language detection.
+     * Bare dollar/euro symbols, CHF, and conflicting hints remain ambiguous.
+     * Apply these defaults only when the number itself is otherwise ambiguous.
+     */
+    private static Character currencyDecimalSeparator(String s) {
+        Set<String> currencies = amountCurrencies(s);
+        if (currencies.size() != 1) return null;
+        return switch (currencies.iterator().next()) {
+            case "BRL" -> ',';
+            case "USD", "GBP" -> '.';
+            default -> null;
+        };
     }
 
     private static String normalizeDate(String s) {
         if (s == null) return "";
-        s = s.replaceAll("\\s+"," ").trim();
-        return s.replaceAll("^(\\d{1,2})([A-Za-z]{3})(\\b)", "$1 $2");
+        Matcher date = DATE_LIKE.matcher(s);
+        if (!date.matches()) return s;
+        String month = date.group(2).toLowerCase(Locale.ROOT);
+        int monthNumber = Arrays.asList(MONTHS.toLowerCase(Locale.ROOT).split("\\|"))
+                .indexOf(month) + 1;
+        String year = date.group(3);
+        // Validate without expanding two-digit years in the returned value.
+        int validationYear = year == null ? 2000 : Integer.parseInt(year);
+        if (year != null && year.length() == 2) validationYear += 2000;
+        try {
+            LocalDate.of(validationYear, monthNumber, Integer.parseInt(date.group(1)));
+        } catch (DateTimeException e) {
+            return s;
+        }
+        month = month.substring(0, 1).toUpperCase(Locale.ROOT) + month.substring(1);
+        return date.group(1) + " " + month + (year == null ? "" : " " + year);
     }
 }

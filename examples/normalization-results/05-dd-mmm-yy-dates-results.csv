@@ -1,0 +1,27 @@
+row_id,field,raw_value,normalized_value,expected_value,result
+D01,date,01-Jan-26,01 Jan 26,01 Jan 26,PASS
+D01,amount,10.00,10.00,10.00,PASS
+D02,date,09-feb-26,09 Feb 26,09 Feb 26,PASS
+D02,amount,20.00,20.00,20.00,PASS
+D03,date,15-MAR-26,15 Mar 26,15 Mar 26,PASS
+D03,amount,30.00,30.00,30.00,PASS
+D04,date,29-Feb-24,29 Feb 24,29 Feb 24,PASS
+D04,amount,40.00,40.00,40.00,PASS
+D05,date,29-Feb-25,29-Feb-25,29-Feb-25,PASS
+D05,amount,50.00,50.00,50.00,PASS
+D06,date,31-Apr-26,31-Apr-26,31-Apr-26,PASS
+D06,amount,60.00,60.00,60.00,PASS
+D07,date,31-Dec-99,31 Dec 99,31 Dec 99,PASS
+D07,amount,70.00,70.00,70.00,PASS
+D08,date,01-Jan-00,01 Jan 00,01 Jan 00,PASS
+D08,amount,80.00,80.00,80.00,PASS
+D09,date,31-Dec-49,31 Dec 49,31 Dec 49,PASS
+D09,amount,90.00,90.00,90.00,PASS
+D10,date,01-Jan-50,01 Jan 50,01 Jan 50,PASS
+D10,amount,100.00,100.00,100.00,PASS
+D11,date,1-May-26,1 May 26,1 May 26,PASS
+D11,amount,110.00,110.00,110.00,PASS
+D12,date,01 Jan 26,01 Jan 26,01 Jan 26,PASS
+D12,amount,120.00,120.00,120.00,PASS
+D13,date,01Jan26,01 Jan 26,01 Jan 26,PASS
+D13,amount,130.00,130.00,130.00,PASS

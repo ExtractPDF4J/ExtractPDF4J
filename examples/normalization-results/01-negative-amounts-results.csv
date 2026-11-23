@@ -1,0 +1,19 @@
+row_id,field,raw_value,normalized_value,expected_value,result
+N01,date,01-Nov-26,01 Nov 26,01 Nov 26,PASS
+N01,amount,"-1,234.56",-1234.56,-1234.56,PASS
+N02,date,02-Nov-26,02 Nov 26,02 Nov 26,PASS
+N02,amount,"(1,234.56)",-1234.56,-1234.56,PASS
+N03,date,03-Nov-26,03 Nov 26,03 Nov 26,PASS
+N03,amount,"1,234.56-",-1234.56,-1234.56,PASS
+N04,date,04-Nov-26,04 Nov 26,04 Nov 26,PASS
+N04,amount,"−1,234.56",-1234.56,-1234.56,PASS
+N05,date,05-Nov-26,05 Nov 26,05 Nov 26,PASS
+N05,amount,"$-1,234.56",-1234.56,-1234.56,PASS
+N06,date,06-Nov-26,06 Nov 26,06 Nov 26,PASS
+N06,amount,"-$1,234.56",-1234.56,-1234.56,PASS
+N07,date,07-Nov-26,07 Nov 26,07 Nov 26,PASS
+N07,amount,"($1,234.56)",-1234.56,-1234.56,PASS
+N08,date,08-Nov-26,08 Nov 26,08 Nov 26,PASS
+N08,amount,-0.00,-0.00,-0.00,PASS
+N09,date,09-Nov-26,09 Nov 26,09 Nov 26,PASS
+N09,amount,"1,234.56",1234.56,1234.56,PASS

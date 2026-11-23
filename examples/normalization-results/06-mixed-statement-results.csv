@@ -1,0 +1,25 @@
+row_id,field,raw_value,normalized_value,expected_value,result
+M01,date,01-Jan-26,01 Jan 26,01 Jan 26,PASS
+M01,amount,"1,234.56",1234.56,1234.56,PASS
+M02,date,02-Jan-26,02 Jan 26,02 Jan 26,PASS
+M02,amount,(123.45),-123.45,-123.45,PASS
+M03,date,03-Jan-26,03 Jan 26,03 Jan 26,PASS
+M03,amount,"1.234,56",1234.56,1234.56,PASS
+M04,date,04-Jan-26,04 Jan 26,04 Jan 26,PASS
+M04,amount,"123,45 CR",-123.45,-123.45,PASS
+M05,date,05-jan-26,05 Jan 26,05 Jan 26,PASS
+M05,amount,"1 234,56 €",1234.56,1234.56,PASS
+M06,date,06-JAN-26,06 Jan 26,06 Jan 26,PASS
+M06,amount,"−123,45 €",-123.45,-123.45,PASS
+M07,date,07-Jan-26,07 Jan 26,07 Jan 26,PASS
+M07,amount,CHF 1'234.56,1234.56,1234.56,PASS
+M08,date,08-Jan-26,08 Jan 26,08 Jan 26,PASS
+M08,amount,123.45 cr,-123.45,-123.45,PASS
+M09,date,09-Jan-26,09 Jan 26,09 Jan 26,PASS
+M09,amount,"R$ -123,45",-123.45,-123.45,PASS
+M10,date,10-Jan-26,10 Jan 26,10 Jan 26,PASS
+M10,amount,123.45-,-123.45,-123.45,PASS
+M11,date,29-Feb-24,29 Feb 24,29 Feb 24,PASS
+M11,amount,$123.45CR,-123.45,-123.45,PASS
+M12,date,31-Apr-26,31-Apr-26,31-Apr-26,PASS
+M12,amount,"0,00",0.00,0.00,PASS
