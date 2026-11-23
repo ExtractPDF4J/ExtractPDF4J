@@ -4,8 +4,6 @@ This page covers dependencies, runtime requirements, and native setup notes for 
 
 ---
 
-The examples use 2.3.0. Use 2.2.0 for published dependencies until 2.3.0 is available on Maven Central.
-
 # Requirements
 
 - **Java:** 17+

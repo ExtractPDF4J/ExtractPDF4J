@@ -124,7 +124,7 @@ The copy/paste quick start is at the top of this README under the project descri
 
 ## Install (Maven + Gradle)
 
-The examples below use ExtractPDF4J 2.3.0. Until 2.3.0 is published to Maven Central, use 2.2.0 for Maven or Gradle dependencies. See [what’s new in 2.3.0](CHANGELOG.md#230).
+The Maven and Gradle examples below use ExtractPDF4J 2.3.0. See the [v2.3.0 release notes](https://github.com/ExtractPDF4J/ExtractPDF4J/releases/tag/v2.3.0) for CLI JSON export, the dedicated CLI Docker image, and improvements to statement parsing and OCR normalization.
 
 ### **Maven**
 
