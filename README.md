@@ -67,6 +67,10 @@
 A production-focused **Java** library for extracting **tables** and structured data from PDFs.
 Extract tables from scanned/image PDFs in Java using OCR + table structure detection.
 
+**Scroll down for [all four parsing demos](#try-it-pdf-to-csv-in-four-parsing-modes).**
+
+If ExtractPDF4J saves you time, [give it a star](https://github.com/ExtractPDF4J/ExtractPDF4J) to help other Java developers find it. Found a bug or have an idea? [Open an issue](https://github.com/ExtractPDF4J/ExtractPDF4J/issues/new/choose). Want to contribute? [Fork the repo](https://github.com/ExtractPDF4J/ExtractPDF4J/fork) and follow the [contributing guide](CONTRIBUTING.md).
+
 ## Try it: PDF to CSV in four parsing modes
 
 Watch each mode run on a synthetic PDF and compare the generated CSV with the sample. [STREAM](#stream) · [LATTICE](#lattice) · [OCRSTREAM](#ocrstream) · [HYBRID](#hybrid)
@@ -134,8 +138,6 @@ java -jar extractpdf4j-cli.jar \
   examples/synthetic-bank-statement/synthetic_bank_statement_text.pdf \
   --mode HYBRID --pages all --out hybrid.csv
 ```
-
-If ExtractPDF4J saves you time, [give it a star on GitHub](https://github.com/ExtractPDF4J/ExtractPDF4J). It helps other Java developers find the project.
 
 ## Java quickstart
 
