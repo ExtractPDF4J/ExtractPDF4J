@@ -4,13 +4,13 @@
 <br />
 
 <p align="center">
-  <a href="https://extractpdf4j.github.io/ExtractPDF4J/apidocs/index.html">
+  <a href="https://extractpdf4j.github.io/ExtractPDF4J/">
     <picture>
       <source media="(prefers-reduced-motion: reduce) and (prefers-color-scheme: dark)" srcset="./docs/images/extractpdf4j-banner-dark.png">
       <source media="(prefers-reduced-motion: reduce)" srcset="./docs/images/extractpdf4j-banner-light.png">
       <source media="(prefers-color-scheme: dark)" srcset="./docs/images/extractpdf4j-banner-dark-motion.gif">
       <img
-        alt="Open the ExtractPDF4J Java API documentation. Animated banner: A ₹10,000 ATM withdrawal from a synthetic PDF appears in the Debit column of the exported CSV, followed by a comparison of ExtractPDF4J, Tabula Java, Apache PDFBox, and Aspose.PDF for Java."
+        alt="Open the ExtractPDF4J website. Animated banner: A ₹10,000 ATM withdrawal from a synthetic PDF appears in the Debit column of the exported CSV, followed by a comparison of ExtractPDF4J, Tabula Java, Apache PDFBox, and Aspose.PDF for Java."
         width="100%"
         src="./docs/images/extractpdf4j-banner-light-motion.gif"
       />

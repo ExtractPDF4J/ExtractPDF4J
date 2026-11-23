@@ -39,6 +39,9 @@ markdown_extensions:
   - pymdownx.inlinehilite
   - pymdownx.snippets
 
+extra_css:
+  - stylesheets/demo-home.css
+
 extra:
   social:
     - icon: fontawesome/brands/github

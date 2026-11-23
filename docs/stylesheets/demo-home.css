@@ -1,0 +1,68 @@
+.extract-home .extract-hero {
+  margin: 1.2rem 0 2rem;
+  padding: clamp(.65rem, 2vw, 1.25rem);
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 1rem;
+  background: linear-gradient(145deg, var(--md-code-bg-color), var(--md-default-bg-color) 65%);
+}
+
+.extract-home .extract-hero video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 1;
+  border-radius: .65rem;
+  background: #122038;
+}
+
+.extract-home .extract-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: .85rem 0 0;
+}
+
+.extract-home .extract-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  gap: .85rem;
+  margin: 1rem 0 2rem;
+}
+
+.extract-home .extract-demo {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: .75rem;
+  background: var(--md-default-bg-color);
+}
+
+.extract-home .extract-demo img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1440 / 530;
+  background: #122038;
+}
+
+.extract-home .extract-demo-body {
+  padding: .7rem .9rem .85rem;
+}
+
+.extract-home .extract-demo h3 {
+  margin: 0 0 .2rem;
+  font-weight: 700;
+}
+
+.extract-home .extract-demo p {
+  margin: 0 0 .45rem;
+}
+
+.extract-home .extract-demo .extract-media-link {
+  margin: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .extract-home .extract-demo img {
+    display: none;
+  }
+}

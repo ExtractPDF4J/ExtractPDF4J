@@ -1,43 +1,85 @@
 # ExtractPDF4J
 
-**Java-native PDF table extraction for text-based, scanned, and image-heavy documents.**
+Extract tables from selectable text, ruled grids, and scanned PDFs in Java. Export the results to CSV or JSON, or work with the rows directly in your application.
 
-ExtractPDF4J is a production-focused Java library for extracting **tables** and structured data from PDFs in real-world conditions.
+<div class="extract-home">
+  <div class="extract-hero">
+    <video controls playsinline preload="none" poster="images/extractpdf4j-banner-light.png" aria-label="ExtractPDF4J PDF-to-CSV walkthrough and Java tool comparison">
+      <source src="images/extractpdf4j-banner-motion.mp4" type="video/mp4">
+      <a href="images/extractpdf4j-banner-motion.mp4">Download the banner video</a>
+    </video>
+    <div class="extract-actions">
+      <a class="md-button md-button--primary" href="#watch-the-four-parsing-demos">Watch the parsing demos</a>
+      <a class="md-button" href="getting-started/">Get started</a>
+      <a class="md-button" href="apidocs/index.html">Java API docs</a>
+    </div>
+  </div>
+</div>
 
-It is designed for documents where extraction often becomes unreliable in practice:
+## Watch the four parsing demos
 
-- text-based PDFs with inconsistent layout
-- scanned PDFs with no usable text layer
-- ruled and borderless tables
-- mixed multi-page documents
-- OCR-heavy operational files
+Each demo shows the source PDF, the CLI command, and rows from the generated CSV. [Get the sample PDFs, expected CSVs, and commands on GitHub](https://github.com/ExtractPDF4J/ExtractPDF4J/tree/main/examples/parsing-modes).
 
-Whether you are processing invoices, statements, reports, forms, or internal business documents, ExtractPDF4J gives you multiple parsing strategies under one Java-first API.
+<div class="extract-home">
+  <div class="extract-gallery">
+    <article class="extract-demo">
+      <a href="images/statement-to-csv-demo.gif"><img src="images/statement-to-csv-demo.gif" width="1440" height="530" loading="lazy" alt="STREAM exports the text-based bank statement into two CSVs"></a>
+      <div class="extract-demo-body">
+        <h3>STREAM</h3>
+        <p>Group selectable text into columns. The two-page example exports 29 transactions.</p>
+        <p class="extract-media-link"><a href="images/statement-to-csv-demo.gif">Open animation</a> · <a href="how-it-works/stream/">How STREAM works</a></p>
+      </div>
+    </article>
+    <article class="extract-demo">
+      <a href="images/lattice-parsing-demo.gif"><img src="images/lattice-parsing-demo.gif" width="1440" height="530" loading="lazy" alt="LATTICE extracts four columns from a ruled invoice"></a>
+      <div class="extract-demo-body">
+        <h3>LATTICE</h3>
+        <p>Follow visible grid lines to recover the cells of an invoice table.</p>
+        <p class="extract-media-link"><a href="images/lattice-parsing-demo.gif">Open animation</a> · <a href="how-it-works/lattice/">How LATTICE works</a></p>
+      </div>
+    </article>
+    <article class="extract-demo">
+      <a href="images/ocrstream-parsing-demo.gif"><img src="images/ocrstream-parsing-demo.gif" width="1440" height="530" loading="lazy" alt="OCRSTREAM reads five transactions from an image-only statement"></a>
+      <div class="extract-demo-body">
+        <h3>OCRSTREAM</h3>
+        <p>Use Tesseract to recognize text and recover columns from an image-only PDF.</p>
+        <p class="extract-media-link"><a href="images/ocrstream-parsing-demo.gif">Open animation</a> · <a href="how-it-works/ocr-stream/">How OCRSTREAM works</a></p>
+      </div>
+    </article>
+    <article class="extract-demo">
+      <a href="images/hybrid-parsing-demo.gif"><img src="images/hybrid-parsing-demo.gif" width="1440" height="530" loading="lazy" alt="HYBRID exports the same verified bank statement transactions as STREAM"></a>
+      <div class="extract-demo-body">
+        <h3>HYBRID</h3>
+        <p>Compare extraction strategies when you are unsure how the PDF represents its table.</p>
+        <p class="extract-media-link"><a href="images/hybrid-parsing-demo.gif">Open animation</a> · <a href="how-it-works/hybrid/">How HYBRID works</a></p>
+      </div>
+    </article>
+  </div>
+</div>
 
-## Why ExtractPDF4J?
+## Compare Java PDF tools
 
-PDF table extraction is not one problem — it is a family of problems.
+- **ExtractPDF4J** extracts structured tables from text-based and scanned PDFs using stream, lattice, OCR stream, and hybrid modes.
+- **Tabula Java** extracts tables from text-based PDFs using stream and lattice modes. [Tabula Java CLI and API](https://github.com/tabulapdf/tabula-java)
+- **Apache PDFBox** creates, edits, renders, and extracts text from PDFs. ExtractPDF4J uses it for PDF processing. [PDFBox features](https://pdfbox.apache.org/) · [Command-line tools](https://pdfbox.apache.org/3.0/commandline.html)
+- **Aspose.PDF for Java** creates and edits PDFs and exposes table rows and cells through its `TableAbsorber` API. [Aspose.PDF for Java](https://docs.aspose.com/pdf/java/) · [Table extraction example](https://docs.aspose.com/pdf/java/extract-data-from-table-in-pdf/)
 
-A single parser often works for ideal documents but fails when:
+✓ means the named tool provides the feature directly. ✗ means the feature requires other tooling or custom code.
 
-- one PDF is text-based and the next is scanned
-- some tables are ruled while others are spacing-based
-- rows wrap across lines
-- headers drift between document versions
-- OCR quality changes across scans
+| Capability | ExtractPDF4J | Tabula Java | Apache PDFBox | Aspose.PDF for Java |
+| --- | :---: | :---: | :---: | :---: |
+| Table extraction API | ✓ | ✓ | ✗ | ✓ |
+| OCR to tables in one workflow | ✓ | ✗ | ✗ | ✗ |
+| CLI exports tables to both CSV and JSON | ✓ | ✓ | ✗ | ✗ |
+| General-purpose PDF creation and editing | ✗ | ✗ | ✓ | ✓ |
 
-ExtractPDF4J addresses this by providing multiple extraction modes built for different layout types:
+For image-only pages, Tabula requires a text layer from an OCR tool. PDFBox can render pages for an external OCR engine, and Aspose provides PDF recognition through a separate Aspose.OCR product. [Tabula scan guidance](https://github.com/tabulapdf/tabula#using-tabula) · [PDFBox rendering](https://pdfbox.apache.org/3.0/commandline.html) · [Aspose.OCR for Java](https://docs.aspose.com/ocr/java/recognition/)
 
-- **StreamParser** for text-based PDFs
-- **LatticeParser** for ruled and grid-based tables
-- **OcrStreamParser** for OCR-backed recovery
-- **HybridParser** for mixed or uncertain input
+[Try the ExtractPDF4J parsing demos](#watch-the-four-parsing-demos) to see the sample inputs and generated outputs.
 
-This gives you a more practical and production-ready extraction toolkit than a single-strategy approach.
+## Use the Java API
 
-## Quick example
-
-Start with `HybridParser` if you want the safest default for mixed or unknown PDFs.
+Start with `HybridParser` when the layout is mixed or unknown.
 
 ```java
 import com.extractpdf4j.helpers.Table;
@@ -59,119 +101,8 @@ public class QuickStart {
 }
 ```
 
-This is a strong first choice because `HybridParser` can help when your input varies across files or pages.
+See the [Java quickstart](quickstart.md), [installation guide](installation.md), or [CLI reference](cli.md) to run your first extraction.
 
-## What problem it solves
+## Contribute
 
-Use ExtractPDF4J when you need to:
-
-- extract tables from invoices and statements
-- convert PDF tables into CSV for downstream processing
-- process scanned operational documents
-- reduce manual retyping of tabular data
-- build Java applications that ingest structured PDF content
-- support mixed text and scanned document pipelines
-
-## Key strengths
-
-- **Java-first API** for application integration
-- **Multiple parser strategies** for different PDF layouts
-- **Scanned PDF support** through OCR-backed extraction
-- **CLI support** for one-off runs and batch workflows
-- **Debug-friendly tuning** for real production troubleshooting
-- **Docker-friendly service integration** for API-style deployment
-- **Consistent `List<Table>` output model** across parser modes
-
-## Choose your path
-
-### New to the project?
-Start with:
-
-- [Getting Started](getting-started.md)
-
-### Need dependencies and setup?
-Go to:
-
-- [Installation](installation.md)
-
-### Want working Java examples?
-See:
-
-- [Quickstart](quickstart.md)
-
-### Prefer terminal-based usage?
-Use:
-
-- [CLI](cli.md)
-
-### Want to understand the parser internals?
-Explore:
-
-- [How It Works](how-it-works/overview.md)
-
-### Need tuning for difficult PDFs?
-Go to:
-
-- [Advanced Usage](advanced-usage/page-ranges.md)
-
-### Want API-level reference?
-See:
-
-- [API Overview](api/overview.md)
-- [Javadocs](https://extractpdf4j.github.io/ExtractPDF4J/apidocs/index.html)
-
-## Recommended first workflow
-
-If you are evaluating ExtractPDF4J for the first time, this is the best path:
-
-1. Read **Getting Started**
-2. Follow **Installation**
-3. Run the **Quickstart** example with `HybridParser`
-4. Validate the first extracted table as CSV
-5. Move to parser-specific pages only if you need tighter tuning
-
-This keeps your first integration simple and avoids premature optimization.
-
-## Typical use cases
-
-ExtractPDF4J is well suited for:
-
-- invoice line-item extraction
-- bank statement parsing
-- utility bill table extraction
-- report-to-CSV conversion
-- scanned archive processing
-- document ingestion pipelines in internal enterprise systems
-
-## API reference
-
-Use the Java API when you need:
-
-- application integration
-- pipeline orchestration
-- custom validation logic
-- post-processing in code
-- parser tuning inside your service
-
-Use the CLI when you need:
-
-- quick local extraction
-- shell scripting
-- batch jobs
-- debugging parser behavior before embedding the library
-
-## Javadocs
-
-For exact classes and method signatures:
-
-- [Javadocs](https://extractpdf4j.github.io/ExtractPDF4J/apidocs/index.html)
-
-## Project links
-
-- [GitHub Repository](https://github.com/ExtractPDF4J/ExtractPDF4J)
-
-## Next step
-
-If you are starting fresh, begin with:
-
-- [Getting Started](getting-started.md)
+If ExtractPDF4J helps you, [star the project](https://github.com/ExtractPDF4J/ExtractPDF4J) so more Java developers can find it. [Open an issue](https://github.com/ExtractPDF4J/ExtractPDF4J/issues/new/choose) to share a bug or an idea, or [fork the repository](https://github.com/ExtractPDF4J/ExtractPDF4J/fork) and follow the [contributing guide](contributing.md).
