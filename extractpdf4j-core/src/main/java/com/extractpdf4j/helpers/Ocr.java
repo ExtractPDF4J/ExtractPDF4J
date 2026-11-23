@@ -102,7 +102,7 @@ public final class Ocr {
         try {
             Class<?> tessBaseApi = Class.forName("org.bytedeco.tesseract.TessBaseAPI");
             Class<?> pixCls      = Class.forName("org.bytedeco.leptonica.PIX");
-            Class<?> leptGlobal  = Class.forName("org.bytedeco.leptonica.global.lept");
+            Class<?> leptGlobal  = Class.forName("org.bytedeco.leptonica.global.leptonica");
 
             api = tessBaseApi.getDeclaredConstructor().newInstance();
             int rc = (int) tessBaseApi.getMethod("Init", String.class, String.class)
@@ -133,7 +133,7 @@ public final class Ocr {
             try { if (api != null) safeCall(api, "End"); } catch (Throwable ignore) {}
             try {
                 if (image != null) {
-                    Class<?> leptGlobal = Class.forName("org.bytedeco.leptonica.global.lept");
+                    Class<?> leptGlobal = Class.forName("org.bytedeco.leptonica.global.leptonica");
                     Class<?> pixCls     = Class.forName("org.bytedeco.leptonica.PIX");
                     safePixDestroy(leptGlobal, pixCls, image);
                 }

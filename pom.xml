@@ -61,16 +61,16 @@
         <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>${java.version}</maven.compiler.release>
-        <bytedeco.suffix>1.5.7</bytedeco.suffix>
-        <tesseract.preset>5.0.1-1.5.7</tesseract.preset>
-        <leptonica.preset>1.82.0-1.5.7</leptonica.preset>
-        <pdfbox.version>2.0.30</pdfbox.version>
-        <opencv.version>4.9.0-1.5.10</opencv.version>
-        <lombok.version>1.18.30</lombok.version>
-        <junit.version>5.11.3</junit.version>
-        <picocli.version>4.7.6</picocli.version>
-        <spring-boot.version>3.4.2</spring-boot.version>
-        <maven-surefire.version>3.2.5</maven-surefire.version>
+        <bytedeco.suffix>1.5.14</bytedeco.suffix>
+        <tesseract.preset>5.5.3-${bytedeco.suffix}</tesseract.preset>
+        <leptonica.preset>1.87.0-${bytedeco.suffix}</leptonica.preset>
+        <pdfbox.version>2.0.37</pdfbox.version>
+        <opencv.version>4.14.0-${bytedeco.suffix}</opencv.version>
+        <lombok.version>1.18.48</lombok.version>
+        <junit.version>5.12.2</junit.version>
+        <picocli.version>4.7.7</picocli.version>
+        <spring-boot.version>3.5.16</spring-boot.version>
+        <maven-surefire.version>3.5.6</maven-surefire.version>
     </properties>
 
     <dependencyManagement>
