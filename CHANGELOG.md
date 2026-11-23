@@ -6,6 +6,17 @@ The project follows **Semantic Versioning** and this changelog format is inspire
 
 ---
 
+## [2.3.1]
+
+### Added
+
+- Document a reproducible synthetic bank statement example with its source PDF and two verified CSVs.
+
+### Fixed
+
+- Preserve seven transaction columns and source row order for the supported INR statement layout, including separate Value Date, Description, Debit, and Credit fields.
+- Write CLI CSV files in UTF-8.
+
 ## [2.3.0]
 
 ### Added
@@ -162,6 +173,7 @@ to reliably extract tabular data from real-world documents such as:
 
 ## Links
 
+[2.3.1]: https://github.com/ExtractPDF4J/ExtractPDF4J/compare/v2.3.0...v2.3.1
 [2.3.0]: https://github.com/ExtractPDF4J/ExtractPDF4J/compare/v2.2.0...v2.3.0
 [2.2.0]: https://github.com/ExtractPDF4J/ExtractPDF4J/releases/tag/v2.2.0
 [2.1.0]: https://github.com/ExtractPDF4J/ExtractPDF4J/releases/tag/v2.1.0
