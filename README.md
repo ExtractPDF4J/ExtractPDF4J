@@ -63,24 +63,73 @@
 A production-focused **Java** library for extracting **tables** and structured data from PDFs.
 Extract tables from scanned/image PDFs in Java using OCR + table structure detection.
 
-## Try it: PDF bank statement to CSV
+## Try it: PDF to CSV in four parsing modes
 
-![The sample PDF and its generated CSV, showing the same three transactions in seven columns. The demo also shows the CLI command writing two CSV files.](docs/images/statement-to-csv-demo.gif)
+Watch each mode run on a synthetic PDF and compare the generated CSV with the sample. [STREAM](#stream) · [LATTICE](#lattice) · [OCRSTREAM](#ocrstream) · [HYBRID](#hybrid)
 
-Download the [sample PDF](examples/synthetic-bank-statement/synthetic_bank_statement_text.pdf) and the expected UTF-8 CSVs for [page 1](examples/synthetic-bank-statement/bank_statement_hybrid-1.csv) and [page 2](examples/synthetic-bank-statement/bank_statement_hybrid-2.csv). The statement contains fictional data.
-
-From the root of a 2.3.1 checkout, build the CLI with Java 17 and run:
+Build the CLI from the repository root with Java 17 and Maven. Install Tesseract with English language data for OCRSTREAM and HYBRID.
 
 ```bash
-mvn -pl extractpdf4j-cli -am package -DskipTests
-java -jar extractpdf4j-cli/target/extractpdf4j-cli-2.3.1.jar \
+mvn -pl extractpdf4j-cli -am clean package -DskipTests
+cp "$(find extractpdf4j-cli/target -maxdepth 1 -type f -name 'extractpdf4j-cli-*.jar' \
+  ! -name '*-sources.jar' ! -name '*-javadoc.jar')" extractpdf4j-cli.jar
+```
+
+### STREAM
+
+Use STREAM when the PDF has selectable text and the table columns are separated by spacing.
+
+<img src="docs/images/statement-to-csv-demo.gif" alt="STREAM extracts the text-based statement into two CSVs" width="100%" />
+
+[Source PDF](examples/synthetic-bank-statement/synthetic_bank_statement_text.pdf) · [Expected page 1 CSV](examples/synthetic-bank-statement/bank_statement_hybrid-1.csv) · [Expected page 2 CSV](examples/synthetic-bank-statement/bank_statement_hybrid-2.csv)
+
+```bash
+java -jar extractpdf4j-cli.jar \
   examples/synthetic-bank-statement/synthetic_bank_statement_text.pdf \
   --mode STREAM --pages all --out bank_statement.csv
 ```
 
-The CLI creates `bank_statement-1.csv` with 20 transactions and `bank_statement-2.csv` with 9. Both files have seven columns, including separate Value Date, Description, Debit, and Credit fields. STREAM uses the PDF's text layer. HYBRID produces the same CSVs for this sample.
+### LATTICE
 
-[Watch the demos for all four parsing modes](examples/parsing-modes/README.md).
+Use LATTICE when visible horizontal and vertical lines form a grid around the cells.
+
+<img src="docs/images/lattice-parsing-demo.gif" alt="LATTICE extracts four columns from the ruled invoice" width="100%" />
+
+[Source PDF](examples/parsing-modes/ruled-invoice.pdf) · [Expected CSV](examples/parsing-modes/ruled-invoice.csv)
+
+```bash
+java -jar extractpdf4j-cli.jar \
+  examples/parsing-modes/ruled-invoice.pdf \
+  --mode LATTICE --pages 1 --out lattice.csv
+```
+
+### OCRSTREAM
+
+Use OCRSTREAM when the page is an image. Tesseract reads the text in this sample, and the CSV contains five data rows. The parser uses the recognized header to locate columns and omits it from the CSV.
+
+<img src="docs/images/ocrstream-parsing-demo.gif" alt="OCRSTREAM extracts five transactions from an image-only statement" width="100%" />
+
+[Source PDF](examples/parsing-modes/scanned-statement.pdf) · [Expected CSV](examples/parsing-modes/scanned-statement.csv)
+
+```bash
+java -jar extractpdf4j-cli.jar \
+  examples/parsing-modes/scanned-statement.pdf \
+  --mode OCRSTREAM --pages 1 --out ocrstream.csv
+```
+
+### HYBRID
+
+Use HYBRID when you want ExtractPDF4J to compare extraction strategies. On this text-based sample, HYBRID and STREAM generate identical CSVs.
+
+<img src="docs/images/hybrid-parsing-demo.gif" alt="HYBRID extracts the two-page bank statement" width="100%" />
+
+[Source PDF](examples/synthetic-bank-statement/synthetic_bank_statement_text.pdf) · [Expected page 1 CSV](examples/synthetic-bank-statement/bank_statement_hybrid-1.csv) · [Expected page 2 CSV](examples/synthetic-bank-statement/bank_statement_hybrid-2.csv)
+
+```bash
+java -jar extractpdf4j-cli.jar \
+  examples/synthetic-bank-statement/synthetic_bank_statement_text.pdf \
+  --mode HYBRID --pages all --out hybrid.csv
+```
 
 If ExtractPDF4J saves you time, [give it a star on GitHub](https://github.com/ExtractPDF4J/ExtractPDF4J). It helps other Java developers find the project.
 
@@ -404,7 +453,7 @@ Common flags:
 - `--debug` and `--debug-dir debug/`
 - `--ocr auto|cli|bytedeco`
 
-See the [bank statement demo](#try-it-pdf-bank-statement-to-csv) for a complete example.
+See the [bank statement demo](#try-it-pdf-to-csv-in-four-parsing-modes) for a complete example.
 
 See also the changelog entry for this documentation pass: [CHANGELOG](CHANGELOG.md).
 
