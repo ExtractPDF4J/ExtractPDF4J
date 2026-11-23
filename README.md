@@ -58,16 +58,33 @@
 
 <br />
 
-<p align="center">
-  <img src="./docs/images/extractpdf4j-demo.gif" alt="ExtractPDF4J demo" width="100%" />
-</p>
-
----
-
 # ExtractPDF4J
 
 A production-focused **Java** library for extracting **tables** and structured data from PDFs.
 Extract tables from scanned/image PDFs in Java using OCR + table structure detection.
+
+## Try it: PDF bank statement to CSV
+
+![The sample PDF and its generated CSV, showing the same three transactions in seven columns. The demo also shows the CLI command writing two CSV files.](docs/images/statement-to-csv-demo.gif)
+
+Download the [sample PDF](examples/synthetic-bank-statement/synthetic_bank_statement_text.pdf) and the expected UTF-8 CSVs for [page 1](examples/synthetic-bank-statement/bank_statement_hybrid-1.csv) and [page 2](examples/synthetic-bank-statement/bank_statement_hybrid-2.csv). The statement contains fictional data.
+
+From the root of a 2.3.1 checkout, build the CLI with Java 17 and run:
+
+```bash
+mvn -pl extractpdf4j-cli -am package -DskipTests
+java -jar extractpdf4j-cli/target/extractpdf4j-cli-2.3.1.jar \
+  examples/synthetic-bank-statement/synthetic_bank_statement_text.pdf \
+  --mode STREAM --pages all --out bank_statement.csv
+```
+
+The CLI creates `bank_statement-1.csv` with 20 transactions and `bank_statement-2.csv` with 9. Both files have seven columns, including separate Value Date, Description, Debit, and Credit fields. STREAM uses the PDF's text layer. HYBRID produces the same CSVs for this sample.
+
+[Watch the demos for all four parsing modes](examples/parsing-modes/README.md).
+
+If ExtractPDF4J saves you time, [give it a star on GitHub](https://github.com/ExtractPDF4J/ExtractPDF4J). It helps other Java developers find the project.
+
+## Java quickstart
 
 ```java
 import com.extractpdf4j.helpers.Table;
@@ -387,20 +404,7 @@ Common flags:
 - `--debug` and `--debug-dir debug/`
 - `--ocr auto|cli|bytedeco`
 
-### Try the synthetic bank statement
-
-Download the [sample PDF](examples/synthetic-bank-statement/synthetic_bank_statement_text.pdf) and the expected UTF-8 CSVs for [page 1](examples/synthetic-bank-statement/bank_statement_hybrid-1.csv) and [page 2](examples/synthetic-bank-statement/bank_statement_hybrid-2.csv). The statement contains fictional data.
-
-From the root of a 2.3.1 checkout, build the CLI with Java 17 and run:
-
-```bash
-mvn -pl extractpdf4j-cli -am package -DskipTests
-java -jar extractpdf4j-cli/target/extractpdf4j-cli-2.3.1.jar \
-  examples/synthetic-bank-statement/synthetic_bank_statement_text.pdf \
-  --mode STREAM --pages all --out bank_statement.csv
-```
-
-The CLI creates `bank_statement-1.csv` with 20 transactions and `bank_statement-2.csv` with 9. Both files have seven columns, including separate Value Date, Description, Debit, and Credit fields. STREAM uses the PDF's text layer. HYBRID produces the same CSVs for this sample.
+See the [bank statement demo](#try-it-pdf-bank-statement-to-csv) for a complete example.
 
 See also the changelog entry for this documentation pass: [CHANGELOG](CHANGELOG.md).
 
