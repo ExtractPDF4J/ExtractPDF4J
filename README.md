@@ -80,6 +80,8 @@ java -jar extractpdf4j-cli/target/extractpdf4j-cli-2.3.1.jar \
 
 The CLI creates `bank_statement-1.csv` with 20 transactions and `bank_statement-2.csv` with 9. Both files have seven columns, including separate Value Date, Description, Debit, and Credit fields. STREAM uses the PDF's text layer. HYBRID produces the same CSVs for this sample.
 
+[Watch the demos for all four parsing modes](examples/parsing-modes/README.md).
+
 If ExtractPDF4J saves you time, [give it a star on GitHub](https://github.com/ExtractPDF4J/ExtractPDF4J). It helps other Java developers find the project.
 
 ## Java quickstart
