@@ -4,13 +4,13 @@
 <br />
 
 <p align="center">
-  <a href="./docs/images/extractpdf4j-banner-motion.mp4">
+  <a href="https://extractpdf4j.github.io/ExtractPDF4J/apidocs/index.html">
     <picture>
       <source media="(prefers-reduced-motion: reduce) and (prefers-color-scheme: dark)" srcset="./docs/images/extractpdf4j-banner-dark.png">
       <source media="(prefers-reduced-motion: reduce)" srcset="./docs/images/extractpdf4j-banner-light.png">
       <source media="(prefers-color-scheme: dark)" srcset="./docs/images/extractpdf4j-banner-dark-motion.gif">
       <img
-        alt="ExtractPDF4J animated banner. A ₹10,000 ATM withdrawal from a synthetic PDF appears in the Debit column of the exported CSV."
+        alt="Open the ExtractPDF4J Java API documentation. Animated banner: A ₹10,000 ATM withdrawal from a synthetic PDF appears in the Debit column of the exported CSV."
         width="100%"
         src="./docs/images/extractpdf4j-banner-light-motion.gif"
       />
@@ -20,6 +20,8 @@
 
 <p align="center">
   <a href="https://extractpdf4j.github.io/ExtractPDF4J/" target="_blank">→ extractpdf4j.github.io/ExtractPDF4J ←</a>
+  ·
+  <a href="./docs/images/extractpdf4j-banner-motion.mp4">Watch the banner video</a>
 </p>
 
 <p align="center">
