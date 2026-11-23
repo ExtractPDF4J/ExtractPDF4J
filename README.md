@@ -10,7 +10,7 @@
       <source media="(prefers-reduced-motion: reduce)" srcset="./docs/images/extractpdf4j-banner-light.png">
       <source media="(prefers-color-scheme: dark)" srcset="./docs/images/extractpdf4j-banner-dark-motion.gif">
       <img
-        alt="Open the ExtractPDF4J Java API documentation. Animated banner: A ₹10,000 ATM withdrawal from a synthetic PDF appears in the Debit column of the exported CSV."
+        alt="Open the ExtractPDF4J Java API documentation. Animated banner: A ₹10,000 ATM withdrawal from a synthetic PDF appears in the Debit column of the exported CSV, followed by a comparison of ExtractPDF4J, Tabula Java, and Apache PDFBox."
         width="100%"
         src="./docs/images/extractpdf4j-banner-light-motion.gif"
       />
@@ -22,6 +22,8 @@
   <a href="https://extractpdf4j.github.io/ExtractPDF4J/" target="_blank">→ extractpdf4j.github.io/ExtractPDF4J ←</a>
   ·
   <a href="./docs/images/extractpdf4j-banner-motion.mp4">Watch the banner video</a>
+  ·
+  <a href="#compare-java-pdf-tools">Compare Java PDF tools</a>
 </p>
 
 <p align="center">
@@ -290,14 +292,17 @@ Docs dependencies are pinned to MkDocs 1.x in [`docs/requirements.txt`](./docs/r
 
 ---
 
-### Why this vs Tabula/PDFBox (comparison table)
+### Compare Java PDF tools
 
-| Feature            | ExtractPDF4J                | Tabula-Java | PDFBox       |
-| ------------------ | --------------------------- | ----------- | ------------ |
-| Text-based PDFs    | ✅                           | ✅           | ✅            |
-| Scanned/Image PDFs | ✅ Native OCR                | ❌           | ❌            |
-| Table recognition  | ✅ Stream/Lattice/OCR-hybrid | ✅           | ❌ (raw text) |
-| “Hello world” time | Low (single entrypoint)     | Medium      | High         |
+| Capability | ExtractPDF4J | [Tabula Java](https://github.com/tabulapdf/tabula-java) | [Apache PDFBox](https://pdfbox.apache.org/) |
+| --- | --- | --- | --- |
+| Primary use | Turn PDF tables into structured data in Java | Extract tables from text-based PDFs | Create, edit, render, and extract content from PDFs |
+| Text-based tables | Stream for aligned text, lattice for ruled grids, and hybrid to compare strategies | Stream and lattice extraction | Text extraction and page rendering APIs for building custom table logic |
+| Image-only pages | OCRSTREAM recognizes text with Tesseract and reconstructs columns. HYBRID can also evaluate OCR results. | Apply OCR first to create a text layer. See the [Tabula scan guidance](https://github.com/tabulapdf/tabula#using-tabula). | Renders pages to images that can be passed to an OCR engine |
+| Structured output | CLI exports CSV and JSON | CLI exports CSV, TSV, and JSON | Applications define their own table schema and export |
+
+ExtractPDF4J uses PDFBox for PDF processing. Try the [ExtractPDF4J demos](#try-it-pdf-to-csv-in-four-parsing-modes) or see the [Tabula Java CLI options](https://github.com/tabulapdf/tabula-java#commandline-usage-examples) and [PDFBox command-line tools](https://pdfbox.apache.org/3.0/commandline.html).
+
 ---
 ## Use cases (3 quick examples)
 
