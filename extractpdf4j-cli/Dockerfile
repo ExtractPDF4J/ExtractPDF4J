@@ -11,14 +11,15 @@ COPY extractpdf4j-bom ./extractpdf4j-bom
 COPY extractpdf4j-service ./extractpdf4j-service
 COPY extractpdf4j-cli ./extractpdf4j-cli
 COPY extractpdf4j-core ./extractpdf4j-core
+COPY examples/batch-folder-processing/pom.xml ./examples/batch-folder-processing/pom.xml
 
 # Create the directory that will contains the CLI commands results, and inputs to be analyzed
 RUN mkdir -p /app/outputs
 RUN mkdir -p /app/inputs
 
-# Build the JARs and avoid the 'extractpdf4j-bom' module
+# Build the CLI and its reactor dependencies.
 RUN mvn -Djavacpp.platform=${JAVACPP_PLATFORM} \
-    -pl '!extractpdf4j-bom' -am clean package -DskipTests
+    -pl extractpdf4j-cli -am clean package -DskipTests
 
 # Copy the essential .jar that runs the app to app.jar
 RUN set -eu; \

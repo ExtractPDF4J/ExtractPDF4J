@@ -67,7 +67,7 @@ public class PageRangesExample {
 
 ```bash
 java -jar extractpdf4j-cli-<version>.jar statement.pdf \
-  --mode hybrid \
+  --mode HYBRID \
   --pages 2-4 \
   --out result.csv
 ```

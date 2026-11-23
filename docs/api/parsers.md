@@ -182,3 +182,34 @@ For new implementations:
 - [Extractor](extractor.md)
 - [Models](models.md)
 - [How It Works](../how-it-works/overview.md)
+
+## Statement layouts
+
+The current source tree improves visual row ordering and column alignment
+for text-based statements with variable-width descriptions. Lattice parsing
+keeps separate ruled tables, such as a summary grid above a transaction grid,
+as separate results. Hybrid confidence scores are bounded to 0–1.
+
+## Extraction diagnostics
+
+Call `parseResult()` with diagnostics enabled to retrieve tables and structured
+metadata in one call.
+
+```java
+import com.extractpdf4j.helpers.ExtractionResult;
+import com.extractpdf4j.parsers.HybridParser;
+
+ExtractionResult result = new HybridParser("statement.pdf")
+    .pages("all")
+    .diagnostics(true)
+    .parseResult();
+
+System.out.println(result.diagnostics());
+```
+
+Use `result.tables()` to access the extracted tables. Hybrid diagnostics include
+the selected parser, selection reason, page and table counts, timing, warnings,
+and fallback actions. `result.diagnostics()` returns `null` when diagnostics are disabled.
+
+For an optional local model integration in the current source tree, see
+[Experimental ML fallback](../advanced-usage/ml-fallback.md).

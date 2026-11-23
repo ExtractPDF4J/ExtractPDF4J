@@ -24,7 +24,7 @@ Import the BOM once, then declare modules without specifying versions.
     <dependency>
       <groupId>io.github.extractpdf4j</groupId>
       <artifactId>extractpdf4j-bom</artifactId>
-      <version>2.1.0</version>
+      <version>2.2.0</version>
       <type>pom</type>
       <scope>import</scope>
     </dependency>
@@ -68,7 +68,7 @@ If you prefer not to use the BOM, you can declare modules directly.
 <dependency>
   <groupId>io.github.extractpdf4j</groupId>
   <artifactId>extractpdf4j-core</artifactId>
-  <version>2.1.0</version>
+  <version>2.2.0</version>
 </dependency>
 ```
 
@@ -78,7 +78,7 @@ If you prefer not to use the BOM, you can declare modules directly.
 <dependency>
   <groupId>io.github.extractpdf4j</groupId>
   <artifactId>extractpdf4j-service</artifactId>
-  <version>2.1.0</version>
+  <version>2.2.0</version>
 </dependency>
 ```
 
@@ -88,7 +88,7 @@ If you prefer not to use the BOM, you can declare modules directly.
 <dependency>
   <groupId>io.github.extractpdf4j</groupId>
   <artifactId>extractpdf4j-cli</artifactId>
-  <version>2.1.0</version>
+  <version>2.2.0</version>
 </dependency>
 ```
 
@@ -99,7 +99,7 @@ If you prefer not to use the BOM, you can declare modules directly.
 Using the BOM:
 
 ```groovy
-implementation platform("io.github.extractpdf4j:extractpdf4j-bom:2.1.0")
+implementation platform("io.github.extractpdf4j:extractpdf4j-bom:2.2.0")
 
 implementation "io.github.extractpdf4j:extractpdf4j-service"
 ```
@@ -107,9 +107,9 @@ implementation "io.github.extractpdf4j:extractpdf4j-service"
 Without BOM:
 
 ```groovy
-implementation "io.github.extractpdf4j:extractpdf4j-core:2.1.0"
-implementation "io.github.extractpdf4j:extractpdf4j-service:2.1.0"
-implementation "io.github.extractpdf4j:extractpdf4j-cli:2.1.0"
+implementation "io.github.extractpdf4j:extractpdf4j-core:2.2.0"
+implementation "io.github.extractpdf4j:extractpdf4j-service:2.2.0"
+implementation "io.github.extractpdf4j:extractpdf4j-cli:2.2.0"
 ```
 
 ---
@@ -131,6 +131,10 @@ These include:
 The easiest setup is to use **Bytedeco `*-platform` artifacts**, which bundle native binaries automatically.
 
 This avoids manual native library installation.
+
+The unreleased source tree uses aligned Bytedeco 1.5.14 presets for OpenCV 4.14.0,
+Tesseract 5.5.3, and Leptonica 1.87.0. Use the preset versions managed by the
+source POM when building with custom native dependencies.
 
 ---
 

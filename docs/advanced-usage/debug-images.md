@@ -50,7 +50,7 @@ public class DebugImagesExample {
 
 ```bash
 java -jar extractpdf4j-cli-<version>.jar scanned.pdf \
-  --mode lattice \
+  --mode LATTICE \
   --pages 1 \
   --dpi 300 \
   --debug \

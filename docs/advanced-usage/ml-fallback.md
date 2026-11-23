@@ -2,7 +2,12 @@
 
 ExtractPDF4J can integrate a local machine-learning table extractor as an optional fallback without adding ML dependencies to the core module.
 
-The existing Stream, Lattice, and OCR strategies always run first. ML is invoked only when those strategies return no tables.
+Available in builds from the current source tree. The existing Stream, Lattice,
+and OCR strategies run first. For a file with explicit page numbers or ranges,
+the fallback runs for each requested page that yields no tables. With
+`pages("all")` or an in-memory PDFBox document, it runs only if the entire
+requested selection yields no tables. Supply your own model implementation of
+`MlTableExtractor` when constructing `HybridMlParser`.
 
 ```java
 MlTableExtractor extractor = new MyOnnxTableExtractor(modelPath);

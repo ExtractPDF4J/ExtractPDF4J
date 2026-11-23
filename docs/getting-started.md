@@ -90,7 +90,7 @@ public class FirstRun {
 The project includes sample PDFs in `/examples` to help you test extraction behavior safely.
 
 To batch-process every PDF in a folder to CSV, use the runnable example at
-[`examples/batch-folder-processing`](../examples/batch-folder-processing/README.md).
+[`examples/batch-folder-processing`](https://github.com/ExtractPDF4J/ExtractPDF4J/blob/main/examples/batch-folder-processing/README.md).
 
 **Examples include:**
 
