@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>ExtractPDF4J API overview</title>
+</head>
+<body>
+<p>Extract tables from PDFs using Java. Choose a parser based on how the document represents its table.</p>
+
+<h2>From PDF to table</h2>
+<p>Open a PDF, call a <a href="com/extractpdf4j/parsers/BaseParser.html">parser</a>, and work with the returned
+<a href="com/extractpdf4j/helpers/Table.html">Table</a> objects. Use
+<a href="com/extractpdf4j/helpers/CsvExporter.html">CsvExporter</a> for CSV or
+<a href="com/extractpdf4j/helpers/JsonExporter.html">JsonExporter</a> for JSON.</p>
+
+<figure>
+  <img src="com/extractpdf4j/parsers/doc-files/statement-extraction.png"
+       alt="Synthetic statement and CSV excerpt. The 3 April ATM withdrawal appears under Debit as 10,000.00 INR."
+       width="1200" height="363" style="max-width: 100%; height: auto;">
+  <figcaption>Selectable text in a synthetic statement becomes structured rows with separate debit and credit fields.</figcaption>
+</figure>
+
+<h2>Choose a parser</h2>
+<table class="striped">
+  <caption>Parsing strategies by PDF layout</caption>
+  <thead>
+    <tr><th scope="col">PDF layout</th><th scope="col">Java API</th><th scope="col">How it reads the table</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Selectable text aligned in columns</td><td><a href="com/extractpdf4j/parsers/StreamParser.html">StreamParser</a></td><td>Groups text by position.</td></tr>
+    <tr><td>Cells bounded by visible rules</td><td><a href="com/extractpdf4j/parsers/LatticeParser.html">LatticeParser</a></td><td>Detects horizontal and vertical grid lines.</td></tr>
+    <tr><td>Scanned pages without a text layer</td><td><a href="com/extractpdf4j/parsers/OcrStreamParser.html">OcrStreamParser</a></td><td>Uses OCR to recognize text and recover columns.</td></tr>
+    <tr><td>Mixed or unknown layout</td><td><a href="com/extractpdf4j/parsers/HybridParser.html">HybridParser</a></td><td>Compares extraction strategies and selects the highest-scoring result.</td></tr>
+  </tbody>
+</table>
+
+<p>For a runnable PDF-to-CSV example and sample files, see the
+<a href="https://extractpdf4j.github.io/ExtractPDF4J/cli/#try-the-synthetic-bank-statement">CLI walkthrough</a>.</p>
+</body>
+</html>
