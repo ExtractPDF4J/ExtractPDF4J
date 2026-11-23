@@ -4,13 +4,15 @@
 <br />
 
 <p align="center">
-  <a href="https://extractpdf4j.github.io/ExtractPDF4J/">
+  <a href="./docs/images/extractpdf4j-banner-motion.mp4">
     <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="./docs/images/extractpdf4j-banner-dark.png">
+      <source media="(prefers-reduced-motion: reduce) and (prefers-color-scheme: dark)" srcset="./docs/images/extractpdf4j-banner-dark.png">
+      <source media="(prefers-reduced-motion: reduce)" srcset="./docs/images/extractpdf4j-banner-light.png">
+      <source media="(prefers-color-scheme: dark)" srcset="./docs/images/extractpdf4j-banner-dark-motion.gif">
       <img
-        alt="ExtractPDF4J - Java-native PDF table extraction for real-world documents"
-        width="900"
-        src="./docs/images/extractpdf4j-banner-light.png"
+        alt="ExtractPDF4J animated banner. A ₹10,000 ATM withdrawal from a synthetic PDF appears in the Debit column of the exported CSV."
+        width="100%"
+        src="./docs/images/extractpdf4j-banner-light-motion.gif"
       />
     </picture>
   </a>
