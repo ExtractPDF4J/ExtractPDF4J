@@ -45,6 +45,9 @@
   <a href="https://extractpdf4j.github.io/ExtractPDF4J/">
     <img src="https://img.shields.io/badge/Docs-live-1E88E5?style=for-the-badge" alt="Docs" />
   </a>
+  <a href="https://extractpdf4j.github.io/ExtractPDF4J/apidocs/index.html">
+    <img src="https://img.shields.io/badge/Javadocs-API%20Reference-3949AB?style=for-the-badge" alt="Javadocs API reference" />
+  </a>
 </p>
 
 <p align="center">
