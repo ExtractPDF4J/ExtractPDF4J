@@ -8,7 +8,7 @@ import org.apache.pdfbox.text.TextPosition;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
+import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +34,11 @@ public class StreamParser extends BaseParser {
     /** Logger for stream parser events. */
     private static final Logger LOGGER = LoggerFactory.getLogger(StreamParser.class);
     
+    private static final List<String> STATEMENT_HEADER = List.of(
+            "date", "value date", "description", "reference no.", "debit (inr)", "credit (inr)", "balance (inr)");
+    private static final Pattern STATEMENT_DATE = Pattern.compile("\\d{2}[-/]\\d{2}[-/]\\d{4}");
+    private static final Pattern STATEMENT_AMOUNT = Pattern.compile("[+-]?\\d[\\d,]*\\.\\d{2}");
+
     public StreamParser(String filepath){ super(filepath); }
 
     /**
@@ -129,17 +134,16 @@ public class StreamParser extends BaseParser {
             gs.sort(Comparator.comparingDouble(a->a.x));
             rows.add(new Row(gs));
         }
+        Table transactions = extractStatementTransactions(rows);
+        if (transactions != null) {
+            return transactions;
+        }
         List<Double> bounds = inferColumnBounds(rows);
         LOGGER.debug("Inferred column bounds: {}", bounds);
         LOGGER.debug("Detected {} rows on page {}", rows.size(), pageOneIndexed);
         List<List<String>> grid = new ArrayList<>();
         for (Row r : rows) {
-            List<String> row = new ArrayList<>(Collections.nCopies(bounds.size()-1, ""));
-            for (Span sp : r.spans()) {
-                int col = findCol(bounds, sp.x);
-                String prev = row.get(col);
-                row.set(col, prev.isEmpty()? sp.text : prev + " " + sp.text);
-            }
+            List<String> row = assignColumns(r.spans(), bounds);
             if (stripText) for (int i=0;i<row.size();i++) row.set(i, row.get(i).trim());
             grid.add(row);
         }
@@ -149,6 +153,62 @@ public class StreamParser extends BaseParser {
         LOGGER.info("Table detected on page {} with {} rows and {} columns",
           pageOneIndexed, grid.size(), bounds.size()-1);
         return new Table(grid, bounds, rowBounds);
+    }
+
+    /**
+     * Uses the printed column starts for a recognized transaction ledger. Page-level
+     * gap inference can merge columns when summary text crosses their whitespace.
+     */
+    private static Table extractStatementTransactions(List<Row> rows) {
+        List<Double> bounds = new ArrayList<>();
+        List<List<String>> grid = new ArrayList<>();
+        List<Double> rowBounds = new ArrayList<>();
+        for (Row row : rows) {
+            List<Span> spans = row.spans();
+            if (spans.stream().map(span -> span.text.toLowerCase(Locale.ROOT)).toList().equals(STATEMENT_HEADER)) {
+                if (bounds.isEmpty()) {
+                    for (Span span : spans) {
+                        // Allow a small tolerance for changes in left cell padding.
+                        bounds.add(span.x - 1.0);
+                    }
+                    bounds.add(1e9);
+                    grid.add(spans.stream().map(Span::text).toList());
+                    rowBounds.add(row.glyphs.get(0).y);
+                }
+                continue;
+            }
+            if (bounds.isEmpty() || spans.isEmpty() || !STATEMENT_DATE.matcher(spans.get(0).text).matches()) {
+                continue;
+            }
+
+            List<String> cells = assignColumns(spans, bounds);
+            if (!STATEMENT_DATE.matcher(cells.get(1)).matches()
+                    || cells.get(2).isBlank()
+                    || cells.get(3).isBlank()
+                    || !STATEMENT_AMOUNT.matcher(cells.get(6)).matches()
+                    || !(isStatementAmountOrBlank(cells.get(4)) && isStatementAmountOrBlank(cells.get(5)))
+                    || !(STATEMENT_AMOUNT.matcher(cells.get(4)).matches() || STATEMENT_AMOUNT.matcher(cells.get(5)).matches())) {
+                return null;
+            }
+            grid.add(cells);
+            rowBounds.add(row.glyphs.get(0).y);
+        }
+        return grid.size() > 1 ? new Table(grid, bounds, rowBounds) : null;
+    }
+
+    private static boolean isStatementAmountOrBlank(String value) {
+        return value.isBlank() || value.equals("—") || value.equals("–") || value.equals("-")
+                || STATEMENT_AMOUNT.matcher(value).matches();
+    }
+
+    private static List<String> assignColumns(List<Span> spans, List<Double> bounds) {
+        List<String> cells = new ArrayList<>(Collections.nCopies(bounds.size() - 1, ""));
+        for (Span span : spans) {
+            int col = findCol(bounds, span.x);
+            String previous = cells.get(col);
+            cells.set(col, previous.isEmpty() ? span.text : previous + " " + span.text);
+        }
+        return cells;
     }
 
     /** Returns the column index i where x ∈ [bounds[i], bounds[i+1}), or clamps to last. */

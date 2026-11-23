@@ -117,6 +117,40 @@ class StatementRegressionTest {
     }
 
     @Test
+    void hybridKeepsBankStatementColumnsAcrossPages() throws Exception {
+        List<String> header = List.of("Date", "Value Date", "Description", "Reference No.",
+                "Debit (INR)", "Credit (INR)", "Balance (INR)");
+        List<List<String>> transactions = List.of(
+                List.of("01-04-2025", "01-04-2025", "Salary payment", "REF001", "—", "25,000.00", "73,732.65"),
+                List.of("02-04-2025", "03-04-2025", "ATM CASH WITHDRAWAL", "REF002", "10,000.00", "—", "63,732.65"));
+        float[] starts = {36, 94, 152, 305, 378, 451, 524};
+        Path pdf = temporaryDirectory.resolve("bank-statement.pdf");
+        try (PDDocument document = new PDDocument()) {
+            for (List<String> transaction : transactions) {
+                PDPage page = new PDPage();
+                document.addPage(page);
+                try (PDPageContentStream content = new PDPageContentStream(document, page)) {
+                    text(content, 36, 720, "Account summary with long metadata crossing the date and description columns");
+                    for (int column = 0; column < starts.length; column++) {
+                        text(content, starts[column], 650, header.get(column));
+                        float offset = column >= 4 ? 22 : 0;
+                        text(content, starts[column] + offset, 630, transaction.get(column));
+                    }
+                    text(content, 36, 600, "Statement footer");
+                }
+            }
+            document.save(pdf.toFile());
+            List<List<List<String>>> expected = transactions.stream().map(row -> List.of(header, row)).toList();
+            HybridParser fileParser = new HybridParser(pdf.toString()).dpi(144);
+            fileParser.pages("all");
+            assertEquals(expected, fileParser.parse().stream().map(Table::asList).toList());
+            HybridParser memoryParser = new HybridParser().dpi(144);
+            memoryParser.pages("all");
+            assertEquals(expected, memoryParser.parse(document).stream().map(Table::asList).toList());
+        }
+    }
+
+    @Test
     void hybridScoreIsBoundedAndDoesNotRewardEmptyExtraColumns() throws Exception {
         var score = HybridParser.class.getDeclaredMethod("score", Table.class);
         score.setAccessible(true);
