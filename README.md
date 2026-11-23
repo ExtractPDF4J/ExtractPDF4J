@@ -4,13 +4,13 @@
 <br />
 
 <p align="center">
-  <a href="https://extractpdf4j.github.io/ExtractPDF4J/apidocs/index.html">
+  <a href="https://extractpdf4j.github.io/ExtractPDF4J/">
     <picture>
       <source media="(prefers-reduced-motion: reduce) and (prefers-color-scheme: dark)" srcset="./docs/images/extractpdf4j-banner-dark.png">
       <source media="(prefers-reduced-motion: reduce)" srcset="./docs/images/extractpdf4j-banner-light.png">
       <source media="(prefers-color-scheme: dark)" srcset="./docs/images/extractpdf4j-banner-dark-motion.gif">
       <img
-        alt="Open the ExtractPDF4J Java API documentation. Animated banner: A ₹10,000 ATM withdrawal from a synthetic PDF appears in the Debit column of the exported CSV."
+        alt="Open the ExtractPDF4J website. Animated banner: A ₹10,000 ATM withdrawal from a synthetic PDF appears in the Debit column of the exported CSV, followed by a comparison of ExtractPDF4J, Tabula Java, Apache PDFBox, and Aspose.PDF for Java."
         width="100%"
         src="./docs/images/extractpdf4j-banner-light-motion.gif"
       />
@@ -22,6 +22,8 @@
   <a href="https://extractpdf4j.github.io/ExtractPDF4J/" target="_blank">→ extractpdf4j.github.io/ExtractPDF4J ←</a>
   ·
   <a href="./docs/images/extractpdf4j-banner-motion.mp4">Watch the banner video</a>
+  ·
+  <a href="#compare-java-pdf-tools">Compare Java PDF tools</a>
 </p>
 
 <p align="center">
@@ -290,14 +292,26 @@ Docs dependencies are pinned to MkDocs 1.x in [`docs/requirements.txt`](./docs/r
 
 ---
 
-### Why this vs Tabula/PDFBox (comparison table)
+### Compare Java PDF tools
 
-| Feature            | ExtractPDF4J                | Tabula-Java | PDFBox       |
-| ------------------ | --------------------------- | ----------- | ------------ |
-| Text-based PDFs    | ✅                           | ✅           | ✅            |
-| Scanned/Image PDFs | ✅ Native OCR                | ❌           | ❌            |
-| Table recognition  | ✅ Stream/Lattice/OCR-hybrid | ✅           | ❌ (raw text) |
-| “Hello world” time | Low (single entrypoint)     | Medium      | High         |
+- **ExtractPDF4J** extracts structured tables from text-based and scanned PDFs using stream, lattice, OCR stream, and hybrid modes.
+- **Tabula Java** extracts tables from text-based PDFs using stream and lattice modes. [Tabula Java CLI and API](https://github.com/tabulapdf/tabula-java)
+- **Apache PDFBox** creates, edits, renders, and extracts text from PDFs. ExtractPDF4J uses it for PDF processing. [PDFBox features](https://pdfbox.apache.org/) · [Command-line tools](https://pdfbox.apache.org/3.0/commandline.html)
+- **Aspose.PDF for Java** creates and edits PDFs and exposes table rows and cells through its `TableAbsorber` API. [Aspose.PDF for Java](https://docs.aspose.com/pdf/java/) · [Table extraction example](https://docs.aspose.com/pdf/java/extract-data-from-table-in-pdf/)
+
+✓ means the named tool provides the feature directly. ✗ means the feature requires other tooling or custom code.
+
+| Capability | ExtractPDF4J | Tabula Java | Apache PDFBox | Aspose.PDF for Java |
+| --- | :---: | :---: | :---: | :---: |
+| Table extraction API | ✓ | ✓ | ✗ | ✓ |
+| OCR to tables in one workflow | ✓ | ✗ | ✗ | ✗ |
+| CLI exports tables to both CSV and JSON | ✓ | ✓ | ✗ | ✗ |
+| General-purpose PDF creation and editing | ✗ | ✗ | ✓ | ✓ |
+
+For image-only pages, Tabula requires a text layer from an OCR tool. PDFBox can render pages for an external OCR engine, and Aspose provides PDF recognition through a separate Aspose.OCR product. [Tabula scan guidance](https://github.com/tabulapdf/tabula#using-tabula) · [PDFBox rendering](https://pdfbox.apache.org/3.0/commandline.html) · [Aspose.OCR for Java](https://docs.aspose.com/ocr/java/recognition/)
+
+[Try the ExtractPDF4J parsing demos](#try-it-pdf-to-csv-in-four-parsing-modes) to see the sample inputs and generated outputs.
+
 ---
 ## Use cases (3 quick examples)
 
