@@ -248,7 +248,7 @@ public class Main implements Runnable {
         File outFile = new File(outPath);
 
         if (tables.size() == 1) {
-            try (FileWriter fw = new FileWriter(outFile)) {
+            try (FileWriter fw = new FileWriter(outFile, StandardCharsets.UTF_8)) {
                 fw.write(tables.get(0).toCSV(separator));
             } catch (Exception e) {
                 throw new CommandLine.ExecutionException(new CommandLine(new Main()), e.getMessage(), e);
@@ -273,7 +273,7 @@ public class Main implements Runnable {
         int i = 1;
         for (Table table : tables) {
             File file = new File(parent, prefix + "-" + i + ext);
-            try (FileWriter fw = new FileWriter(file)) {
+            try (FileWriter fw = new FileWriter(file, StandardCharsets.UTF_8)) {
                 fw.write(table.toCSV(separator));
             } catch (Exception e) {
                 throw new CommandLine.ExecutionException(new CommandLine(new Main()), e.getMessage(), e);
