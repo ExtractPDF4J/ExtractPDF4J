@@ -6,7 +6,7 @@ The project follows **Semantic Versioning** and this changelog format is inspire
 
 ---
 
-## [Unreleased]
+## [2.3.0]
 
 ### Added
 
@@ -162,7 +162,7 @@ to reliably extract tabular data from real-world documents such as:
 
 ## Links
 
-[Unreleased]: https://github.com/ExtractPDF4J/ExtractPDF4J/compare/v2.2.0...main
+[2.3.0]: https://github.com/ExtractPDF4J/ExtractPDF4J/compare/v2.2.0...v2.3.0
 [2.2.0]: https://github.com/ExtractPDF4J/ExtractPDF4J/releases/tag/v2.2.0
 [2.1.0]: https://github.com/ExtractPDF4J/ExtractPDF4J/releases/tag/v2.1.0
 [2.0.0]: https://github.com/ExtractPDF4J/ExtractPDF4J/releases/tag/v2.0.0

@@ -66,8 +66,8 @@ If omitted, output is written to STDOUT.
 
 ## JSON output
 
-Build the runnable CLI JAR from the current source tree to use JSON output.
-From the repository root, run:
+JSON output is available starting in 2.3.0. To build the runnable CLI JAR from source,
+run this from the repository root:
 
 ```bash
 mvn -pl extractpdf4j-cli -am package -DskipTests
