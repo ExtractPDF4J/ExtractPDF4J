@@ -124,7 +124,7 @@ The copy/paste quick start is at the top of this README under the project descri
 
 ## Install (Maven + Gradle)
 
-The Maven and Gradle examples below use ExtractPDF4J 2.3.0. See the [v2.3.0 release notes](https://github.com/ExtractPDF4J/ExtractPDF4J/releases/tag/v2.3.0) for CLI JSON export, the dedicated CLI Docker image, and improvements to statement parsing and OCR normalization.
+The Maven and Gradle examples below use ExtractPDF4J 2.3.1. See the [v2.3.1 release notes](https://github.com/ExtractPDF4J/ExtractPDF4J/releases/tag/v2.3.1) for the statement CSV fix.
 
 ### **Maven**
 
@@ -136,7 +136,7 @@ The Maven and Gradle examples below use ExtractPDF4J 2.3.0. See the [v2.3.0 rele
     <dependency>
       <groupId>io.github.extractpdf4j</groupId>
       <artifactId>extractpdf4j-bom</artifactId>
-      <version>2.3.0</version>
+      <version>2.3.1</version>
       <type>pom</type>
       <scope>import</scope>
     </dependency>
@@ -159,7 +159,7 @@ If you prefer not to use the BOM:
 <dependency>
   <groupId>io.github.extractpdf4j</groupId>
   <artifactId>extractpdf4j-core</artifactId>
-  <version>2.3.0</version>
+  <version>2.3.1</version>
 </dependency>
 ```
 
@@ -167,7 +167,7 @@ If you prefer not to use the BOM:
 <dependency>
   <groupId>io.github.extractpdf4j</groupId>
   <artifactId>extractpdf4j-cli</artifactId>
-  <version>2.3.0</version>
+  <version>2.3.1</version>
 </dependency>
 ```
 
@@ -175,22 +175,22 @@ If you prefer not to use the BOM:
 <dependency>
   <groupId>io.github.extractpdf4j</groupId>
   <artifactId>extractpdf4j-service</artifactId>
-  <version>2.3.0</version>
+  <version>2.3.1</version>
 </dependency>
 ```
 
 ### **Gradle**
 
 ```kotlin
-implementation("io.github.extractpdf4j:extractpdf4j-core:2.3.0")
+implementation("io.github.extractpdf4j:extractpdf4j-core:2.3.1")
 ```
 
 ```kotlin
-implementation("io.github.extractpdf4j:extractpdf4j-cli:2.3.0")
+implementation("io.github.extractpdf4j:extractpdf4j-cli:2.3.1")
 ```
 
 ```kotlin
-implementation("io.github.extractpdf4j:extractpdf4j-service:2.3.0")
+implementation("io.github.extractpdf4j:extractpdf4j-service:2.3.1")
 ```
 
 ---
@@ -387,6 +387,21 @@ Common flags:
 - `--debug` and `--debug-dir debug/`
 - `--ocr auto|cli|bytedeco`
 
+### Try the synthetic bank statement
+
+Download the [sample PDF](examples/synthetic-bank-statement/synthetic_bank_statement_text.pdf) and the expected UTF-8 CSVs for [page 1](examples/synthetic-bank-statement/bank_statement_hybrid-1.csv) and [page 2](examples/synthetic-bank-statement/bank_statement_hybrid-2.csv). The statement contains fictional data.
+
+From the root of a 2.3.1 checkout, build the CLI with Java 17 and run:
+
+```bash
+mvn -pl extractpdf4j-cli -am package -DskipTests
+java -jar extractpdf4j-cli/target/extractpdf4j-cli-2.3.1.jar \
+  examples/synthetic-bank-statement/synthetic_bank_statement_text.pdf \
+  --mode STREAM --pages all --out bank_statement.csv
+```
+
+The CLI creates `bank_statement-1.csv` with 20 transactions and `bank_statement-2.csv` with 9. Both files have seven columns, including separate Value Date, Description, Debit, and Credit fields. STREAM uses the PDF's text layer. HYBRID produces the same CSVs for this sample.
+
 See also the changelog entry for this documentation pass: [CHANGELOG](CHANGELOG.md).
 
 ---
@@ -394,7 +409,7 @@ See also the changelog entry for this documentation pass: [CHANGELOG](CHANGELOG.
 ## Project Status
 
 - Build tool: **Maven**
-- Coordinates (current): `io.github.extractpdf4j:extractpdf4j-core:2.3.0`
+- Coordinates (current): `io.github.extractpdf4j:extractpdf4j-core:2.3.1`
 - Java: **17+** (recommended 17+ runtime)
 
 ---
@@ -420,14 +435,14 @@ See also the changelog entry for this documentation pass: [CHANGELOG](CHANGELOG.
 <dependency>
   <groupId>io.github.extractpdf4j</groupId>
   <artifactId>extractpdf4j-core</artifactId>
-  <version>2.3.0</version>
+  <version>2.3.1</version>
 </dependency>
 ```
 
 ### Gradle
 
 ```kotlin
-implementation("io.github.extractpdf4j:extractpdf4j-core:2.3.0")
+implementation("io.github.extractpdf4j:extractpdf4j-core:2.3.1")
 ```
 
 ### Native Notes

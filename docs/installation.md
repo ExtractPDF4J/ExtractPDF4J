@@ -24,7 +24,7 @@ Import the BOM once, then declare modules without specifying versions.
     <dependency>
       <groupId>io.github.extractpdf4j</groupId>
       <artifactId>extractpdf4j-bom</artifactId>
-      <version>2.3.0</version>
+      <version>2.3.1</version>
       <type>pom</type>
       <scope>import</scope>
     </dependency>
@@ -68,7 +68,7 @@ If you prefer not to use the BOM, you can declare modules directly.
 <dependency>
   <groupId>io.github.extractpdf4j</groupId>
   <artifactId>extractpdf4j-core</artifactId>
-  <version>2.3.0</version>
+  <version>2.3.1</version>
 </dependency>
 ```
 
@@ -78,17 +78,19 @@ If you prefer not to use the BOM, you can declare modules directly.
 <dependency>
   <groupId>io.github.extractpdf4j</groupId>
   <artifactId>extractpdf4j-service</artifactId>
-  <version>2.3.0</version>
+  <version>2.3.1</version>
 </dependency>
 ```
 
 ## CLI module
 
+After installing the CLI, try the [synthetic bank statement walkthrough](cli.md#try-the-synthetic-bank-statement).
+
 ```xml
 <dependency>
   <groupId>io.github.extractpdf4j</groupId>
   <artifactId>extractpdf4j-cli</artifactId>
-  <version>2.3.0</version>
+  <version>2.3.1</version>
 </dependency>
 ```
 
@@ -99,7 +101,7 @@ If you prefer not to use the BOM, you can declare modules directly.
 Using the BOM:
 
 ```groovy
-implementation platform("io.github.extractpdf4j:extractpdf4j-bom:2.3.0")
+implementation platform("io.github.extractpdf4j:extractpdf4j-bom:2.3.1")
 
 implementation "io.github.extractpdf4j:extractpdf4j-service"
 ```
@@ -107,9 +109,9 @@ implementation "io.github.extractpdf4j:extractpdf4j-service"
 Without BOM:
 
 ```groovy
-implementation "io.github.extractpdf4j:extractpdf4j-core:2.3.0"
-implementation "io.github.extractpdf4j:extractpdf4j-service:2.3.0"
-implementation "io.github.extractpdf4j:extractpdf4j-cli:2.3.0"
+implementation "io.github.extractpdf4j:extractpdf4j-core:2.3.1"
+implementation "io.github.extractpdf4j:extractpdf4j-service:2.3.1"
+implementation "io.github.extractpdf4j:extractpdf4j-cli:2.3.1"
 ```
 
 ---

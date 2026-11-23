@@ -64,6 +64,21 @@ CSV defaults to commas. Pass a single separator character, quoted when your shel
 
 If omitted, output is written to STDOUT.
 
+## Try the synthetic bank statement
+
+Download the [sample PDF](https://github.com/ExtractPDF4J/ExtractPDF4J/blob/v2.3.1/examples/synthetic-bank-statement/synthetic_bank_statement_text.pdf) and the expected UTF-8 CSVs for [page 1](https://github.com/ExtractPDF4J/ExtractPDF4J/blob/v2.3.1/examples/synthetic-bank-statement/bank_statement_hybrid-1.csv) and [page 2](https://github.com/ExtractPDF4J/ExtractPDF4J/blob/v2.3.1/examples/synthetic-bank-statement/bank_statement_hybrid-2.csv). The statement contains fictional data.
+
+From the root of a 2.3.1 checkout, build the CLI with Java 17 and run:
+
+```bash
+mvn -pl extractpdf4j-cli -am package -DskipTests
+java -jar extractpdf4j-cli/target/extractpdf4j-cli-2.3.1.jar \
+  examples/synthetic-bank-statement/synthetic_bank_statement_text.pdf \
+  --mode STREAM --pages all --out bank_statement.csv
+```
+
+The CLI creates `bank_statement-1.csv` with 20 transactions and `bank_statement-2.csv` with 9. Both files have seven columns, including separate Value Date, Description, Debit, and Credit fields. STREAM uses the PDF's text layer. HYBRID produces the same CSVs for this sample.
+
 ## JSON output
 
 JSON output is available starting in 2.3.0. To build the runnable CLI JAR from source,

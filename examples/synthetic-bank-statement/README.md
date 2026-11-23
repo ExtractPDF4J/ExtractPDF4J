@@ -8,7 +8,7 @@ With Java 17 and Maven installed, run these commands from the repository root us
 
 ```sh
 mvn -pl extractpdf4j-cli -am package -DskipTests
-java -jar extractpdf4j-cli/target/extractpdf4j-cli-2.3.0.jar \
+java -jar extractpdf4j-cli/target/extractpdf4j-cli-2.3.1.jar \
   examples/synthetic-bank-statement/synthetic_bank_statement_text.pdf \
   --mode STREAM --pages all --out bank_statement.csv
 ```
