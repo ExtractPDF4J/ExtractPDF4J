@@ -77,7 +77,7 @@ public class OcrTuningExample {
 
 ```bash
 java -jar extractpdf4j-cli-<version>.jar scan.pdf \
-  --mode ocrstream \
+  --mode OCRSTREAM \
   --pages 1-2 \
   --dpi 400 \
   --out scan.csv
@@ -157,3 +157,22 @@ Without this, OCR may fail or return poor results.
 - [OCR Stream Parser](../how-it-works/ocr-stream.md)
 - [Lattice Parser](../how-it-works/lattice.md)
 - [Page Ranges](page-ranges.md)
+
+
+## Amount and date normalization
+
+In the current source tree, OCR stream extraction normalizes columns dominated
+by numeric values or month-name dates. Amounts can use accounting parentheses,
+currency markers, decimal commas or dots, and grouping with spaces or
+apostrophes. A separate `CR` credit marker is represented as a negative amount.
+
+When the first row contains a `Locale` header, a supported language-country tag
+in that column supplies the source formatting for its row. For example, `1,234`
+becomes `1234` with `en-US` and `1.234` with `de-DE`. Currency conventions can
+provide a hint when the row has no supported locale. Amounts whose separators
+remain ambiguous are preserved.
+
+Month-name dates use spaces between the day, month, and optional year. The
+year keeps its original two or four digits, and invalid dates are preserved.
+See the [normalization fixtures](https://github.com/ExtractPDF4J/ExtractPDF4J/tree/main/examples/normalization-results)
+for source values and expected output.

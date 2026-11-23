@@ -103,6 +103,21 @@ When using options like:
 
 the parser may preserve more explicit cell-level structure where supported.
 
+## CSV export with a custom delimiter
+
+Use `Table.toCSV(';')` for one table or `CsvExporter` to append the rows of
+multiple tables with the same delimiter.
+
+```java
+import com.extractpdf4j.helpers.CsvExporter;
+
+CsvExporter exporter = new CsvExporter();
+exporter.setDelimiter(";");
+String csv = exporter.export(tables);
+```
+
+`CsvExporter` defaults to commas and accepts one character as its delimiter.
+
 ## Downstream normalization
 
 After extraction, it is common to normalize:

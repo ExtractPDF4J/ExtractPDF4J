@@ -63,6 +63,7 @@ nav:
       - Table Areas: advanced-usage/table-areas.md
       - Columns: advanced-usage/columns.md
       - OCR Tuning: advanced-usage/ocr-tuning.md
+      - Experimental ML Fallback: advanced-usage/ml-fallback.md
       - Debug Images: advanced-usage/debug-images.md
 
   - API Reference:

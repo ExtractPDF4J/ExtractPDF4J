@@ -11,7 +11,7 @@ If you do not pass `--mode`, the CLI defaults to:
 That means it behaves like:
 
 ```bash
---mode hybrid
+--mode HYBRID
 ```
 
 ## Basic usage
@@ -25,7 +25,7 @@ java -jar extractpdf4j-cli-<version>.jar input.pdf \
 ## Supported modes
 
 ```bash
---mode stream|lattice|ocrstream|hybrid
+--mode STREAM|LATTICE|OCRSTREAM|HYBRID
 ```
 
 ## Mode guidance
@@ -51,8 +51,10 @@ Examples:
 - `--pages all` → all pages
 
 ## CSV separator
+CSV defaults to commas. Pass a single separator character, quoted when your shell treats it specially.
+
 ```bash
---sep ,
+--sep ';'
 ```
 
 ## Output file
@@ -64,13 +66,23 @@ If omitted, output is written to STDOUT.
 
 ## JSON output
 
+JSON output is available starting in 2.3.0. To build the runnable CLI JAR from source,
+run this from the repository root:
+
+```bash
+mvn -pl extractpdf4j-cli -am package -DskipTests
+```
+
+The JAR is in `extractpdf4j-cli/target/`. Replace `<version>` in the examples
+with the version from the source POM.
+
 Use `--json` to produce one structured JSON document for all detected tables.
 This is useful when the result is consumed by services, Kafka consumers, or
 other JSON-aware pipeline stages.
 
 ```bash
-java -jar extractpdf4j-cli-2.0.0.jar examples/Sample_Utility_Bill.pdf \
-  --mode stream \
+java -jar "extractpdf4j-cli/target/extractpdf4j-cli-<version>.jar" examples/Sample_Utility_Bill.pdf \
+  --mode STREAM \
   --json \
   --out tables.json
 ```
@@ -84,16 +96,32 @@ The command writes one file even if the PDF contains multiple tables:
 Omit `--out` to send the same JSON document to STDOUT, for example:
 
 ```bash
-java -jar extractpdf4j-cli-2.0.0.jar examples/Sample_Utility_Bill.pdf --mode stream --json
+java -jar "extractpdf4j-cli/target/extractpdf4j-cli-<version>.jar" examples/Sample_Utility_Bill.pdf --mode STREAM --json
 ```
 
 `--json` requires no additional libraries or environment variables. For scanned
 PDFs, use the usual OCR prerequisites: bundled Bytedeco native artifacts are
 recommended; otherwise ensure OpenCV/Tesseract libraries are available on the
 system `PATH` and set `TESSDATA_PREFIX` when Tesseract language data is not
-found. The repository Docker image packages the Spring Boot service rather than
-the CLI, so run the CLI command on the host or add the CLI shaded JAR to a
-custom image.
+found. Each cell is emitted as a JSON string. If no tables are detected, the
+CLI reports that on standard error and produces no JSON document.
+
+## Run the CLI in Docker
+
+Build the dedicated CLI image from the repository root. The default native
+platform is `linux-x86_64`. For a supported alternative, set
+`--build-arg JAVACPP_PLATFORM=<platform>` to match the image architecture.
+
+```bash
+docker build -f extractpdf4j-cli/Dockerfile -t extractpdf4j-cli:latest .
+docker run --rm \
+  --mount "type=bind,source=$PWD/examples,target=/app/inputs,readonly" \
+  extractpdf4j-cli:latest /app/inputs/Sample_Utility_Bill.pdf --mode STREAM --json
+```
+
+To save files directly, mount a writable host directory and pass an `--out`
+path inside that mount. See the [CLI Docker guide](https://github.com/ExtractPDF4J/ExtractPDF4J/blob/main/extractpdf4j-cli/cli-docker-image.md)
+for output mounts and Windows commands.
 
 ## DPI
 ```bash
@@ -132,7 +160,7 @@ Use these to tighten output control in more advanced workflows.
 
 ```bash
 java -jar extractpdf4j-cli-<version>.jar scan.pdf \
-  --mode lattice \
+  --mode LATTICE \
   --pages 1 \
   --dpi 450 \
   --ocr cli \
@@ -146,7 +174,7 @@ java -jar extractpdf4j-cli-<version>.jar scan.pdf \
 
 ```bash
 java -jar extractpdf4j-cli-<version>.jar statement.pdf \
-  --mode hybrid \
+  --mode HYBRID \
   --pages all \
   --dpi 400 \
   --out tables.csv
@@ -156,15 +184,15 @@ java -jar extractpdf4j-cli-<version>.jar statement.pdf \
 
 **When** `--out` **is omitted:**
 
-Tables are printed to STDOUT as CSV.
+The CLI prints CSV with a heading for each table, or one JSON document when `--json` is set.
 
 **When** `--out` **is provided:**
 
 Output is written to file.
 
-**When multiple tables are found:**
+**When multiple tables are exported as CSV:**
 
-Files may be numbered with suffixes, for example:
+The CLI numbers the output files, for example:
 
 - `out-1.csv`
 - `out-2.csv`

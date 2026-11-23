@@ -30,8 +30,8 @@
   <a href="https://github.com/ExtractPDF4J/ExtractPDF4J">
     <img src="https://img.shields.io/badge/Java-17%2B-1976D2?style=for-the-badge&logo=openjdk&logoColor=white" alt="Java 17+" />
   </a>
-  <a href="https://github.com/ExtractPDF4J/ExtractPDF4J/releases/tag/v2.1.0">
-  <img src="https://img.shields.io/badge/release-v2.1.0-616161?style=for-the-badge" alt="Release v2.1.0" />
+  <a href="https://github.com/ExtractPDF4J/ExtractPDF4J/releases/latest">
+  <img src="https://img.shields.io/github/v/release/ExtractPDF4J/ExtractPDF4J?style=for-the-badge" alt="Latest published release" />
   </a>
   <a href="https://github.com/ExtractPDF4J/ExtractPDF4J">
     <img src="https://img.shields.io/badge/OCR-supported-5E35B1?style=for-the-badge" alt="OCR Supported" />
@@ -124,6 +124,8 @@ The copy/paste quick start is at the top of this README under the project descri
 
 ## Install (Maven + Gradle)
 
+The examples below use ExtractPDF4J 2.3.0. Until 2.3.0 is published to Maven Central, use 2.2.0 for Maven or Gradle dependencies. See [what’s new in 2.3.0](CHANGELOG.md#230).
+
 ### **Maven**
 
 ### Recommended: Using the BOM
@@ -134,7 +136,7 @@ The copy/paste quick start is at the top of this README under the project descri
     <dependency>
       <groupId>io.github.extractpdf4j</groupId>
       <artifactId>extractpdf4j-bom</artifactId>
-      <version>2.1.0</version>
+      <version>2.3.0</version>
       <type>pom</type>
       <scope>import</scope>
     </dependency>
@@ -157,7 +159,7 @@ If you prefer not to use the BOM:
 <dependency>
   <groupId>io.github.extractpdf4j</groupId>
   <artifactId>extractpdf4j-core</artifactId>
-  <version>2.1.0</version>
+  <version>2.3.0</version>
 </dependency>
 ```
 
@@ -165,7 +167,7 @@ If you prefer not to use the BOM:
 <dependency>
   <groupId>io.github.extractpdf4j</groupId>
   <artifactId>extractpdf4j-cli</artifactId>
-  <version>2.1.0</version>
+  <version>2.3.0</version>
 </dependency>
 ```
 
@@ -173,22 +175,22 @@ If you prefer not to use the BOM:
 <dependency>
   <groupId>io.github.extractpdf4j</groupId>
   <artifactId>extractpdf4j-service</artifactId>
-  <version>2.1.0</version>
+  <version>2.3.0</version>
 </dependency>
 ```
 
 ### **Gradle**
 
 ```kotlin
-implementation("io.github.extractpdf4j:extractpdf4j-core:2.1.0")
+implementation("io.github.extractpdf4j:extractpdf4j-core:2.3.0")
 ```
 
 ```kotlin
-implementation("io.github.extractpdf4j:extractpdf4j-cli:2.1.0")
+implementation("io.github.extractpdf4j:extractpdf4j-cli:2.3.0")
 ```
 
 ```kotlin
-implementation("io.github.extractpdf4j:extractpdf4j-service:2.1.0")
+implementation("io.github.extractpdf4j:extractpdf4j-service:2.3.0")
 ```
 
 ---
@@ -366,7 +368,7 @@ HybridParser ── coordinates and merges results from the above
 
 ## CLI Quickstart
 
-The CLI defaults to **hybrid mode**. If you do not pass `--mode`, it behaves like `--mode hybrid`.
+The CLI defaults to **hybrid mode**. If you do not pass `--mode`, it behaves like `--mode HYBRID`.
 
 ```bash
 java -jar extractpdf4j-cli-<version>.jar input.pdf \
@@ -376,11 +378,11 @@ java -jar extractpdf4j-cli-<version>.jar input.pdf \
 
 Common flags:
 
-- `--mode stream|lattice|ocrstream|hybrid` (default: hybrid)
+- `--mode STREAM|LATTICE|OCRSTREAM|HYBRID` (default: hybrid)
 - `--pages 1|all|1,3-5`
 - `--sep ,` (CSV separator)
 - `--out out.csv` (omit to print to STDOUT)
-- `--json` (emit all detected tables as one JSON document)
+- `--json` (one JSON document for all detected tables, available starting in 2.3.0)
 - `--dpi 300` (use 300–450 for scans)
 - `--debug` and `--debug-dir debug/`
 - `--ocr auto|cli|bytedeco`
@@ -392,7 +394,7 @@ See also the changelog entry for this documentation pass: [CHANGELOG](CHANGELOG.
 ## Project Status
 
 - Build tool: **Maven**
-- Coordinates (current): `io.github.extractpdf4j:extractpdf4j-core:2.1.0`
+- Coordinates (current): `io.github.extractpdf4j:extractpdf4j-core:2.3.0`
 - Java: **17+** (recommended 17+ runtime)
 
 ---
@@ -418,14 +420,14 @@ See also the changelog entry for this documentation pass: [CHANGELOG](CHANGELOG.
 <dependency>
   <groupId>io.github.extractpdf4j</groupId>
   <artifactId>extractpdf4j-core</artifactId>
-  <version>2.1.0</version>
+  <version>2.3.0</version>
 </dependency>
 ```
 
 ### Gradle
 
 ```kotlin
-implementation("io.github.extractpdf4j:extractpdf4j-core:2.1.0")
+implementation("io.github.extractpdf4j:extractpdf4j-core:2.3.0")
 ```
 
 ### Native Notes
@@ -560,7 +562,7 @@ Usage:
 
 ```bash
 java -jar extractpdf4j-cli-<version>.jar <pdf>
-     [--mode stream|lattice|ocrstream|hybrid]
+     [--mode STREAM|LATTICE|OCRSTREAM|HYBRID]
      [--pages 1|all|1,3-5]
      [--sep ,]
      [--out out.csv]
@@ -584,19 +586,23 @@ java -jar extractpdf4j-cli-<version>.jar <pdf>
 Examples:
 
 ```bash
-java -jar extractpdf4j-parser-<version>.jar scan.pdf --mode lattice --pages 1 --dpi 450 --ocr cli --debug --keep-cells --debug-dir debug_out --out p1.csv
-java -jar extractpdf4j-parser-<version>.jar statement.pdf --mode hybrid --pages all --dpi 400 --out tables.csv
-java -jar extractpdf4j-cli-2.0.0.jar examples/Sample_Utility_Bill.pdf --mode stream --json --out tables.json
+java -jar extractpdf4j-cli-<version>.jar scan.pdf --mode LATTICE --pages 1 --dpi 450 --ocr cli --debug --keep-cells --debug-dir debug_out --out p1.csv
+java -jar extractpdf4j-cli-<version>.jar statement.pdf --mode HYBRID --pages all --dpi 400 --out tables.csv
+java -jar extractpdf4j-cli-<version>.jar examples/Sample_Utility_Bill.pdf --mode STREAM --json --out tables.json
 ```
 
 Notes:
 
-- When `--out` is omitted, tables are printed to STDOUT in CSV form.
-- When multiple tables are found and `--out` is provided, files are numbered by suffix (e.g., `out-1.csv`, `out-2.csv`).
-- `--json` emits one parseable JSON document with a top-level `tables` array; when paired with `--out`, all tables are written to that one file.
+- When `--out` is omitted, the selected output format is printed to STDOUT.
+- When multiple tables are exported as CSV with `--out`, files are numbered by suffix (e.g., `out-1.csv`, `out-2.csv`).
+- Starting in 2.3.0, `--json` emits one parseable JSON document with a top-level `tables` array; when paired with `--out`, all tables are written to that one file.
 - `--ocr` sets a system property read by OCR helpers; values: `auto`, `cli`, or `bytedeco`.
 
 ---
+
+See the [CLI guide](https://github.com/ExtractPDF4J/ExtractPDF4J/blob/main/docs/cli.md) for building and running the
+dedicated CLI container. The [changelog](CHANGELOG.md#230) lists the
+changes in 2.3.0.
 
 ## Microservice (via Docker)
 
@@ -783,14 +789,14 @@ Example (lattice, 450 DPI, CLI OCR, debug artifacts):
 ```bash
 java -Dtess.lang=eng -Dtess.psm=6 -Dtess.oem=1 -Docr.debug=true \
   -jar extractpdf4j-cli-<version>.jar scan.pdf \
-  --mode lattice --dpi 450 --ocr cli --debug --debug-dir debug \
+  --mode LATTICE --dpi 450 --ocr cli --debug --debug-dir debug \
   --out tables.csv
 ```
 
 Before/after (conceptual):
 
 - Before: low-DPI scan at 150, faint grid → few or no tables detected.
-- After: re-run at `--dpi 400` with `--debug` to inspect binarization; switch to `--mode ocrstream` if the text layer is missing.
+- After: re-run at `--dpi 400` with `--debug` to inspect binarization; switch to `--mode OCRSTREAM` if the text layer is missing.
 
 ---
 

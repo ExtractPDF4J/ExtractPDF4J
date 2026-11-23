@@ -2,7 +2,7 @@
 
 Minimal runnable demo that extracts tables from **every PDF in a directory** and writes one CSV file per document (first table only).
 
-Uses ExtractPDF4J **2.2.0** (`extractpdf4j-core`) via the parent reactor.
+Uses ExtractPDF4J **2.3.0** (`extractpdf4j-core`) via the parent reactor.
 
 ## Prerequisites
 
@@ -31,7 +31,7 @@ mvn -q -pl examples/batch-folder-processing exec:java \
 Or run the packaged JAR after a full reactor build:
 
 ```bash
-java -jar examples/batch-folder-processing/target/extractpdf4j-example-batch-folder-2.2.0.jar \
+java -jar examples/batch-folder-processing/target/extractpdf4j-example-batch-folder-2.3.0.jar \
   examples target/batch-out
 ```
 

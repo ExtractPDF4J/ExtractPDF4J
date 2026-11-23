@@ -6,6 +6,33 @@ The project follows **Semantic Versioning** and this changelog format is inspire
 
 ---
 
+## [2.3.0]
+
+### Added
+
+- Export all detected tables as one JSON document with the CLI's `--json` flag.
+- Add experimental, opt-in local ML fallback through `HybridMlParser` and the `MlTableExtractor` SPI.
+- Add a runnable Maven example that processes a folder of PDFs and writes one CSV per detected table.
+- Add a dedicated Docker image build for the CLI.
+
+### Changed
+
+- Align JavaCPP, OpenCV, Tesseract, and Leptonica on Bytedeco 1.5.14. Update PDFBox, Spring Boot, Picocli, Lombok, JUnit, and Maven Surefire.
+
+### Fixed
+
+- Preserve visual row order and column alignment in statement extraction, keep distinct ruled grids separate, and bound hybrid confidence scores to 0–1.
+- Improve OCR stream normalization for locale-specific amounts, accounting signs, credit markers, and month-name dates.
+
+- Include the Maven reactor module descriptors required to build the CLI and service Docker images.
+
+## [2.2.0]
+
+### Added
+
+- Support custom, single-character delimiters in `CsvExporter`.
+- Add opt-in extraction diagnostics for parser selection, timing, warnings, and fallback actions.
+
 ## [2.1.0] - 2026
 
 ### Added
@@ -135,6 +162,8 @@ to reliably extract tabular data from real-world documents such as:
 
 ## Links
 
+[2.3.0]: https://github.com/ExtractPDF4J/ExtractPDF4J/compare/v2.2.0...v2.3.0
+[2.2.0]: https://github.com/ExtractPDF4J/ExtractPDF4J/releases/tag/v2.2.0
 [2.1.0]: https://github.com/ExtractPDF4J/ExtractPDF4J/releases/tag/v2.1.0
 [2.0.0]: https://github.com/ExtractPDF4J/ExtractPDF4J/releases/tag/v2.0.0
 [0.1.2]: https://github.com/ExtractPDF4J/ExtractPDF4J/releases/tag/v0.1.2

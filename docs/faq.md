@@ -171,7 +171,7 @@ Example:
 
 ```bash
 java -jar extractpdf4j-cli-<version>.jar input.pdf \
-  --mode hybrid \
+  --mode HYBRID \
   --pages all \
   --out output.csv
 ```

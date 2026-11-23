@@ -135,7 +135,7 @@ public class OcrQuickStart {
 Use this when processing multiple PDFs.
 
 For a copy/paste runnable demo (build, run, and smoke test), see
-[`examples/batch-folder-processing`](../examples/batch-folder-processing/README.md).
+[`examples/batch-folder-processing`](https://github.com/ExtractPDF4J/ExtractPDF4J/blob/main/examples/batch-folder-processing/README.md).
 
 ```java
 import com.extractpdf4j.helpers.Table;
