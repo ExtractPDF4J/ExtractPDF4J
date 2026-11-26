@@ -2,16 +2,20 @@ package com.extractpdf4j.helpers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * CsvExporter
  *
  * <p>
  * Utility class for exporting extracted tables into CSV format with a
- * configurable delimiter.
+ * configurable delimiter and deterministic cell whitespace normalization.
  * </p>
  */
 public class CsvExporter {
+
+    private static final Pattern HORIZONTAL_WHITESPACE = Pattern.compile("\\h+");
+    private static final Pattern LINE_EDGE_SPACES = Pattern.compile(" *(\\r\\n|\\r|\\n) *");
 
     private String delimiter = ",";
 
@@ -31,11 +35,12 @@ public class CsvExporter {
             for (int r = 0; r < table.nrows(); r++) {
                 List<String> row = new ArrayList<>();
                 for (int c = 0; c < table.ncols(); c++) {
-                    String v = table.cell(r, c);
-                    if (v == null)
-                        v = "";
+                    String v = normalizeCellWhitespace(table.cell(r, c));
 
-                    boolean quote = v.contains(delimiter) || v.contains("\"") || v.contains(System.lineSeparator());
+                    boolean quote = v.contains(delimiter)
+                            || v.contains("\"")
+                            || v.contains("\n")
+                            || v.contains("\r");
                     if (quote) {
                         row.add("\"" + v.replace("\"", "\"\"") + "\"");
                     } else {
@@ -46,5 +51,25 @@ public class CsvExporter {
             }
         }
         return result.toString();
+    }
+
+    /**
+     * Applies deterministic CSV cell whitespace rules: collapses runs of
+     * horizontal whitespace to a single ASCII space, trims leading and trailing
+     * whitespace (including spaces adjacent to embedded line breaks), and
+     * preserves single internal spaces.
+     */
+    static String normalizeCellWhitespace(String value) {
+        if (value == null || value.isEmpty()) {
+            return "";
+        }
+        String collapsed = HORIZONTAL_WHITESPACE.matcher(value).replaceAll(" ").strip();
+        if (collapsed.isEmpty()) {
+            return "";
+        }
+        if (collapsed.contains("\n") || collapsed.contains("\r")) {
+            collapsed = LINE_EDGE_SPACES.matcher(collapsed).replaceAll("$1").strip();
+        }
+        return collapsed;
     }
 }
